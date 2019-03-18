@@ -1,0 +1,188 @@
+
+	// test args
+	int i;
+	if (arg_option_c) {
+		printf("[c option enabled]\n");
+		for (i = 0; i < arg_option_c_argc; i++) {
+			printf("[%s]\n", arg_option_c_argv[i]);
+		}
+	}
+	if (arg_option_e) {
+		printf("[e option enabled]\n");
+		for (i = 0; i < arg_option_e_argc; i++) {
+			printf("[%s]\n", arg_option_e_argv[i]);
+		}
+	}
+	if (arg_option_t) {
+		printf("[t option enabled]\n");
+		for (i = 0; i < arg_option_t_argc; i++) {
+			printf("[%s]\n", arg_option_t_argv[i]);
+		}
+	}
+	if (arg_option_p) {
+		printf("[p option enabled]\n");
+	}
+	if (arg_option_h) {
+		printf("[h option enabled]\n");
+	}
+	// end of test args
+
+
+
+
+	
+void read_answer_directory()
+{
+	// read all directorys and read file
+	struct dirent *dentry; // directory entry
+	struct stat statbuf;
+	int i;
+	
+	// dir[file] name limit xx-xx.txt => allocat 20 bytes
+	number_of_questions = 0;
+	answer_directory = (char **)malloc(sizeof(char *) * 100);
+	answer_data = (char **)malloc(sizeof(char *) * 100);
+	answer_type = (int *)malloc(sizeof(int) * 100);
+	for (i = 0; i < 100; i++) {
+		answer_directory[i] = (char *)malloc(sizeof(char) * 20);
+	}
+
+	DIR *dirp;
+
+	// open directory
+	if ((dirp = opendir(answer_dir)) == NULL || chdir(answer_dir) == -1) {
+		fprintf(stderr, "opendir, chdir error for %s\n", answer_dir);
+		close_program(1);
+	}
+
+	while ( (dentry = readdir(dirp)) != NULL ) {
+		// ignore starts with . and inode 0
+		if (dentry->d_ino == 0 || dentry->d_name[0] == '.') continue;
+
+
+		if (stat(dentry->d_name, &statbuf) == -1) {
+			fprintf(stderr, "stat error for %s\n", dentry->d_name);
+			break;
+		}
+
+		if ((statbuf.st_mode & S_IFMT) == S_IFREG)
+			printf("%-14s %ld\n", dentry->d_name, statbuf.st_size);
+		else {
+			memcpy(answer_directory[number_of_questions], dentry->d_name, 20);
+			// printf("haha : %-14s\n", answer_directory[number_of_questions]);
+			read_file_in_dir(answer_directory[number_of_questions]);
+			++number_of_questions;
+		}
+	}
+}
+
+void read_file_in_dir(char *directory_entry)
+{
+	DIR *dirp;
+	struct dirent *dentry;
+	struct stat statbuf;
+
+	int fd;
+
+	char txt[20];
+	char c[20];
+	sprintf(txt, "%s.txt", directory_entry);
+	sprintf(c, "%s.c", directory_entry);
+	/*
+	printf("%s\n", txt);
+	printf("%s\n", c);
+	printf("--------------------\n");
+	*/
+
+	if ((dirp = opendir(directory_entry)) == NULL || chdir(directory_entry) == -1) {
+		fprintf(stderr, "opendir, chdir error for %s\n", directory_entry);
+		close_program(1);
+	}
+	while ((dentry = readdir(dirp)) != NULL) {
+		// one file only
+		if (dentry->d_ino == 0 || dentry->d_name[0] == '.') continue;
+
+
+		if (stat(dentry->d_name, &statbuf) == -1) {
+			fprintf(stderr, "stat error for %s\n", dentry->d_name);
+			break;
+		}
+		// printf("%s\n", dentry->d_name);
+		if (dentry->d_name[strlen(dentry->d_name)-1] == 't') {
+			/*
+			answer_type[number_of_questions] = 0;
+			// printf("texts\n");
+
+			// open file and fill answer
+			if ( ( fd = open(dentry->d_name, O_RDONLY)) < 0 ) {
+				fprintf(stderr, "open error for %s\n", dentry->d_name);
+				close_program(1);
+			}
+			char *buf;
+			ssize_t length;
+			int i = 0;
+			off_t filesize;
+			filesize = lseek(fd, (off_t)0, SEEK_END);
+			lseek(fd, (off_t)0, SEEK_SET);
+			printf("[gaka] %s \n", dentry->d_name);
+			buf = (char *)calloc(filesize, sizeof(char));
+			// read only return one byte, so read only one byte
+			if ((length = read(fd, buf, filesize) ) < 0 ) {
+				printf("reading file Error for %s\n", dentry->d_name);
+			}
+			buf[filesize] = '\0';
+			// ignore space before ':' character
+			// printf("%s\n", buf);
+			answer_data[number_of_questions] = (char *)malloc(sizeof(char) * (filesize+1));
+			memcpy(answer_data[number_of_questions], buf, i+1);
+			free(buf);
+			close(fd);
+			*/
+		}
+		else {
+			answer_type[number_of_questions] = 1;
+			printf("c code\n");
+			//printf("%s.c\n", directory_entry); // compile this file
+			char command[100];
+			int is_error = 0;
+			int warning_count = 0;
+			sprintf(command, "gcc %s -o %s.exe", dentry->d_name, directory_entry);
+			system(command); // compile
+			sprintf(command, "./%s.exe > %s.stdout", directory_entry, directory_entry);
+			system(command);//execute
+		}
+		// fill answer data....
+
+	}
+	// printf("------------------------\n");
+	chdir(".."); // goto upto upsisde
+
+}
+
+void free_all_memory()
+{
+	int i;
+	for (i = 0; i < 100; i++) {
+		free(answer_directory[i]);
+		free(answer_data[i]);
+	}
+	free(answer_type);
+	free(answer_directory);
+	free(answer_data);
+	free(arg_option_c_argv);
+	free(arg_option_e_argv);
+	free(arg_option_t_argv);
+}
+
+void read_student_directory(char *directory_entry)
+{
+	// reads one student directory in all files
+	// check answer with answer file
+	// open 
+}
+
+void close_program(int code)
+{
+	free_all_memory();
+	exit(code);
+}
