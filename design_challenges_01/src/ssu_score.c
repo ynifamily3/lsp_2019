@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "arg_read.h"
 #include "print_helps.h"
@@ -90,11 +91,26 @@ void extract_answer(char *ansdir)
 		}
 		printf("making answer .... %s \n", filename_c);
 		sprintf(gcc_command, "gcc %s %s -o %s.exe", filename_c, p, ansdir);
-		printf("%s\n", gcc_command);
 		system(gcc_command);
-		sprintf(gcc_command, "./%s.exe > %s.stdout", ansdir, ansdir);
-		printf("%s\n", gcc_command);
+
+		// file creat
+		sprintf(gcc_command, "%s.stdout", ansdir);
+		
+		int stdout_fd, origin_fd;
+		origin_fd = dup(1); // 0 : in 1 : out 2 : error
+		if ((stdout_fd = creat(gcc_command, 0644)) < 0) {
+			fprintf(stderr, "error create .... for %s\n", gcc_command);
+			exit(1);
+		}
+		sprintf(gcc_command, "./%s.exe", ansdir);
+		// write %s.stdout using dup
+		dup2(stdout_fd, 1);
 		system(gcc_command);
+		// after write. close file.
+		close(stdout_fd);
+		dup2(origin_fd, 1);
+		printf("test!!");
+
 		// open %s.stdout and put into answers[number_of_questions]
 		ssize_t flength;
 		ssize_t content_length;
@@ -114,6 +130,23 @@ void extract_answer(char *ansdir)
 		exit(1);
 	}
 	chdir("..");
+}
+
+int compare(const void *a, const void *b) 
+{
+	char *aString = *(char **)a;
+	char *bString = *(char **)b;
+	int diff;
+	while ( *aString && *bString ) {
+		if (isdigit(*aString) && isdigit(*bString))
+			diff = strtol(aString, (char **)&aString, 10) - strtol(bString, (char**)&bString, 10);
+		else
+			diff = tolower( *aString ) - tolower( *bString);
+		if (diff != 0) return diff;
+		aString++;
+		bString++;
+	}
+	return *aString - *bString;
 }
 
 void open_answer_set()
@@ -144,9 +177,12 @@ void open_answer_set()
 			break;
 		}
 		// all of contents contain directory
-		memcpy(answer_directory[number_of_questions], dentry->d_name, 20);
-		extract_answer(answer_directory[number_of_questions]);
-		++number_of_questions;
+		memcpy(answer_directory[number_of_questions++], dentry->d_name, 20);
+	}
+	// all of directorys must be sorted
+	qsort((void *)answer_directory, number_of_questions, sizeof(answer_directory[0]), compare);
+	for (i = 0; i < number_of_questions; i++) {
+		extract_answer(answer_directory[i]);
 	}
 }
 
@@ -161,12 +197,13 @@ int main(int argc, char *argv[])
 	}
 	// compose Answer Data into RAM (include compile C & run so long time)
 	open_answer_set();
-
+	/*
 	for (int i = 0; i < number_of_questions; i++) {
 		// if(problem_type[i] == 0) continue;
 		printf("%s : %s", answer_directory[i], answers[i]);
 		printf("--------------------------------\n");
 	}
+	*/
 
 	mark_student(0);
 	
