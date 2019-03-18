@@ -9,6 +9,7 @@
 
 #include "arg_read.h"
 #include "print_helps.h"
+#include "mark_student.h"
 #include "assert_answer.h"
 
 #define DIRECTORY_SIZE MAXNAMLEN
@@ -36,7 +37,7 @@ int number_of_text_questions = 0;
 
 int number_of_students = 0;
 char **students; 
-int *scores; // siljae score * 10 (int hwa)
+int *scores; // siljae score = ( / 10 )(int hwa)
 
 /*
 	students 	-> "2016xxxx"
@@ -166,9 +167,12 @@ int main(int argc, char *argv[])
 		printf("%s : %s", answer_directory[i], answers[i]);
 		printf("--------------------------------\n");
 	}
+
+	mark_student(0);
 	
+	//mark_student(int student_index);
 	// for example, 11 check
-	printf("%d", assert_answer(1, "parent", "parent : SIGUSR1 pending"));
+	//printf("%d", assert_answer(1, "parent", "parent : SIGUSR1 pending"));
 	
 	exit(0);
 }
