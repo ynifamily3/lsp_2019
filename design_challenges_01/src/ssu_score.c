@@ -7,6 +7,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 
 #include "arg_read.h"
 #include "print_helps.h"
@@ -40,12 +41,60 @@ int number_of_students = 0;
 char **students; 
 int *scores; // siljae score = ( / 10 )(int hwa)
 
+int compare(const void *a, const void *b);
+
 /*
 	students 	-> "2016xxxx"
 				-> "2017xxxx"
 				-> "2018xxxx"
 				...
 */
+void set_students_info()
+{
+	// sets number_of_students, students, scores
+	struct dirent *dentry;
+	struct stat statbuf;
+	DIR *dirp;
+	int i;
+	chdir(".."); // rewind
+	students = (char **)calloc(100, sizeof(char *));
+	for (i = 0; i < 100; i++) {
+		students[i] = (char *)calloc(1000, sizeof(char));
+	}
+	if ((dirp = opendir(student_dir)) == NULL || chdir(student_dir) == -1) {
+		fprintf(stderr, "Student's directory open failed : %s\n", strerror(errno));
+		exit(1);
+	}
+
+	while ( (dentry = readdir(dirp)) != NULL ) {
+		
+		if (dentry->d_ino == 0 || dentry->d_name[0] == '.') continue;
+		printf("%s\n", dentry->d_name);
+		if (stat(dentry->d_name, &statbuf) == -1) {
+			fprintf(stderr, "stat error for %s : %s\n", dentry->d_name, strerror(errno));
+			break;
+		}
+		memcpy(students[number_of_students++], dentry->d_name, 20);
+	}
+
+	qsort((void *)students, number_of_students, sizeof(answer_directory[0]), compare);	
+}
+
+void normalize(char *text)
+{
+	int i, j;
+	for (i = 0, j = 0; text[i] != 0; i++,j++) {
+		if (!isspace(text[i])) {
+			// lower normalize
+			char t = text[i];
+			if (t >= 'A' && t <= 'Z') t += 32;
+			text[j] = t;
+		}
+		else
+			j--;
+	}
+	text[j] = '\0';
+}
 
 
 void extract_answer(char *ansdir)
@@ -109,7 +158,6 @@ void extract_answer(char *ansdir)
 		// after write. close file.
 		close(stdout_fd);
 		dup2(origin_fd, 1);
-		printf("test!!");
 
 		// open %s.stdout and put into answers[number_of_questions]
 		ssize_t flength;
@@ -188,6 +236,7 @@ void open_answer_set()
 
 int main(int argc, char *argv[])
 {
+	int i;
 	// parse user's arguments
 	parse_args(argc, argv);
 
@@ -197,20 +246,16 @@ int main(int argc, char *argv[])
 	}
 	// compose Answer Data into RAM (include compile C & run so long time)
 	open_answer_set();
-	/*
-	for (int i = 0; i < number_of_questions; i++) {
-		// if(problem_type[i] == 0) continue;
-		printf("%s : %s", answer_directory[i], answers[i]);
-		printf("--------------------------------\n");
-	}
-	*/
 
-	mark_student(0);
-	
-	//mark_student(int student_index);
-	// for example, 11 check
-	//printf("%d", assert_answer(1, "parent", "parent : SIGUSR1 pending"));
-	
+	set_students_info();
+
+	//debug
+	// print students
+	for (i = 0; i < number_of_students; i++) {
+		printf("student's dir : [%s]\n", students[i]);
+	}
+
+	// mark_student(0);
 	exit(0);
 }
 
