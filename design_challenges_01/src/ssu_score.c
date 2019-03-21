@@ -22,6 +22,9 @@
 char **answer_directory;
 int *problem_type; // 0 for text , 1 for c
 char **answers;
+
+char students_challenge[1000];
+
 /*
 answers -> contents of ans/1-1.txt (abc : def : ghi...)
 		-> contents of ans/1-2.txt
@@ -42,6 +45,7 @@ char **students;
 int *scores; // siljae score = ( / 10 )(int hwa)
 
 int compare(const void *a, const void *b);
+void compile_and_return_result(char *dirname);
 
 /*
 	students 	-> "2016xxxx"
@@ -76,7 +80,7 @@ void set_students_info()
 		}
 		memcpy(students[number_of_students++], dentry->d_name, 20);
 	}
-
+	scores = (int *)calloc(number_of_students, sizeof(int));
 	qsort((void *)students, number_of_students, sizeof(answer_directory[0]), compare);	
 }
 
@@ -134,9 +138,7 @@ void extract_answer(int index, char *ansdir)
 		// printf("c : %s\n", filename_c);
 		close(fd_c); // no more....
 
-		if(!arg_option_t) {
-			p = "";
-		} else {
+		if(arg_option_t) {
 			for (int i = 0;i < arg_option_t_argc; i++) {
 				if (strcmp(ansdir, arg_option_t_argv[i]) == 0) {
 						p = "-lpthread";
@@ -267,14 +269,68 @@ int mark_student(int student_index) {
 			// sxxxxxxxxxxxxxxxxxxxx
 			sprintf(pathname, "%s.c", answer_directory[i]);
 			if ( access(pathname, F_OK) == 0) {
-				printf("%s exists \n", pathname);
+				printf("%s exists. comparing score....\n", pathname);
+				// compile students c source file
+				// checking answer
+				compile_and_return_result(answer_directory[i]);
 			} else {
-				printf("cannot find %s\n", pathname);
+				printf("cannot find : this problem is 0 score %s\n", pathname);
 			}
         }
     }
 	chdir("..");
     return 0;
+}
+
+void compile_and_return_result(char *dirname)
+{
+	char *p = "";
+	char pathname[15];
+	char gcc_command[100];
+	if(arg_option_t) {
+		for (int i = 0;i < arg_option_t_argc; i++) {
+			if (strcmp(dirname, arg_option_t_argv[i]) == 0) {
+					p = "-lpthread";
+					break;
+			}
+		}
+	}
+	sprintf(pathname, "%s.c", dirname);
+
+	// error, warning redirecting (error file writing)
+	char errr[30];
+	sprintf(errr, "%s-error.txt", dirname);
+	int error_warning_fd = creat(errr, 0666);
+	int original_stderr = dup(2);
+	dup2(error_warning_fd, 2);
+	// try compile
+	sprintf(gcc_command, "gcc %s %s -o %s.exe", pathname, p, dirname);
+	system(gcc_command);
+	close(error_warning_fd);
+	dup2(original_stderr, 2);
+
+	// detect error finding
+
+
+	
+	// file creat
+	sprintf(gcc_command, "%s.stdout", dirname);	
+	int stdout_fd, origin_fd;
+	origin_fd = dup(1); // 0 : in 1 : out 2 : error
+	if ((stdout_fd = creat(gcc_command, 0644)) < 0) {
+		fprintf(stderr, "error create .... for %s\n", gcc_command);
+		exit(1);
+	}
+	sprintf(gcc_command, "./%s.exe", dirname);
+	// write %s.stdout using dup
+	dup2(stdout_fd, 1);
+	system(gcc_command);
+	// after write. close file.
+	close(stdout_fd);
+	dup2(origin_fd, 1);
+	
+	///// print (debug)
+	printf("tjdrhd\n");
 }
 
 
