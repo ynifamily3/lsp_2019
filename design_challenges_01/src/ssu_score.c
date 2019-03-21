@@ -59,7 +59,7 @@ void set_students_info()
 	chdir(".."); // rewind
 	students = (char **)calloc(100, sizeof(char *));
 	for (i = 0; i < 100; i++) {
-		students[i] = (char *)calloc(1000, sizeof(char));
+		students[i] = (char *)calloc(100, sizeof(char));
 	}
 	if ((dirp = opendir(student_dir)) == NULL || chdir(student_dir) == -1) {
 		fprintf(stderr, "Student's directory open failed : %s\n", strerror(errno));
@@ -69,7 +69,7 @@ void set_students_info()
 	while ( (dentry = readdir(dirp)) != NULL ) {
 		
 		if (dentry->d_ino == 0 || dentry->d_name[0] == '.') continue;
-		printf("%s\n", dentry->d_name);
+		// printf("%s\n", dentry->d_name);
 		if (stat(dentry->d_name, &statbuf) == -1) {
 			fprintf(stderr, "stat error for %s : %s\n", dentry->d_name, strerror(errno));
 			break;
@@ -97,7 +97,7 @@ void normalize(char *text)
 }
 
 
-void extract_answer(char *ansdir)
+void extract_answer(int index, char *ansdir)
 {
 	chdir(ansdir);
 	// open C or txt file
@@ -113,21 +113,27 @@ void extract_answer(char *ansdir)
 	if(fd_txt > 0) {
 		// text mode
 		// printf("text : %s\n", filename_txt);
-		problem_type[number_of_questions] = 0;
+		problem_type[index] = 0;
 		ssize_t flength;
 		ssize_t content_length;
+
+		// stat file size
+		/// will be filled
+
 		flength = lseek(fd_txt, (off_t)0, SEEK_END);
 		lseek(fd_txt, (off_t)0, SEEK_SET);
-		if( (content_length = read(fd_txt, answers[number_of_questions], flength)) < 0) {
+		answers[index] = (char *)calloc(flength + 1, sizeof(char)); // answer contents
+		if( (content_length = read(fd_txt, answers[index], flength)) < 0) {
 			fprintf(stderr, "reading file error... %s\n", gcc_command);
 		}
 		close(fd_txt); // no more
 	}
 	else if (fd_c > 0) {
-		problem_type[number_of_questions] = 1;
+		problem_type[index] = 1;
 		// c mode
 		// printf("c : %s\n", filename_c);
 		close(fd_c); // no more....
+
 		if(!arg_option_t) {
 			p = "";
 		} else {
@@ -168,10 +174,15 @@ void extract_answer(char *ansdir)
 			exit(1);
 		}
 		flength = lseek(fd_c, (off_t)0, SEEK_END);
+
+		answers[index] = (char *)calloc(flength + 1, sizeof(char)); // answer contents
+
 		lseek(fd_c, (off_t)0, SEEK_SET);
-		if( (content_length = read(fd_c, answers[number_of_questions], flength)) < 0) {
+		if( (content_length = read(fd_c, answers[index], flength)) < 0) {
 			fprintf(stderr, "reading file error... %s\n", gcc_command);
 		}
+		// normalize C program output answer
+		normalize(answers[index]);
 	}
 	else {
 		printf("no file in ans_dir : %s\n", ansdir);
@@ -209,7 +220,9 @@ void open_answer_set()
 	problem_type = (int *)calloc(100, sizeof(int));
 	for (i = 0; i < 100; i++) {
 		answer_directory[i] = (char *)calloc(20, sizeof(char));
-		answers[i] = (char *)calloc(1000, sizeof(char)); // answer contents
+		// answers[i] = (char *)calloc(1000, sizeof(char)); // answer contents
+		// will be placed on extract_answer
+		// will be filesize (answer file)
 	}
 
 	if ((dirp = opendir(answer_dir)) == NULL || chdir(answer_dir) == -1) {
@@ -230,9 +243,40 @@ void open_answer_set()
 	// all of directorys must be sorted
 	qsort((void *)answer_directory, number_of_questions, sizeof(answer_directory[0]), compare);
 	for (i = 0; i < number_of_questions; i++) {
-		extract_answer(answer_directory[i]);
+		extract_answer(i, answer_directory[i]); // momo
 	}
 }
+
+// originally, this module is into mark_student.c
+int mark_student(int student_index) {
+    // printf("mark %d\n", student_index);
+    // test. Programming problem first
+    int i;
+	
+	if (chdir(students[student_index]) < 0 ) {
+		fprintf(stderr, "cannot find student directory %s\n", students[student_index]);
+		exit(1);
+	}
+	
+	printf("Grading %s\n", students[student_index]);
+    for (i = 0; i < number_of_questions; i++) {
+		// printf("%d %s\n", problem_type[i], answer_directory[i]);
+        if (problem_type[i] == 1) {
+            // find student's file
+			char pathname[15];
+			// sxxxxxxxxxxxxxxxxxxxx
+			sprintf(pathname, "%s.c", answer_directory[i]);
+			if ( access(pathname, F_OK) == 0) {
+				printf("%s exists \n", pathname);
+			} else {
+				printf("cannot find %s\n", pathname);
+			}
+        }
+    }
+	chdir("..");
+    return 0;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -249,13 +293,10 @@ int main(int argc, char *argv[])
 
 	set_students_info();
 
-	//debug
-	// print students
-	for (i = 0; i < number_of_students; i++) {
-		printf("student's dir : [%s]\n", students[i]);
-	}
+	printf("Grading Student's test papers..\n");
 
-	// mark_student(0);
+	for (i = 0; i < number_of_students; i++)
+		mark_student(i);
+	
 	exit(0);
 }
-
