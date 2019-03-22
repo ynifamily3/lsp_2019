@@ -1,7 +1,7 @@
 OBJECTS = ssu_score.o print_helps.o arg_read.o assert_answer.o mark_student.o
 TARGET = ../ssu_score
 CC = gcc
-CFLAGS = -Wall -W -std=c99
+CFLAGS = -Wall -W -std=c99 -lpthread -pthread
 
 $(TARGET) : $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJECTS)

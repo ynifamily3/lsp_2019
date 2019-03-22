@@ -1,5 +1,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -8,6 +9,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <pthread.h>
 
 #include "arg_read.h"
 #include "print_helps.h"
@@ -44,8 +46,49 @@ int number_of_students = 0;
 char **students; 
 int *scores; // siljae score = ( / 10 )(int hwa)
 
+bool is_execute_completed = false; // check mark_thread ended
+bool is_time_limited = false;
+
 int compare(const void *a, const void *b);
-void compile_and_return_result(char *dirname);
+int compile_and_return_result(char *dirname);
+void *mark_thread(void *arg);
+void *wait_thread(void *arg);
+
+void *mark_thread(void *arg)
+{
+	// fprintf(stderr, "cmd : %s\n", (char *)arg);
+	//fprintf(stderr, "Run start!!..\n");
+	system((char *)arg);
+	is_execute_completed = true;
+	//fprintf(stderr, "\nRun ended!!..\n");
+	return NULL;
+}
+
+void *wait_thread(void *arg)
+{
+	// observe mark is ended
+	// runtime is required
+	struct timeval begin;
+	struct timeval end;
+	gettimeofday(&begin, NULL);
+	int limit = 5;
+	// observe mark_tid is ended
+	while (!is_execute_completed && limit--)
+	{
+		sleep(1);
+		
+		//fprintf(stderr, "[%d]", limit);
+	}
+	if (limit <= 0) {
+		//fprintf(stderr, "\ntime Limit exceeded!!\n");
+		is_time_limited = true;
+		// exit mark_thread
+		pthread_cancel((pthread_t)arg);
+	}
+	is_execute_completed = false;
+	gettimeofday(&end, NULL);
+	return NULL;
+}
 
 /*
 	students 	-> "2016xxxx"
@@ -269,7 +312,7 @@ int mark_student(int student_index) {
 			// sxxxxxxxxxxxxxxxxxxxx
 			sprintf(pathname, "%s.c", answer_directory[i]);
 			if ( access(pathname, F_OK) == 0) {
-				printf("%s exists. comparing score....\n", pathname);
+				printf("%s : ", pathname);
 				// compile students c source file
 				// checking answer
 				compile_and_return_result(answer_directory[i]);
@@ -282,11 +325,13 @@ int mark_student(int student_index) {
     return 0;
 }
 
-void compile_and_return_result(char *dirname)
+int compile_and_return_result(char *dirname)
 {
+	int score = 100; // init score
 	char *p = "";
 	char pathname[15];
 	char gcc_command[100];
+	struct stat statbuf;
 	if(arg_option_t) {
 		for (int i = 0;i < arg_option_t_argc; i++) {
 			if (strcmp(dirname, arg_option_t_argv[i]) == 0) {
@@ -305,32 +350,64 @@ void compile_and_return_result(char *dirname)
 	dup2(error_warning_fd, 2);
 	// try compile
 	sprintf(gcc_command, "gcc %s %s -o %s.exe", pathname, p, dirname);
-	system(gcc_command);
+	int retsys = system(gcc_command);
 	close(error_warning_fd);
 	dup2(original_stderr, 2);
 
-	// detect error finding
-
-
-	
-	// file creat
-	sprintf(gcc_command, "%s.stdout", dirname);	
-	int stdout_fd, origin_fd;
-	origin_fd = dup(1); // 0 : in 1 : out 2 : error
-	if ((stdout_fd = creat(gcc_command, 0644)) < 0) {
-		fprintf(stderr, "error create .... for %s\n", gcc_command);
-		exit(1);
+	// if retsys is not 0, error detected
+	if (retsys != 0) {
+		printf("error detected!! %s is zero point\n", pathname);
+		remove(errr); // error file delete
+		return 0;
 	}
+	// detect error finding
+	stat(errr, &statbuf);
+	if(statbuf.st_size > 0) {
+		printf("warning detected!!\n");
+		FILE *fp;
+		fp = fopen(errr, "r");
+		char line_buf[500];
+		while (!feof(fp)) {
+			char *find_warning;
+			fgets(line_buf, sizeof(line_buf), fp);
+			find_warning = strstr(line_buf, " warning: ");
+			if(find_warning) {
+				find_warning = NULL;
+				score--;
+			}
+		}
+		fclose(fp);
+	} else {
+		printf("Compile succeed! running...\n");
+	}
+	remove(errr); // warn file delete
+	// creat stdout file
+	int stdout_fd, origin_fd;
+	sprintf(gcc_command, "%s.stdout", dirname);
+	stdout_fd = creat(gcc_command, 0666);
+	origin_fd = dup(1);
 	sprintf(gcc_command, "./%s.exe", dirname);
-	// write %s.stdout using dup
 	dup2(stdout_fd, 1);
-	system(gcc_command);
-	// after write. close file.
-	close(stdout_fd);
-	dup2(origin_fd, 1);
+
 	
-	///// print (debug)
-	printf("tjdrhd\n");
+	// open 2 thread and race time
+	pthread_t mark_tid, wait_tid;
+	int wait_status;
+	// execute students' program
+	pthread_create(&mark_tid, NULL, mark_thread, (void *)gcc_command);
+	// sleep 5 seconds
+	pthread_create(&wait_tid, NULL, wait_thread, (void *)&mark_tid);
+
+	pthread_join(wait_tid, (void *)&wait_status);
+	// pthread_join(mark_tid, (void *)&mark_status);
+	if (is_time_limited) {
+		is_time_limited = false;
+		fprintf(stderr, "time Limit exceeded!!\n");
+		// process kill please
+	}
+	
+	dup2(origin_fd, 1);
+	return score;
 }
 
 
