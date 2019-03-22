@@ -57,37 +57,29 @@ int strcmp2(char *a, char *b, int tol);
 
 void *mark_thread(void *arg)
 {
-	// fprintf(stderr, "cmd : %s\n", (char *)arg);
-	//fprintf(stderr, "Run start!!..\n");
+	struct timeval begin;
+	struct timeval end;
+	
+	gettimeofday(&begin, NULL);
+	
 	system((char *)arg);
+	fprintf(stderr, "requested nono");
+	gettimeofday(&end, NULL);
 	is_execute_completed = true;
-	//fprintf(stderr, "\nRun ended!!..\n");
 	return NULL;
 }
 
 void *wait_thread(void *arg)
 {
 	// observe mark is ended
-	// runtime is required
-	struct timeval begin;
-	struct timeval end;
-	gettimeofday(&begin, NULL);
-	int limit = 7;
-	// observe mark_tid is ended
-	while (!is_execute_completed && limit--)
-	{
-		sleep(1);
-		
-		//fprintf(stderr, "[%d]", limit);
-	}
-	if (limit <= 0) {
-		//fprintf(stderr, "\ntime Limit exceeded!!\n");
-		is_time_limited = true;
-		// exit mark_thread
+	sleep(7);
+	is_time_limited = true;
+	// exit mark_thread
+	if(!is_execute_completed) {
 		pthread_cancel((pthread_t)arg);
+		fprintf(stderr, "cancel requested\n");
 	}
 	is_execute_completed = false;
-	gettimeofday(&end, NULL);
 	return NULL;
 }
 
