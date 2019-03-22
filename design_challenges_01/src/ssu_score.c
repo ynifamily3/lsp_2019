@@ -46,7 +46,6 @@ int number_of_students = 0;
 char **students; 
 int *scores; // siljae score = ( / 10 )(int hwa)
 
-bool is_execute_completed = false; // check mark_thread ended
 bool is_time_limited = false;
 
 int compare(const void *a, const void *b);
@@ -69,7 +68,6 @@ void *mark_thread(void *arg)
 	// fprintf(stderr, "[[[[");
 	system(args->gcc_command);
 	// fprintf(stderr, "]]]]");
-	is_execute_completed = true;
 	pthread_cancel(*(args->target_tid));
 	return NULL;
 }
@@ -78,7 +76,7 @@ void *wait_thread(void *arg)
 {
 	sleep(7);
 	is_time_limited = true;
-	fprintf(stderr, "%ld", *(pthread_t *)arg);
+	// fprintf(stderr, "%ld", *(pthread_t *)arg);
 	pthread_cancel(*(pthread_t *)arg);
 	return NULL;
 }
@@ -307,7 +305,7 @@ int mark_student(int student_index) {
 				printf("%s : ", pathname);
 				compile_and_return_result(i, answer_directory[i]);
 			} else {
-				printf("%s : Not Submitted\n", pathname);
+				printf("%s : X - Not Submitted\n", pathname);
 			}
         }
     }
@@ -350,7 +348,7 @@ int compile_and_return_result(int student_index, char *dirname)
 
 	// if retsys is not 0, error detected
 	if (retsys != 0) {
-		printf("error occured\n");
+		printf("X - error occured\n");
 		remove(errr); // error file delete
 		return 0;
 	}
@@ -400,7 +398,7 @@ int compile_and_return_result(int student_index, char *dirname)
 
 	if (is_time_limited) {
 		is_time_limited = false;
-		printf(" Time Limit Exceeded!!\n"); // 6 times
+		printf("X - Time Limit Exceeded!!\n"); // 6 times
 		// process kill please
 		char kill_command[50];
 		sprintf(kill_command, "pkill -9 -ef %s > /dev/null", gcc_command);
@@ -419,7 +417,7 @@ int compile_and_return_result(int student_index, char *dirname)
 		normalize(ansbuf);
 		// printf("%s\n", ansbuf);
 		if ( strcmp2( answers[student_index] + off, ansbuf, len ) != 0  ) {
-			printf(" Incorrect!!!\n");
+			printf("X - incorrect!!!\n");
 			close(student_fd);
 			return 0;
 		}
@@ -427,7 +425,7 @@ int compile_and_return_result(int student_index, char *dirname)
 	}
 	close(student_fd);
 
-	printf(" correct !!\n");
+	printf("O - correct!!\n");
 	return score;
 }
 
@@ -456,7 +454,7 @@ int main(int argc, char *argv[])
 
 	printf("Grading Student's test papers..\n");
 	mark_student(0);
-	//for (int i = 0; i < number_of_students; i++)
-		//mark_student(i);
+	for (int i = 0; i < number_of_students; i++)
+		mark_student(i);
 	exit(0);
 }
