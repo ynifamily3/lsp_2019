@@ -402,11 +402,18 @@ int compile_and_return_result(char *dirname)
 	// pthread_join(mark_tid, (void *)&mark_status);
 	if (is_time_limited) {
 		is_time_limited = false;
-		fprintf(stderr, "time Limit exceeded!!\n");
+		fprintf(stderr, "time Limit exceeded!!\n"); // 6 times
 		// process kill please
+		char kill_command[50];
+		sprintf(kill_command, "pkill -9 -ef %s > /dev/null", gcc_command);
+		system(kill_command);
+		return 0; // 0 score
 	}
-	
 	dup2(origin_fd, 1);
+	// mark_answer
+	sprintf(gcc_command, "%s.stdout", dirname);
+	
+
 	return score;
 }
 
