@@ -57,7 +57,7 @@ int strcmp2(char *a, char *b, int tol);
 
 struct thread_args {
 		char *gcc_command;
-		pthread_t target_tid;
+		pthread_t *target_tid;
 	};
 
 struct thread_args t_args;
@@ -65,12 +65,12 @@ struct thread_args t_args;
 void *mark_thread(void *arg)
 {
 	struct thread_args *args = (struct thread_args *) arg;
-	fprintf(stderr, "[[[[");
+	// fprintf(stderr, "wait Tid(2) : %ld\n", *(args->target_tid));
+	// fprintf(stderr, "[[[[");
 	system(args->gcc_command);
-	fprintf(stderr, "]]]]");
+	// fprintf(stderr, "]]]]");
 	is_execute_completed = true;
-	fprintf(stderr, "%ld", args->target_tid);
-	fprintf(stderr, " <%d> ", pthread_cancel(args->target_tid));
+	pthread_cancel(*(args->target_tid));
 	return NULL;
 }
 
@@ -289,29 +289,25 @@ void open_answer_set()
 int mark_student(int student_index) {
     int i;
 	
-	if (chdir(students[student_index]) < 0 ) {
+	if ( chdir(students[student_index]) < 0 ) {
 		fprintf(stderr, "cannot find student directory %s\n", students[student_index]);
 		exit(1);
 	}
 	
-	printf("Grading %s\n", students[student_index]);
+	printf("Grading %s...\n", students[student_index]);
 	struct stat statbuf;
     for (i = 0; i < number_of_questions; i++) {
-		// printf("%d %s\n", problem_type[i], answer_directory[i]);
         if (problem_type[i] == 1) {
-            // find student's file
 			char pathname[15];
 			sprintf(pathname, "%s.c", answer_directory[i]);
 			statbuf.st_size = -1;
 			if (access(pathname, F_OK) == 0)
 				stat(pathname, &statbuf);
-			if ( statbuf.st_size > 0) {
+			if (statbuf.st_size > 0) {
 				printf("%s : ", pathname);
-				// compile students c source file
-				// checking answer
 				compile_and_return_result(i, answer_directory[i]);
 			} else {
-				printf("%s :  <Not Submitted> \n", pathname);
+				printf("%s : Not Submitted\n", pathname);
 			}
         }
     }
@@ -342,22 +338,26 @@ int compile_and_return_result(int student_index, char *dirname)
 	int error_warning_fd = creat(errr, 0666);
 	int original_stderr = dup(2);
 	dup2(error_warning_fd, 2);
-	// try compile
+	
 	sprintf(gcc_command, "gcc %s %s -o %s.exe", pathname, p, dirname);
+	
+	// try compile
 	int retsys = system(gcc_command);
+	
 	close(error_warning_fd);
+	
 	dup2(original_stderr, 2);
 
 	// if retsys is not 0, error detected
 	if (retsys != 0) {
-		printf(" error detected!! \n");
+		printf("error occured\n");
 		remove(errr); // error file delete
 		return 0;
 	}
-	// detect error finding
+	// counting warnings
 	stat(errr, &statbuf);
 	if(statbuf.st_size > 0) {
-		printf(" warning detected!!\n");
+		// printf("warning detected\n");
 		FILE *fp;
 		fp = fopen(errr, "r");
 		char line_buf[500];
@@ -367,38 +367,39 @@ int compile_and_return_result(int student_index, char *dirname)
 			find_warning = strstr(line_buf, " warning: ");
 			if(find_warning) {
 				find_warning = NULL;
-				score--; // ;;
+				score--; // decrease score
 			}
 		}
 		fclose(fp);
-	} else {
-		// printf("Compile succeed! running...");
 	}
-	 remove(errr); // warn file delete
-	// creat stdout file
+
+	remove(errr); // warn file delete
+	// create stdout file (running students' exe)
 	int stdout_fd, origin_fd;
 	sprintf(gcc_command, "%s.stdout", dirname);
 	stdout_fd = creat(gcc_command, 0666);
-	origin_fd = dup(1);
 	sprintf(gcc_command, "./%s.exe", dirname);
-	dup2(stdout_fd, 1);
-
-	
 	// open 2 thread and race time
+
+	origin_fd = dup(1);
+	dup2(stdout_fd, 1);
 	pthread_t mark_tid, wait_tid;
 	t_args.gcc_command = gcc_command;
-	t_args.target_tid = wait_tid;
+	t_args.target_tid = &wait_tid;
+	// fprintf(stderr, "wait Tid(1) : %ld\n", *(t_args.target_tid));
 	// execute students' program
-	pthread_create(&mark_tid, NULL, mark_thread, &t_args);
+	pthread_create(&mark_tid, NULL, mark_thread, (void *)&t_args);
 	// sleep 5-7 seconds
 	pthread_create(&wait_tid, NULL, wait_thread, (void *)&mark_tid);
 	
 	pthread_join(wait_tid, NULL);
 	pthread_join(mark_tid, NULL);
-	
+	// restore std print
+	dup2(origin_fd, 1);
+
+
 	if (is_time_limited) {
 		is_time_limited = false;
-		dup2(origin_fd, 1);
 		printf(" Time Limit Exceeded!!\n"); // 6 times
 		// process kill please
 		char kill_command[50];
@@ -406,8 +407,8 @@ int compile_and_return_result(int student_index, char *dirname)
 		system(kill_command);
 		return 0; // 0 score
 	}
-	// mark_answer
-	dup2(origin_fd, 1);
+	// dup2(origin_fd, 1);
+	// read stdout and mark answer
 	sprintf(gcc_command, "%s.stdout", dirname);
 	char ansbuf[101];
 	int student_fd = open(gcc_command, O_RDONLY);
@@ -427,8 +428,6 @@ int compile_and_return_result(int student_index, char *dirname)
 	close(student_fd);
 
 	printf(" correct !!\n");
-	
-
 	return score;
 }
 
@@ -456,9 +455,8 @@ int main(int argc, char *argv[])
 	set_students_info();
 
 	printf("Grading Student's test papers..\n");
-
+	mark_student(0);
 	//for (int i = 0; i < number_of_students; i++)
-	//	mark_student(i);
-	mark_student(2);
+		//mark_student(i);
 	exit(0);
 }
