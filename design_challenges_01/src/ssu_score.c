@@ -55,31 +55,31 @@ void *mark_thread(void *arg);
 void *wait_thread(void *arg);
 int strcmp2(char *a, char *b, int tol);
 
+struct thread_args {
+		char *gcc_command;
+		pthread_t target_tid;
+	};
+
+struct thread_args t_args;
+
 void *mark_thread(void *arg)
 {
-	struct timeval begin;
-	struct timeval end;
-	
-	gettimeofday(&begin, NULL);
-	
-	system((char *)arg);
-	fprintf(stderr, "requested nono");
-	gettimeofday(&end, NULL);
+	struct thread_args *args = (struct thread_args *) arg;
+	fprintf(stderr, "[[[[");
+	system(args->gcc_command);
+	fprintf(stderr, "]]]]");
 	is_execute_completed = true;
+	fprintf(stderr, "%ld", args->target_tid);
+	fprintf(stderr, " <%d> ", pthread_cancel(args->target_tid));
 	return NULL;
 }
 
 void *wait_thread(void *arg)
 {
-	// observe mark is ended
 	sleep(7);
 	is_time_limited = true;
-	// exit mark_thread
-	if(!is_execute_completed) {
-		pthread_cancel((pthread_t)arg);
-		fprintf(stderr, "cancel requested\n");
-	}
-	is_execute_completed = false;
+	fprintf(stderr, "%ld", *(pthread_t *)arg);
+	pthread_cancel(*(pthread_t *)arg);
 	return NULL;
 }
 
@@ -287,8 +287,6 @@ void open_answer_set()
 
 // originally, this module is into mark_student.c
 int mark_student(int student_index) {
-    // printf("mark %d\n", student_index);
-    // test. Programming problem first
     int i;
 	
 	if (chdir(students[student_index]) < 0 ) {
@@ -388,22 +386,24 @@ int compile_and_return_result(int student_index, char *dirname)
 	
 	// open 2 thread and race time
 	pthread_t mark_tid, wait_tid;
-	int wait_status;
+	t_args.gcc_command = gcc_command;
+	t_args.target_tid = wait_tid;
 	// execute students' program
-	pthread_create(&mark_tid, NULL, mark_thread, (void *)gcc_command);
-	// sleep 5 seconds
+	pthread_create(&mark_tid, NULL, mark_thread, &t_args);
+	// sleep 5-7 seconds
 	pthread_create(&wait_tid, NULL, wait_thread, (void *)&mark_tid);
-
-	pthread_join(wait_tid, (void *)&wait_status);
-	// pthread_join(mark_tid, (void *)&mark_status);
+	
+	pthread_join(wait_tid, NULL);
+	pthread_join(mark_tid, NULL);
+	
 	if (is_time_limited) {
 		is_time_limited = false;
-		fprintf(stderr, "Time Limit Exceeded!!\n"); // 6 times
+		dup2(origin_fd, 1);
+		printf(" Time Limit Exceeded!!\n"); // 6 times
 		// process kill please
 		char kill_command[50];
 		sprintf(kill_command, "pkill -9 -ef %s > /dev/null", gcc_command);
 		system(kill_command);
-		dup2(origin_fd, 1);
 		return 0; // 0 score
 	}
 	// mark_answer
@@ -457,7 +457,8 @@ int main(int argc, char *argv[])
 
 	printf("Grading Student's test papers..\n");
 
-	for (int i = 0; i < number_of_students; i++)
-		mark_student(i);
+	//for (int i = 0; i < number_of_students; i++)
+	//	mark_student(i);
+	mark_student(2);
 	exit(0);
 }
