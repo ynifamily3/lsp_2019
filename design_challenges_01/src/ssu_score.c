@@ -49,7 +49,7 @@ int *scores; // siljae score = ( / 10 )(int hwa)
 bool is_time_limited = false;
 
 int compare(const void *a, const void *b);
-int compile_and_return_result(int studnt_index, char *dirname);
+int compile_and_return_result(int studnt_index, int question_index, char *dirname);
 void *mark_thread(void *arg);
 void *wait_thread(void *arg);
 int strcmp2(char *a, char *b, int tol);
@@ -303,7 +303,7 @@ int mark_student(int student_index) {
 				stat(pathname, &statbuf);
 			if (statbuf.st_size > 0) {
 				printf("%s : ", pathname);
-				compile_and_return_result(i, answer_directory[i]);
+				compile_and_return_result(student_index, i, answer_directory[i]);
 			} else {
 				printf("%s : X - Not Submitted\n", pathname);
 			}
@@ -313,7 +313,7 @@ int mark_student(int student_index) {
     return 0;
 }
 
-int compile_and_return_result(int student_index, char *dirname)
+int compile_and_return_result(int student_index, int question_index, char *dirname)
 {
 	int score = 100; // init score
 	char *p = "";
@@ -331,8 +331,22 @@ int compile_and_return_result(int student_index, char *dirname)
 	sprintf(pathname, "%s.c", dirname);
 
 	// error, warning redirecting (error file writing)
-	char errr[30];
-	sprintf(errr, "%s-error.txt", dirname);
+	char errr[256];
+	char path[256];
+	if(arg_option_e) {
+		sprintf(path, "../../%s/", arg_option_e_argv[0]);
+		if (access(path, F_OK) != 0) {
+			mkdir(path, 0777);
+		}
+		sprintf(path, "../../%s/%s/", arg_option_e_argv[0], students[student_index]);
+		if (access(path, F_OK) != 0) {
+			mkdir(path, 0777);
+		}
+	}
+	if(!arg_option_e)
+		sprintf(errr, "%s_error.txt", dirname);
+	else
+		sprintf(errr, "%s%s_error.txt", path, dirname);
 	int error_warning_fd = creat(errr, 0666);
 	int original_stderr = dup(2);
 	dup2(error_warning_fd, 2);
@@ -349,7 +363,8 @@ int compile_and_return_result(int student_index, char *dirname)
 	// if retsys is not 0, error detected
 	if (retsys != 0) {
 		printf("X - error occured\n");
-		remove(errr); // error file delete
+		if(!arg_option_e)
+			remove(errr); // error file delete
 		return 0;
 	}
 	// counting warnings
@@ -369,9 +384,11 @@ int compile_and_return_result(int student_index, char *dirname)
 			}
 		}
 		fclose(fp);
+	if(!arg_option_e)
+		remove(errr); // warn file delete
+	} else {
+		remove(errr); // warn file delete
 	}
-
-	remove(errr); // warn file delete
 	// create stdout file (running students' exe)
 	int stdout_fd, origin_fd;
 	sprintf(gcc_command, "%s.stdout", dirname);
@@ -416,7 +433,7 @@ int compile_and_return_result(int student_index, char *dirname)
 		ansbuf[len] = '\0';
 		normalize(ansbuf);
 		// printf("%s\n", ansbuf);
-		if ( strcmp2( answers[student_index] + off, ansbuf, len ) != 0  ) {
+		if ( strcmp2( answers[question_index] + off, ansbuf, len ) != 0  ) {
 			printf("X - incorrect!!!\n");
 			close(student_fd);
 			return 0;
