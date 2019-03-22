@@ -50,9 +50,10 @@ bool is_execute_completed = false; // check mark_thread ended
 bool is_time_limited = false;
 
 int compare(const void *a, const void *b);
-int compile_and_return_result(char *dirname);
+int compile_and_return_result(int studnt_index, char *dirname);
 void *mark_thread(void *arg);
 void *wait_thread(void *arg);
+int strcmp2(char *a, char *b, int tol);
 
 void *mark_thread(void *arg)
 {
@@ -71,7 +72,7 @@ void *wait_thread(void *arg)
 	struct timeval begin;
 	struct timeval end;
 	gettimeofday(&begin, NULL);
-	int limit = 5;
+	int limit = 7;
 	// observe mark_tid is ended
 	while (!is_execute_completed && limit--)
 	{
@@ -304,20 +305,23 @@ int mark_student(int student_index) {
 	}
 	
 	printf("Grading %s\n", students[student_index]);
+	struct stat statbuf;
     for (i = 0; i < number_of_questions; i++) {
 		// printf("%d %s\n", problem_type[i], answer_directory[i]);
         if (problem_type[i] == 1) {
             // find student's file
 			char pathname[15];
-			// sxxxxxxxxxxxxxxxxxxxx
 			sprintf(pathname, "%s.c", answer_directory[i]);
-			if ( access(pathname, F_OK) == 0) {
+			statbuf.st_size = -1;
+			if (access(pathname, F_OK) == 0)
+				stat(pathname, &statbuf);
+			if ( statbuf.st_size > 0) {
 				printf("%s : ", pathname);
 				// compile students c source file
 				// checking answer
-				compile_and_return_result(answer_directory[i]);
+				compile_and_return_result(i, answer_directory[i]);
 			} else {
-				printf("cannot find : this problem is 0 score %s\n", pathname);
+				printf("%s :  <Not Submitted> \n", pathname);
 			}
         }
     }
@@ -325,7 +329,7 @@ int mark_student(int student_index) {
     return 0;
 }
 
-int compile_and_return_result(char *dirname)
+int compile_and_return_result(int student_index, char *dirname)
 {
 	int score = 100; // init score
 	char *p = "";
@@ -356,14 +360,14 @@ int compile_and_return_result(char *dirname)
 
 	// if retsys is not 0, error detected
 	if (retsys != 0) {
-		printf("error detected!! %s is zero point\n", pathname);
+		printf(" error detected!! \n");
 		remove(errr); // error file delete
 		return 0;
 	}
 	// detect error finding
 	stat(errr, &statbuf);
 	if(statbuf.st_size > 0) {
-		printf("warning detected!!\n");
+		printf(" warning detected!!\n");
 		FILE *fp;
 		fp = fopen(errr, "r");
 		char line_buf[500];
@@ -373,14 +377,14 @@ int compile_and_return_result(char *dirname)
 			find_warning = strstr(line_buf, " warning: ");
 			if(find_warning) {
 				find_warning = NULL;
-				score--;
+				score--; // ;;
 			}
 		}
 		fclose(fp);
 	} else {
-		printf("Compile succeed! running...\n");
+		// printf("Compile succeed! running...");
 	}
-	remove(errr); // warn file delete
+	 remove(errr); // warn file delete
 	// creat stdout file
 	int stdout_fd, origin_fd;
 	sprintf(gcc_command, "%s.stdout", dirname);
@@ -402,25 +406,51 @@ int compile_and_return_result(char *dirname)
 	// pthread_join(mark_tid, (void *)&mark_status);
 	if (is_time_limited) {
 		is_time_limited = false;
-		fprintf(stderr, "time Limit exceeded!!\n"); // 6 times
+		fprintf(stderr, "Time Limit Exceeded!!\n"); // 6 times
 		// process kill please
 		char kill_command[50];
 		sprintf(kill_command, "pkill -9 -ef %s > /dev/null", gcc_command);
 		system(kill_command);
+		dup2(origin_fd, 1);
 		return 0; // 0 score
 	}
-	dup2(origin_fd, 1);
 	// mark_answer
+	dup2(origin_fd, 1);
 	sprintf(gcc_command, "%s.stdout", dirname);
+	char ansbuf[101];
+	int student_fd = open(gcc_command, O_RDONLY);
+	ssize_t len;
+	size_t off = 0;
+	while ((len = read(student_fd, ansbuf, 100)) > 0) {
+		ansbuf[len] = '\0';
+		normalize(ansbuf);
+		// printf("%s\n", ansbuf);
+		if ( strcmp2( answers[student_index] + off, ansbuf, len ) != 0  ) {
+			printf(" Incorrect!!!\n");
+			close(student_fd);
+			return 0;
+		}
+		off += len;
+	}
+	close(student_fd);
+
+	printf(" correct !!\n");
 	
 
 	return score;
 }
 
+int strcmp2(char *a, char *b, int tol) {
+	int i;
+	for (i = 0; i < tol; i++) {
+		if(a[i] != b[i]) return 1;
+	}
+	return 0;
+}
+
 
 int main(int argc, char *argv[])
 {
-	int i;
 	// parse user's arguments
 	parse_args(argc, argv);
 
@@ -435,8 +465,7 @@ int main(int argc, char *argv[])
 
 	printf("Grading Student's test papers..\n");
 
-	for (i = 0; i < number_of_students; i++)
+	for (int i = 0; i < number_of_students; i++)
 		mark_student(i);
-	
 	exit(0);
 }
