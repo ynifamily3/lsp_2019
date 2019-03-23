@@ -48,37 +48,105 @@ int *scores; // siljae score = ( / 10 )(int hwa)
 
 bool is_time_limited = false;
 
+double blank_score, program_score;
+
 int compare(const void *a, const void *b);
 int compile_and_return_result(int studnt_index, int question_index, char *dirname);
 void *mark_thread(void *arg);
 void *wait_thread(void *arg);
 int strcmp2(char *a, char *b, int tol);
+void check_score_csv();
 
 struct thread_args {
-		char *gcc_command;
-		pthread_t *target_tid;
-	};
+	char *gcc_command;
+	pthread_t *target_tid;
+};
 
 struct thread_args t_args;
 
 void *mark_thread(void *arg)
 {
 	struct thread_args *args = (struct thread_args *) arg;
-	// fprintf(stderr, "wait Tid(2) : %ld\n", *(args->target_tid));
-	// fprintf(stderr, "[[[[");
 	system(args->gcc_command);
-	// fprintf(stderr, "]]]]");
 	pthread_cancel(*(args->target_tid));
 	return NULL;
 }
 
 void *wait_thread(void *arg)
 {
-	sleep(7);
+	sleep(5);
 	is_time_limited = true;
 	// fprintf(stderr, "%ld", *(pthread_t *)arg);
 	pthread_cancel(*(pthread_t *)arg);
 	return NULL;
+}
+
+void check_score_csv()
+{
+	// 정답 폴더에 csv 파일이 있는지 체크한다. 현재 폴더는 정답 폴더 내에 있다.
+	char pathname[256];
+	// struct stat statbuf;
+	sprintf(pathname, "score_table.csv");
+	// score_table.csv 미 존재시 메시지를 띄우고 생성한다.
+	if ( access(pathname, F_OK) < 0 ) {
+		int select_type;
+		printf("score_table.csv file doesn't exist in %s!\n", answer_dir);
+		printf("1. input blank question and program question's score. ex) 0.5 1\n");
+		printf("2. input all question's score. ex) Input value of 1-1: 0.1\n");
+		do {
+			printf("select type >> ");
+			scanf("%1d", &select_type);
+		} while(select_type != 1 && select_type != 2);
+		if (select_type == 1) {
+			printf("Input value of blank question : ");
+			scanf("%lf", &blank_score);
+			printf("input value of program question : ");
+			scanf("%lf", &program_score);
+			// make my csv file
+			int csv_fd;
+			if ( (csv_fd = creat(pathname, 0666)) < 0) {
+				fprintf(stderr, "Error for generating %s\n", pathname); exit(1);
+			}
+			char fn[256];
+			for (int i = 0; i < number_of_questions; i++) {
+				if (problem_type[i] == 0) {
+					// printf("text\t");
+					sprintf(fn, "%s.txt,", answer_directory[i]);
+					printf("%s\n", fn);
+					write(csv_fd, fn, strlen(fn));
+					sprintf(fn, "%.2lf\n", blank_score);
+					printf("%s\n", fn);
+					write(csv_fd, fn, strlen(fn));
+				} else {
+					// printf("program\t");
+					sprintf(fn, "%s.c,", answer_directory[i]);
+					printf("%s\n", fn);
+					write(csv_fd, fn, strlen(fn));
+					sprintf(fn, "%.2lf\n", program_score);
+					printf("%s\n", fn);
+					write(csv_fd, fn, strlen(fn));
+				}
+			}
+			close(csv_fd);
+		} else if (select_type == 2) {
+			// make my csv file
+			int csv_fd;
+			if ( (csv_fd = creat(pathname, 0666)) < 0) {
+				fprintf(stderr, "Error for generating %s\n", pathname); exit(1);
+			}
+			for (int i = 0; i < number_of_questions; i++) {
+				if (problem_type[i] == 0) {
+					printf("Input of %s.txt: ", answer_directory[i]);
+					// 스코어들의 배열을 동적할당하고 각자 넣을 수 있도록 해야한다
+					// 기존 전역변수 2개는 삭제하고 배열로 대체한다 
+				} else {
+					printf("Input of %s.c: ", answer_directory[i]);
+				}
+			}
+		} else {
+			fprintf(stderr, "select error\n"); exit(1);
+		}
+	}
 }
 
 /*
@@ -267,7 +335,7 @@ void open_answer_set()
 	}
 
 	while ( (dentry = readdir(dirp)) != NULL ) {
-		if (dentry->d_ino == 0 || dentry->d_name[0] == '.') continue;
+		if (dentry->d_ino == 0 || dentry->d_name[0] == '.' || dentry->d_type != 4) continue;
 
 		if (stat(dentry->d_name, &statbuf) == -1) {
 			fprintf(stderr, "stat error for %s\n", dentry->d_name);
@@ -466,6 +534,8 @@ int main(int argc, char *argv[])
 	}
 	// compose Answer Data into RAM (include compile C & run so long time)
 	open_answer_set();
+
+	check_score_csv();
 
 	set_students_info();
 
