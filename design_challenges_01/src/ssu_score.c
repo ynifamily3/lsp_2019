@@ -412,7 +412,7 @@ int mark_student(int student_index) {
 				stat(pathname, &statbuf);
 			if (statbuf.st_size > 0) {
 				printf("%s : ", pathname);
-				scores[student_index] = indiv_score[i] - compile_and_return_result(student_index, i, answer_directory[i]);
+				scores[student_index] += compile_and_return_result(student_index, i, answer_directory[i]);
 			} else {
 				printf("%s : X - Not Submitted\n", pathname);
 			}
@@ -424,7 +424,8 @@ int mark_student(int student_index) {
 
 double compile_and_return_result(int student_index, int question_index, char *dirname)
 {
-	double reduce_score = 0.0; // 감점!!
+	// 기본적으론 해당 점수 리턴하되, 워닝시 감점해서 리턴, 틀리거나 오류 시 0점
+	double score = indiv_score[question_index];
 	char *p = "";
 	char pathname[15];
 	char gcc_command[100];
@@ -471,7 +472,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 
 	// if retsys is not 0, error detected
 	if (retsys != 0) {
-		printf("X - error occured\n");
+		printf("X - Compile Error\n");
 		if(!arg_option_e)
 			remove(errr); // error file delete
 		return 0.0;
@@ -489,7 +490,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 			find_warning = strstr(line_buf, " warning: ");
 			if(find_warning) {
 				find_warning = NULL;
-				reduce_score += 0.1; // 추후 define 할 것
+				score -= 0.1; // 추후 define 할 것
 			}
 		}
 		fclose(fp);
@@ -523,7 +524,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	dup2(origin_fd, 1);
 
 	if (t_args.isError) {
-		printf("X - SegFault\n");
+		printf("X - Run Time Error!\n");
 		return 0.0;
 	}
 	if (is_time_limited) {
@@ -556,7 +557,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	close(student_fd);
 
 	printf("O - correct!!\n");
-	return reduce_score;
+	return score;
 }
 
 int strcmp2(char *a, char *b, int tol) {
