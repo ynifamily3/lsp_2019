@@ -39,19 +39,17 @@ answers -> contents of ans/1-1.txt (abc : def : ghi...)
 typedef int bool;
 
 int number_of_questions = 0;
-int number_of_program_questions = 0;
-int number_of_text_questions = 0;
 
 int number_of_students = 0;
 char **students; 
-int *scores; // siljae score = ( / 10 )(int hwa)
 
 bool is_time_limited = false;
 
-double blank_score, program_score;
+double *scores; // 학생들이 받은 점수들
+double *indiv_score; // 문제를 풀면 받는 점수
 
 int compare(const void *a, const void *b);
-int compile_and_return_result(int studnt_index, int question_index, char *dirname);
+double compile_and_return_result(int studnt_index, int question_index, char *dirname);
 void *mark_thread(void *arg);
 void *wait_thread(void *arg);
 int strcmp2(char *a, char *b, int tol);
@@ -60,14 +58,18 @@ void check_score_csv();
 struct thread_args {
 	char *gcc_command;
 	pthread_t *target_tid;
+	bool isError;
 };
 
 struct thread_args t_args;
 
 void *mark_thread(void *arg)
 {
+	int isE;
 	struct thread_args *args = (struct thread_args *) arg;
-	system(args->gcc_command);
+	isE = system(args->gcc_command);
+	if (isE != 0)
+		args->isError = true;
 	pthread_cancel(*(args->target_tid));
 	return NULL;
 }
@@ -83,7 +85,9 @@ void *wait_thread(void *arg)
 
 void check_score_csv()
 {
-	// 정답 폴더에 csv 파일이 있는지 체크한다. 현재 폴더는 정답 폴더 내에 있다.
+	// 정답 폴더에 csv 파일이 있는지 체크한다. 현재 폴더는 ... 폴더 내에 있다.
+	chdir("..");
+	chdir(answer_dir);
 	char pathname[256];
 	// struct stat statbuf;
 	sprintf(pathname, "score_table.csv");
@@ -98,6 +102,8 @@ void check_score_csv()
 			scanf("%1d", &select_type);
 		} while(select_type != 1 && select_type != 2);
 		if (select_type == 1) {
+			double program_score = 0.0;
+			double blank_score = 0.0;
 			printf("Input value of blank question : ");
 			scanf("%lf", &blank_score);
 			printf("input value of program question : ");
@@ -110,6 +116,7 @@ void check_score_csv()
 			char fn[256];
 			for (int i = 0; i < number_of_questions; i++) {
 				if (problem_type[i] == 0) {
+					indiv_score[i] = blank_score; // 변수에 낭낭하게 저장하여 나중에 활용
 					// printf("text\t");
 					sprintf(fn, "%s.txt,", answer_directory[i]);
 					printf("%s\n", fn);
@@ -118,7 +125,7 @@ void check_score_csv()
 					printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
 				} else {
-					// printf("program\t");
+					indiv_score[i] = program_score; // 변수에 낭낭하게 저장하여 나중에 활용
 					sprintf(fn, "%s.c,", answer_directory[i]);
 					printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
@@ -131,22 +138,55 @@ void check_score_csv()
 		} else if (select_type == 2) {
 			// make my csv file
 			int csv_fd;
+			char fn[256];
 			if ( (csv_fd = creat(pathname, 0666)) < 0) {
 				fprintf(stderr, "Error for generating %s\n", pathname); exit(1);
 			}
 			for (int i = 0; i < number_of_questions; i++) {
 				if (problem_type[i] == 0) {
 					printf("Input of %s.txt: ", answer_directory[i]);
-					// 스코어들의 배열을 동적할당하고 각자 넣을 수 있도록 해야한다
-					// 기존 전역변수 2개는 삭제하고 배열로 대체한다 
+					scanf("%lf", &indiv_score[i]);					
+					sprintf(fn, "%s.txt,", answer_directory[i]);
+					printf("%s\n", fn);
+					write(csv_fd, fn, strlen(fn));
+					sprintf(fn, "%.2lf\n", indiv_score[i]);
+					printf("%s\n", fn);
+					write(csv_fd, fn, strlen(fn));
+
 				} else {
 					printf("Input of %s.c: ", answer_directory[i]);
+					scanf("%lf", &indiv_score[i]);
+					sprintf(fn, "%s.c,", answer_directory[i]);
+					printf("%s\n", fn);
+					write(csv_fd, fn, strlen(fn));
+					sprintf(fn, "%.2lf\n", indiv_score[i]);
+					printf("%s\n", fn);
+					write(csv_fd, fn, strlen(fn));
 				}
 			}
+			close(csv_fd);
 		} else {
 			fprintf(stderr, "select error\n"); exit(1);
 		}
+	} else {
+		// 이미 csv 파일이 있을 경우 데이터만 읽어오면 된다.
+		printf("이미 csv파일이 있는거 같네요...\n");
+		FILE *fp;
+		if ( !(fp = fopen(pathname, "r")) ) {
+			fprintf(stderr, "error for open score_table csv : %s\n", pathname);
+			exit(1);
+		}
+		char line_buf[100];
+		int score_ptr = 0;
+		while (!feof(fp)) {
+			if(score_ptr >= number_of_questions) break; // 추해지기 전에 은퇴해야..
+			fgets(line_buf, sizeof(line_buf), fp);
+			sscanf(line_buf, "%*[^,],%lf", &indiv_score[score_ptr++]);
+		}
+		fclose(fp);
 	}
+	chdir("..");
+	chdir(student_dir);
 }
 
 /*
@@ -182,7 +222,8 @@ void set_students_info()
 		}
 		memcpy(students[number_of_students++], dentry->d_name, 20);
 	}
-	scores = (int *)calloc(number_of_students, sizeof(int));
+	scores = (double *)calloc(number_of_students, sizeof(double));
+	indiv_score = (double *)calloc(number_of_questions, sizeof(double));
 	qsort((void *)students, number_of_students, sizeof(answer_directory[0]), compare);	
 }
 
@@ -371,7 +412,7 @@ int mark_student(int student_index) {
 				stat(pathname, &statbuf);
 			if (statbuf.st_size > 0) {
 				printf("%s : ", pathname);
-				compile_and_return_result(student_index, i, answer_directory[i]);
+				scores[student_index] = indiv_score[i] - compile_and_return_result(student_index, i, answer_directory[i]);
 			} else {
 				printf("%s : X - Not Submitted\n", pathname);
 			}
@@ -381,9 +422,9 @@ int mark_student(int student_index) {
     return 0;
 }
 
-int compile_and_return_result(int student_index, int question_index, char *dirname)
+double compile_and_return_result(int student_index, int question_index, char *dirname)
 {
-	int score = 100; // init score
+	double reduce_score = 0.0; // 감점!!
 	char *p = "";
 	char pathname[15];
 	char gcc_command[100];
@@ -433,7 +474,7 @@ int compile_and_return_result(int student_index, int question_index, char *dirna
 		printf("X - error occured\n");
 		if(!arg_option_e)
 			remove(errr); // error file delete
-		return 0;
+		return 0.0;
 	}
 	// counting warnings
 	stat(errr, &statbuf);
@@ -448,7 +489,7 @@ int compile_and_return_result(int student_index, int question_index, char *dirna
 			find_warning = strstr(line_buf, " warning: ");
 			if(find_warning) {
 				find_warning = NULL;
-				score--; // decrease score
+				reduce_score += 0.1; // 추후 define 할 것
 			}
 		}
 		fclose(fp);
@@ -469,6 +510,7 @@ int compile_and_return_result(int student_index, int question_index, char *dirna
 	pthread_t mark_tid, wait_tid;
 	t_args.gcc_command = gcc_command;
 	t_args.target_tid = &wait_tid;
+	t_args.isError = false;
 	// fprintf(stderr, "wait Tid(1) : %ld\n", *(t_args.target_tid));
 	// execute students' program
 	pthread_create(&mark_tid, NULL, mark_thread, (void *)&t_args);
@@ -480,7 +522,10 @@ int compile_and_return_result(int student_index, int question_index, char *dirna
 	// restore std print
 	dup2(origin_fd, 1);
 
-
+	if (t_args.isError) {
+		printf("X - SegFault\n");
+		return 0.0;
+	}
 	if (is_time_limited) {
 		is_time_limited = false;
 		printf("X - Time Limit Exceeded!!\n"); // 6 times
@@ -488,7 +533,7 @@ int compile_and_return_result(int student_index, int question_index, char *dirna
 		char kill_command[50];
 		sprintf(kill_command, "pkill -9 -ef %s > /dev/null", gcc_command);
 		system(kill_command);
-		return 0; // 0 score
+		return 0.0; // 0 score
 	}
 	// dup2(origin_fd, 1);
 	// read stdout and mark answer
@@ -504,14 +549,14 @@ int compile_and_return_result(int student_index, int question_index, char *dirna
 		if ( strcmp2( answers[question_index] + off, ansbuf, len ) != 0  ) {
 			printf("X - incorrect!!!\n");
 			close(student_fd);
-			return 0;
+			return 0.0;
 		}
 		off += len;
 	}
 	close(student_fd);
 
 	printf("O - correct!!\n");
-	return score;
+	return reduce_score;
 }
 
 int strcmp2(char *a, char *b, int tol) {
@@ -535,13 +580,14 @@ int main(int argc, char *argv[])
 	// compose Answer Data into RAM (include compile C & run so long time)
 	open_answer_set();
 
-	check_score_csv();
-
 	set_students_info();
 
+	check_score_csv();
+
 	printf("Grading Student's test papers..\n");
-	mark_student(0);
-	for (int i = 0; i < number_of_students; i++)
+	for (int i = 0; i < number_of_students; i++) {
 		mark_student(i);
+		printf("score : %.2lf\n", scores[i]);
+	}
 	exit(0);
 }
