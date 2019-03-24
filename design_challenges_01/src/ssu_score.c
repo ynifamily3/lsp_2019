@@ -21,6 +21,8 @@
 #define true 1
 #define false 0
 
+#define WAIT_TIME 5
+
 char **answer_directory;
 int *problem_type; // 0 for text , 1 for c
 char **answers;
@@ -34,6 +36,7 @@ answers -> contents of ans/1-1.txt (abc : def : ghi...)
 		...
 		-> contents of ans/11.stdout ( alarm 0 \n alarm 1 ..)
 		-> contents of ans/12.stdout
+		수정 테스트
 */
 
 typedef int bool;
@@ -76,7 +79,7 @@ void *mark_thread(void *arg)
 
 void *wait_thread(void *arg)
 {
-	sleep(5);
+	sleep(WAIT_TIME);
 	is_time_limited = true;
 	// fprintf(stderr, "%ld", *(pthread_t *)arg);
 	pthread_cancel(*(pthread_t *)arg);
@@ -231,7 +234,7 @@ void normalize(char *text)
 {
 	int i, j;
 	for (i = 0, j = 0; text[i] != 0; i++,j++) {
-		if (!isspace(text[i])) {
+		if (text[i] == '\n' || !isspace(text[i])) {
 			// lower normalize
 			char t = text[i];
 			if (t >= 'A' && t <= 'Z') t += 32;
@@ -546,8 +549,13 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	while ((len = read(student_fd, ansbuf, 100)) > 0) {
 		ansbuf[len] = '\0';
 		normalize(ansbuf);
-		// printf("%s\n", ansbuf);
+		len = strlen(ansbuf);
+		ansbuf[len] = '\0';
+		//fprintf(stderr, " 길이 ? : %ld\n", len);
+		//fprintf(stderr, "버퍼에 저장된 내용2 : %s\n", ansbuf);
+		//printf("<<%ld>>\n", len);
 		if ( strcmp2( answers[question_index] + off, ansbuf, len ) != 0  ) {
+			//fprintf(stderr, "[<%s> %s - X : %ld [%s] [%s]\n", students[student_index], dirname, off, answers[question_index] + off, ansbuf + off);
 			printf("X - incorrect!!!\n");
 			close(student_fd);
 			return 0.0;
@@ -555,7 +563,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 		off += len;
 	}
 	close(student_fd);
-
+	// fprintf(stderr, "<%s> %s - O : [%s]\n", students[student_index], dirname, answers[question_index]);
 	printf("O - correct!!\n");
 	return score;
 }
@@ -563,6 +571,10 @@ double compile_and_return_result(int student_index, int question_index, char *di
 int strcmp2(char *a, char *b, int tol) {
 	int i;
 	for (i = 0; i < tol; i++) {
+
+		//// test .....
+		 //fprintf(stderr, "test[%d] :[%c/%d] [%c/%d] \n", i, a[i], (int)a[i], b[i], (int)b[i]);
+		// getchar(); getchar();
 		if(a[i] != b[i]) return 1;
 	}
 	return 0;
@@ -572,6 +584,7 @@ int strcmp2(char *a, char *b, int tol) {
 int main(int argc, char *argv[])
 {
 	// parse user's arguments
+	// rmate로 수정하는 것 테스트
 	parse_args(argc, argv);
 
 	if (arg_option_h) {
