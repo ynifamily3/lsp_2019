@@ -109,7 +109,7 @@ void check_score_csv()
 			double blank_score = 0.0;
 			printf("Input value of blank question : ");
 			scanf("%lf", &blank_score);
-			printf("input value of program question : ");
+			printf("Input value of program question : ");
 			scanf("%lf", &program_score);
 			// make my csv file
 			int csv_fd;
@@ -122,18 +122,18 @@ void check_score_csv()
 					indiv_score[i] = blank_score; // 변수에 낭낭하게 저장하여 나중에 활용
 					// printf("text\t");
 					sprintf(fn, "%s.txt,", answer_directory[i]);
-					printf("%s\n", fn);
+					// printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
 					sprintf(fn, "%.2lf\n", blank_score);
-					printf("%s\n", fn);
+					// printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
 				} else {
 					indiv_score[i] = program_score; // 변수에 낭낭하게 저장하여 나중에 활용
 					sprintf(fn, "%s.c,", answer_directory[i]);
-					printf("%s\n", fn);
+					// printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
 					sprintf(fn, "%.2lf\n", program_score);
-					printf("%s\n", fn);
+					// printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
 				}
 			}
@@ -173,7 +173,6 @@ void check_score_csv()
 		}
 	} else {
 		// 이미 csv 파일이 있을 경우 데이터만 읽어오면 된다.
-		printf("이미 csv파일이 있는거 같네요...\n");
 		FILE *fp;
 		if ( !(fp = fopen(pathname, "r")) ) {
 			fprintf(stderr, "error for open score_table csv : %s\n", pathname);
@@ -292,7 +291,7 @@ void extract_answer(int index, char *ansdir)
 				}
 			}
 		}
-		printf("making answer .... %s \n", filename_c);
+		// printf("making answer .... %s \n", filename_c);
 		sprintf(gcc_command, "gcc %s %s -o %s.exe", filename_c, p, ansdir);
 		system(gcc_command);
 
@@ -333,7 +332,7 @@ void extract_answer(int index, char *ansdir)
 		normalize(answers[index]);
 	}
 	else {
-		printf("no file in ans_dir : %s\n", ansdir);
+		fprintf(stderr, "No file in ans_dir : %s\n", ansdir);
 		exit(1);
 	}
 	chdir("..");
@@ -404,7 +403,7 @@ int mark_student(int student_index) {
 		exit(1);
 	}
 	
-	printf("Grading %s...\n", students[student_index]);
+	// printf("Grading %s...\n", students[student_index]);
 	struct stat statbuf;
     for (i = 0; i < number_of_questions; i++) {
         if (problem_type[i] == 1) {
@@ -414,13 +413,18 @@ int mark_student(int student_index) {
 			if (access(pathname, F_OK) == 0)
 				stat(pathname, &statbuf);
 			if (statbuf.st_size > 0) {
-				printf("%s : ", pathname);
+				// printf("%s : ", pathname);
 				scores[student_index] += compile_and_return_result(student_index, i, answer_directory[i]);
 			} else {
-				printf("%s : X - Not Submitted\n", pathname);
+				//printf("%s : X - Not Submitted\n", pathname);
+				// Not submit or zero-byte
 			}
         }
     }
+	if (arg_option_p)
+		printf("%s is finished.. score : %.2lf\n", students[student_index], scores[student_index]);
+	else
+		printf("%s is finished..\n", students[student_index]);
 	chdir("..");
     return 0;
 }
@@ -464,7 +468,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	int original_stderr = dup(2);
 	dup2(error_warning_fd, 2);
 	
-	sprintf(gcc_command, "gcc %s %s -o %s.exe", pathname, p, dirname);
+	sprintf(gcc_command, "gcc %s %s -o %s.stdexe", pathname, p, dirname);
 	
 	// try compile
 	int retsys = system(gcc_command);
@@ -475,7 +479,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 
 	// if retsys is not 0, error detected
 	if (retsys != 0) {
-		printf("X - Compile Error\n");
+		// printf("X - Compile Error\n");
 		if(!arg_option_e)
 			remove(errr); // error file delete
 		return 0.0;
@@ -506,7 +510,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	int stdout_fd, origin_fd;
 	sprintf(gcc_command, "%s.stdout", dirname);
 	stdout_fd = creat(gcc_command, 0666);
-	sprintf(gcc_command, "./%s.exe", dirname);
+	sprintf(gcc_command, "./%s.stdexe", dirname);
 	// open 2 thread and race time
 
 	origin_fd = dup(1);
@@ -527,12 +531,12 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	dup2(origin_fd, 1);
 
 	if (t_args.isError) {
-		printf("X - Run Time Error!\n");
+		// printf("X - Run Time Error!\n");
 		return 0.0;
 	}
 	if (is_time_limited) {
 		is_time_limited = false;
-		printf("X - Time Limit Exceeded!!\n"); // 6 times
+		// printf("X - Time Limit Exceeded!!\n"); // 6 times
 		// process kill please
 		char kill_command[50];
 		sprintf(kill_command, "pkill -9 -ef %s > /dev/null", gcc_command);
@@ -556,7 +560,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 		//printf("<<%ld>>\n", len);
 		if ( strcmp2( answers[question_index] + off, ansbuf, len ) != 0  ) {
 			//fprintf(stderr, "[<%s> %s - X : %ld [%s] [%s]\n", students[student_index], dirname, off, answers[question_index] + off, ansbuf + off);
-			printf("X - incorrect!!!\n");
+			// printf("X - incorrect!!!\n");
 			close(student_fd);
 			return 0.0;
 		}
@@ -564,7 +568,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	}
 	close(student_fd);
 	// fprintf(stderr, "<%s> %s - O : [%s]\n", students[student_index], dirname, answers[question_index]);
-	printf("O - correct!!\n");
+	// printf("O - correct!!\n");
 	return score;
 }
 
@@ -601,7 +605,16 @@ int main(int argc, char *argv[])
 	printf("Grading Student's test papers..\n");
 	for (int i = 0; i < number_of_students; i++) {
 		mark_student(i);
-		printf("score : %.2lf\n", scores[i]);
+		// printf("score : %.2lf\n", scores[i]);
 	}
+	if (arg_option_p) {
+		double sum = 0.0, avg;
+		for (int i = 0; i < number_of_students; i++) {
+			sum += scores[i];
+		}
+		avg = sum / number_of_students;
+		printf("Total average : %.2lf\n", avg);
+	}
+
 	exit(0);
 }
