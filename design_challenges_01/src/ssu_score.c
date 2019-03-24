@@ -48,7 +48,15 @@ char **students;
 
 bool is_time_limited = false;
 
-double *scores; // 학생들이 받은 점수들
+double **scores; // 학생들이 받은 점수들
+double *s_scores; // 각 학생이 받은 점수 (개별 학생의 총합)
+/*
+	(double **)scores ---->   (double *)201xxxxx(idx)  ---->  [1.0,2.0,3.0.....]
+	               						201xxxxx(idx)  ---->  [4.0,5.0,6.0.....]
+
+*/
+
+
 double *indiv_score; // 문제를 풀면 받는 점수
 
 int compare(const void *a, const void *b);
@@ -225,7 +233,11 @@ void set_students_info()
 		}
 		memcpy(students[number_of_students++], dentry->d_name, 20);
 	}
-	scores = (double *)calloc(number_of_students, sizeof(double));
+	scores = (double **)calloc(number_of_students, sizeof(double *));
+	s_scores = (double *)calloc(number_of_students, sizeof(double));
+	for (i = 0; i < number_of_students; i++) {
+		scores[i] = (double *)calloc(number_of_questions, sizeof(double));
+	}
 	indiv_score = (double *)calloc(number_of_questions, sizeof(double));
 	qsort((void *)students, number_of_students, sizeof(answer_directory[0]), compare);	
 }
@@ -406,6 +418,7 @@ int mark_student(int student_index) {
 	
 	// printf("Grading %s...\n", students[student_index]);
 	struct stat statbuf;
+	double sum = 0.0; // 개별 학생 총점
     for (i = 0; i < number_of_questions; i++) {
         if (problem_type[i] == 1) {
 			char pathname[15];
@@ -415,15 +428,20 @@ int mark_student(int student_index) {
 				stat(pathname, &statbuf);
 			if (statbuf.st_size > 0) {
 				// printf("%s : ", pathname);
-				scores[student_index] += compile_and_return_result(student_index, i, answer_directory[i]);
+				scores[student_index][i] = compile_and_return_result(student_index, i, answer_directory[i]);
+				sum += scores[student_index][i];
+				// fprintf(stderr, "test Score : %.2lf\n", scores[student_index][i]);
 			} else {
 				//printf("%s : X - Not Submitted\n", pathname);
 				// Not submit or zero-byte
 			}
         }
     }
-	if (arg_option_p)
-		printf("%s is finished.. score : %.2lf\n", students[student_index], scores[student_index]);
+	// db are
+	s_scores[student_index] = sum;
+	if (arg_option_p) {
+		printf("%s is finished.. score : %.2lf\n", students[student_index], sum);
+	}
 	else
 		printf("%s is finished..\n", students[student_index]);
 	chdir("..");
@@ -611,13 +629,18 @@ void make_student_score_table()
 	for (int i = 0; i < number_of_students; i++) {
 		// write 학번
 		write(csv_fd, students[i], strlen(students[i]));
-		wirte(csv_fd, ",", 1);
-		for (int j = 0; j < number_questions; j++) {
-			// 아... 전체 합밖에 저장 안 했는데 
+		write(csv_fd, ",", 1);
+		for (int j = 0; j < number_of_questions; j++) {
+			sprintf(buf, "%.2lf", scores[i][j]);
+			write(csv_fd, buf, strlen(buf));
+			write(csv_fd, ",", 1);
 		}
 		// write sum
+		sprintf(buf, "%.2lf", s_scores[i]);
+		write(csv_fd, buf, strlen(buf));
+		write(csv_fd, "\n", 1);
 	}
-
+	close(csv_fd);
 }
 
 
@@ -641,7 +664,6 @@ int main(int argc, char *argv[])
 	printf("Grading Student's test papers..\n");
 	for (int i = 0; i < number_of_students; i++) {
 		mark_student(i);
-		break;
 		// printf("score : %.2lf\n", scores[i]);
 	}
 
@@ -651,7 +673,7 @@ int main(int argc, char *argv[])
 	if (arg_option_p) {
 		double sum = 0.0, avg;
 		for (int i = 0; i < number_of_students; i++) {
-			sum += scores[i];
+			sum += s_scores[i];
 		}
 		avg = sum / number_of_students;
 		printf("Total average : %.2lf\n", avg);
