@@ -57,6 +57,7 @@ void *mark_thread(void *arg);
 void *wait_thread(void *arg);
 int strcmp2(char *a, char *b, int tol);
 void check_score_csv();
+void make_student_score_table();
 
 struct thread_args {
 	char *gcc_command;
@@ -584,6 +585,41 @@ int strcmp2(char *a, char *b, int tol) {
 	return 0;
 }
 
+void make_student_score_table()
+{
+	chdir("..");
+	int csv_fd;
+	char buf[50];
+	if ((csv_fd = open("score.csv", O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0) {
+		fprintf(stderr, "Error Create for score.csv file !! \n");
+		exit(1);
+	}
+	// fill with answer_directory
+	write(csv_fd, ",", 1); // comma
+
+	for (int i = 0; i < number_of_questions; i++) {
+		if (problem_type[i] == 0) {
+			// text
+			sprintf(buf, "%s.txt", answer_directory[i]);
+		} else {
+			sprintf(buf, "%s.c", answer_directory[i]);
+		}
+		write(csv_fd, buf, strlen(buf));
+		write(csv_fd, ",", 1); // comma
+	}
+	write(csv_fd, "sum\n", 4);
+	for (int i = 0; i < number_of_students; i++) {
+		// write 학번
+		write(csv_fd, students[i], strlen(students[i]));
+		wirte(csv_fd, ",", 1);
+		for (int j = 0; j < number_questions; j++) {
+			// 아... 전체 합밖에 저장 안 했는데 
+		}
+		// write sum
+	}
+
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -605,8 +641,13 @@ int main(int argc, char *argv[])
 	printf("Grading Student's test papers..\n");
 	for (int i = 0; i < number_of_students; i++) {
 		mark_student(i);
+		break;
 		// printf("score : %.2lf\n", scores[i]);
 	}
+
+	// 성적 테이블 생성
+	make_student_score_table();
+
 	if (arg_option_p) {
 		double sum = 0.0, avg;
 		for (int i = 0; i < number_of_students; i++) {
