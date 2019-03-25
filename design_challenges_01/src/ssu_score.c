@@ -27,8 +27,6 @@ char **answer_directory;
 int *problem_type; // 0 for text , 1 for c
 char **answers;
 
-char students_challenge[1000];
-
 /*
 answers -> contents of ans/1-1.txt (abc : def : ghi...)
 		-> contents of ans/1-2.txt
@@ -159,20 +157,16 @@ void check_score_csv()
 					printf("Input of %s.txt: ", answer_directory[i]);
 					scanf("%lf", &indiv_score[i]);					
 					sprintf(fn, "%s.txt,", answer_directory[i]);
-					printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
 					sprintf(fn, "%.2lf\n", indiv_score[i]);
-					printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
 
 				} else {
 					printf("Input of %s.c: ", answer_directory[i]);
 					scanf("%lf", &indiv_score[i]);
 					sprintf(fn, "%s.c,", answer_directory[i]);
-					printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
 					sprintf(fn, "%.2lf\n", indiv_score[i]);
-					printf("%s\n", fn);
 					write(csv_fd, fn, strlen(fn));
 				}
 			}
@@ -435,7 +429,14 @@ int mark_student(int student_index) {
 				//printf("%s : X - Not Submitted\n", pathname);
 				// Not submit or zero-byte
 			}
-        }
+        } else {
+			//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+			char students_challenge[1000]; // 
+			// mark Text
+			fprintf(stderr, "Mark Text for %s - %s : \n", students[student_index], answer_directory[i]);
+			fprintf(stderr, "answer : %s\n", answers[i]);
+			//fprintf(stderr, "challenge : %s\n", stud)
+		}
     }
 	// db are
 	s_scores[student_index] = sum;
