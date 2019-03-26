@@ -3,12 +3,17 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include "ssu_runtime.h"
+
 int main(void)
 {
+    struct timeval begin, end;
     char buf[64];
     char *fname = "ssu_tempfile";
     int fd;
     int length;
+
+    gettimeofday(&begin, NULL);
 
     if ((fd = open(fname, O_RDWR | O_CREAT | O_TRUNC, 0600)) < 0) {
         fprintf(stderr, "first open error for %s\n", fname);
@@ -44,5 +49,7 @@ int main(void)
     else
         close(fd);
     
+    gettimeofday(&end, NULL);
+    ssu_runtime(&begin, &end);
     exit(0);
 }

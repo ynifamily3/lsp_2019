@@ -4,11 +4,16 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+#include "ssu_runtime.h"
+
 int main(void)
 {
     struct stat statbuf;
+    struct timeval begin, end;
     char *fname = "ssu_myfile";
     int fd;
+
+    gettimeofday(&begin, NULL);
 
     if ((fd = open(fname, O_RDWR | O_CREAT, 0600)) < 0) {
         fprintf(stderr, "open error for %s\n", fname);
@@ -31,6 +36,9 @@ int main(void)
         fprintf(stderr, "unlink error for %s\n", fname);
         exit(1);
     }
+
+    gettimeofday(&end, NULL);
+    ssu_runtime(&begin, &end);
 
     exit(0);
 }

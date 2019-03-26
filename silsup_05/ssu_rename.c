@@ -3,9 +3,14 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include "ssu_runtime.h"
+
 int main(int argc, char *argv[])
 {
+    struct timeval begin, end;
     int fd;
+
+    gettimeofday(&begin, NULL);
 
     if (argc != 3) {
         fprintf(stderr, "usage: %s <oldname> <newname>\n", argv[0]);
@@ -37,5 +42,7 @@ int main(int argc, char *argv[])
     }
 
     printf("Everything is good!\n");
+    gettimeofday(&end, NULL);
+    ssu_runtime(&begin, &end);
     exit(0);
 }

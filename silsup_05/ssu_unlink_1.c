@@ -3,9 +3,14 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include "ssu_runtime.h"
+
 int main(void)
 {
+    struct timeval begin, end;
     char *fname = "ssu_dump.txt";
+
+    gettimeofday(&begin, NULL);
 
     if (open(fname, O_RDWR) < 0) {
         fprintf(stderr, "open error for %s\n", fname);
@@ -18,6 +23,8 @@ int main(void)
     }
 
     printf("File unlinked\n");
+    gettimeofday(&end, NULL);
+    ssu_runtime(&begin, &end);
     sleep(20);
     printf("Done\n");
     exit(0);

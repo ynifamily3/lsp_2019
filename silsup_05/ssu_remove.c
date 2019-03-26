@@ -2,8 +2,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "ssu_runtime.h"
+
 int main(int argc, char *argv[])
 {
+    struct timeval begin, end;
+
+    gettimeofday(&begin, NULL);
     if (argc != 3) {
         fprintf(stderr, "usage : %s <oldname> <newname>\n", argv[0]);
         exit(1);
@@ -24,5 +29,7 @@ int main(int argc, char *argv[])
     else
         printf("step2 passed.\n");
     printf("Success!\n");
+    gettimeofday(&end, NULL);
+    ssu_runtime(&begin, &end);
     exit(0);
 }

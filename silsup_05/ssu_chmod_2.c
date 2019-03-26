@@ -3,13 +3,18 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#include "ssu_runtime.h"
+
 #define MODE_EXEC ( S_IXUSR | S_IXGRP | S_IXOTH )
 // user / group / other 실행권한
 
 int main(int argc, char *argv[])
 {
+    struct timeval begin, end;
     struct stat statbuf;
     int i;
+
+    gettimeofday(&begin, NULL);
 
     if (argc < 2) {
         fprintf(stderr, "usage: %s <file1> <file2> ... <fileN>\n", argv[0]);
@@ -29,5 +34,6 @@ int main(int argc, char *argv[])
         else
             printf("%s : file permission was changed.\n", argv[i]);
     }
+    gettimeofday(&end, NULL);
     exit(0);
 }

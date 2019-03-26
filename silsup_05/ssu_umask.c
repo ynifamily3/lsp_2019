@@ -3,13 +3,18 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+#include "ssu_runtime.h"
+
 #define RW_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
 // RW_ RW_ RW_
 
 int main(void)
 {
+    struct timeval begin, end;
     char *fname1 = "ssu_file1";
     char *fname2 = "ssu_file2";
+
+    gettimeofday(&begin, NULL);
 
     umask(0);
 
@@ -24,6 +29,9 @@ int main(void)
         fprintf(stderr, "creat error for %s\n", fname2);
         exit(1);
     }
-
+    
+    gettimeofday(&end, NULL);
+    ssu_runtime(&begin, &end);
+    
     exit(0);
 }
