@@ -44,6 +44,8 @@ int main(void)
 
     if ((fd = open(fname, O_RDWR)) < 0) {
         fprintf(stderr, "second open error for %s\n", fname);
+		gettimeofday(&end, NULL);
+		ssu_runtime(&begin, &end);
         exit(1);
     }
     else

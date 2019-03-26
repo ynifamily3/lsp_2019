@@ -35,5 +35,6 @@ int main(int argc, char *argv[])
             printf("%s : file permission was changed.\n", argv[i]);
     }
     gettimeofday(&end, NULL);
+    ssu_runtime(&begin, &end);
     exit(0);
 }
