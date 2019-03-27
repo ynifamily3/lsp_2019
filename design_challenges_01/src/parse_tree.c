@@ -27,40 +27,75 @@ struct statement_container {
 	struct parse_tree **elem;
 };
 
-void lex_go(const char *statement, struct statement_container * container)
-{
+typedef struct char_op_pair {
+	char *p;
+	int isop;
+} cop;
 
-}
-
-char *cut_lex(char *start)
+cop cut_lex(char *start)
 {
 	// 다음 괄호나 연산자까지 자르고 오른편 포인터offset를 리턴
+	cop ret;
+	ret.p = start;
+	ret.isop = 0;
 	char *curr = start;
 	int count_braket_open = 0;
-	for (;curr != '\0';curr++) {
+	for (;*curr != '\0';curr++) {
 		if (*curr == '(') count_braket_open++;
-		if (*curr == ')' && count_braket_open<=1) return curr;
+		if (*curr == ')' && count_braket_open<=1) {ret.p = curr; return ret;}
 		else if (*curr == ')') count_braket_open--;
 		
 		// 각 연산자와의 strcmp를 통해 디텍트한다.
+		
 		if (count_braket_open == 0) {
 			int i, j;
 			for (i = 0; i < NUMBER_OF_OPERATORS; i++) {
 				int opsize = strlen(operator[i]);
 				int is_op = 1;
 				for (j = 0; j < opsize; j++) {
-					if (*curr != operator[i][j]) {is_op = 0; break;}
+					if (*(curr+j) != operator[i][j]) {is_op = 0; break;}
 				}
 				if (is_op) {
-					return curr+j;
+					ret.p = curr+j;
+					ret.isop = 1;
+					return ret;
 				}
 			}
 		}
 	}
-	return curr;
+	return ret;
 }
 
-char buf[1000] = "((t+3)&&stop>a||a<stop)&&(b||c)";
+void make_parse_tree(struct statement_container * container)
+{
+	// 초기 cut 과정
+	char *ptr1, *ptr2 = NULL;
+	ptr1 = container->elem[0]->expression;
+	// 해야 할 것 : 구문 뒤에 연산자 올 경우 그거 판별해서 알아서 자르기
+	for (int cc = 0; cc < 3; cc++) {
+		cop us; // 리턴된 값을 받기 위해서
+		ptr1 = ptr2 ? ((*ptr2 == ')' ? ptr2+1 : ptr2)) : ptr1;
+		us = cut_lex(ptr1);
+		ptr2 = us.p;
+		// 하나의 파스트리를 생성한다.
+		container->elem[container->size]->is_leaf = us.isop;
+		container->elem[container->size]->expression = (*ptr1 == '(' ? ptr1+1 : ptr1);
+		container->elem[container->size]->expression_strlen = (*ptr2 == ')' ? (int)(ptr2 - ptr1 - 1) : (int)(ptr2 - ptr1));
+		container->size++;
+		printf ("operation : %c - ", us.isop ? 'O':'X');
+		for (int i = 0; i < container->elem[cc]->expression_strlen; i++) {
+			printf("%c", container->elem[cc]->expression[i]);
+		}
+		printf("\n");
+	}
+}
+
+void make_recur_parse_tree(struct parse_tree * ptree)
+{
+	// 파스 트리 내부에서 또다른 수식을 평가하여 LR로 나눈다.
+}
+
+char buf[1000] = "const char *a= \"test\";&&b";
 
 int main(void)
 {
@@ -79,51 +114,8 @@ int main(void)
 	
 	printf("원본 : %s\n", container.elem[0]->expression);
 
-	char *ptr1, *ptr2;
-	ptr1 = container.elem[0]->expression;
-	ptr2 = cut_lex(ptr1);
-	// 하나의 파스트리를 생성한다.
-	container.elem[container.size]->is_leaf = 0;
-	container.elem[container.size]->expression = (*ptr1 == '(' ? ptr1+1 : ptr1);
-	container.elem[container.size]->expression_strlen = (*ptr2 == ')' ? (int)(ptr2 - ptr1 - 1) : (int)(ptr2 - ptr1));
-	container.size++;
+	make_parse_tree(&container);
 
-	printf("[");
-	for (int i = 0; i < container.elem[0]->expression_strlen; i++) {
-		printf("%c", container.elem[0]->expression[i]);
-	}
-	printf("] ");
-
-	// 다음 파스트리를 생성한다.
-	ptr1 = (*ptr2 == ')' ? ptr2+1 : ptr2);
-	ptr2 = cut_lex(ptr1);
-	container.elem[container.size]->is_leaf = 0;
-	container.elem[container.size]->expression = (*ptr1 == '(' ? ptr1+1 : ptr1);
-	container.elem[container.size]->expression_strlen = (*ptr2 == ')' ? (int)(ptr2 - ptr1 - 1) : (int)(ptr2 - ptr1));
-	container.size++;
-
-	printf("[");
-	for (int i = 0; i < container.elem[1]->expression_strlen; i++) {
-		printf("%c", container.elem[1]->expression[i]);
-	}
-	printf("] ");
-
-	// 마지막 파스트리를 생성한다.
-	ptr1 = (*ptr2 == ')' ? ptr2+1 : ptr2);
-	ptr2 = cut_lex(ptr1);
-	container.elem[container.size]->is_leaf = 0;
-	container.elem[container.size]->expression = (*ptr1 == '(' ? ptr1+1 : ptr1);
-	container.elem[container.size]->expression_strlen = (*ptr2 == ')' ? (int)(ptr2 - ptr1 - 1) : (int)(ptr2 - ptr1));
-	container.size++;
-
-	printf("[");
-	for (int i = 0; i < container.elem[2]->expression_strlen; i++) {
-		printf("%c", container.elem[2]->expression[i]);
-	}
-	printf("] ");
-
-
-	printf("\n");
 	/*
 	 1. 전체적 텍스트에서 괄호와 연산자를 기준으로 자른다. (괄호-비괄호)
 	 [stop>a||a<stop][&&][b||c]
