@@ -1,6 +1,8 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <getopt.h>
 
 #include "arg_read.h"
 
@@ -26,9 +28,7 @@ void parse_args(int argc, char *argv[])
 	extern int optind;
 	extern char *optarg;
 	int c;
-
 	while( (c = getopt(argc, argv, "c:e:t:ph")) != -1) {
-
 		switch (c) {
 				case 'c':
 				arg_option_c = true;
@@ -46,13 +46,15 @@ void parse_args(int argc, char *argv[])
 				arg_option_h = true;
 				break;
 				case '?':
+				fprintf(stderr, "Option Error..\n");
+				exit(1);
 				break;
 				default:
-				fprintf(stderr, "???\n");
+				fprintf(stderr, "Option parsing Error\n");
+				exit(1);
 				break;
 		}
-
-		if (c == 'c' || c == 'e' || c == 't') { 
+		if (c == 'c' || c == 'e' || c == 't') {
 			int i = optind - 1;
 			for (; i < argc && argv[i][0] != '-'; i++) {
 				switch(c) {
@@ -79,7 +81,10 @@ void parse_args(int argc, char *argv[])
 					break;
 				}
 			}
-
 		}
+	}
+	if ((arg_option_c&&arg_option_c_argc == 0) || (arg_option_e&&arg_option_e_argc == 0) || (arg_option_t&&arg_option_t_argc == 0)) {
+		fprintf(stderr, "Option Error\n");
+		exit(1);
 	}
 }

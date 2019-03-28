@@ -728,6 +728,13 @@ int main(int argc, char *argv[])
 		print_helps();
 		exit(0);
 	}
+
+	if (arg_option_c) {
+		for (int i = 0; i < arg_option_c_argc; i++) {
+			printf("%s\n", arg_option_c_argv[i]);
+		}
+		exit(0);
+	}
 	// compose Answer Data into RAM (include compile C & run so long time)
 	open_answer_set();
 
