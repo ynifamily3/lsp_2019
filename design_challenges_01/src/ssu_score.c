@@ -438,19 +438,19 @@ int mark_student(int student_index) {
 			if (access(pathname, F_OK) == 0)
 				stat(pathname, &statbuf);
 			if (statbuf.st_size > 0) {
-				 printf("%s : ", pathname);
+				 //printf("%s : ", pathname);
 				 scores[student_index][i] = codeCMP(i, answer_directory[i]);
 				//scores[student_index][i] = compile_and_return_result(student_index, i, answer_directory[i]);
 				if (scores[student_index][i] > 0.0) {
-					printf("O - Text Correct!!");
+					//printf("O - Text Correct!!");
 				} else {
-					printf("X - Text Incorrect!!");
+					//printf("X - Text Incorrect!!");
 				}
 				sum += scores[student_index][i];
 				// fprintf(stderr, "test Score : %.2lf\n", scores[student_index][i]);
-				printf("\n");
+				// printf("\n");
 			} else {
-				printf("%s : X - Text Not Submitted\n", pathname);
+				//printf("%s : X - Text Not Submitted\n", pathname);
 				// Not submit or zero-byte
 			}
 		}
@@ -589,6 +589,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 			fgets(line_buf, sizeof(line_buf), fp);
 			find_warning = strstr(line_buf, " warning: ");
 			if(find_warning) {
+				//fprintf(stderr, "워닝 찾음");
 				find_warning = NULL;
 				score -= 0.1; // 추후 define 할 것
 			}
@@ -730,10 +731,11 @@ int main(int argc, char *argv[])
 	}
 
 	if (arg_option_c) {
+		printf("C옵션 구현해야됨");
 		for (int i = 0; i < arg_option_c_argc; i++) {
 			printf("%s\n", arg_option_c_argv[i]);
 		}
-		exit(0);
+		//exit(0);
 	}
 	// compose Answer Data into RAM (include compile C & run so long time)
 	open_answer_set();
@@ -744,7 +746,7 @@ int main(int argc, char *argv[])
 
 	printf("Grading Student's test papers..\n");
 	for (int i = 0; i < number_of_students; i++) {
-		printf("Grading %s...\n", students[i]);
+		// printf("Grading %s...\n", students[i]);
 		mark_student(i);
 		// printf("score : %.2lf\n", scores[i]);
 	}

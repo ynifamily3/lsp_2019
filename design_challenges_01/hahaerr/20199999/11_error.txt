@@ -1,0 +1,4 @@
+11.c: In function ‘main’:
+11.c:6:1: warning: implicit declaration of function ‘system’ [-Wimplicit-function-declaration]
+ system("pwd");
+ ^
