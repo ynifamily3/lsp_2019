@@ -21,9 +21,11 @@
 
 #define WAIT_TIME 5
 
+
 char **answer_directory;
 int *problem_type; // 0 for text , 1 for c
 char **answers;
+bool no_mark;
 
 /*
 answers -> contents of ans/1-1.txt (abc : def : ghi...)
@@ -210,6 +212,11 @@ void set_students_info()
 		students[i] = (char *)calloc(100, sizeof(char));
 	}
 	if ((dirp = opendir(student_dir)) == NULL || chdir(student_dir) == -1) {
+		// -c 옵션이 존재 할 경우 다른 곳으로 분기한다.
+		if (arg_option_c) {
+			no_mark = true;
+			return;
+		}
 		fprintf(stderr, "Student's directory open failed : %s\n", strerror(errno));
 		exit(1);
 	}
@@ -381,6 +388,11 @@ void open_answer_set()
 	}
 
 	if ((dirp = opendir(answer_dir)) == NULL || chdir(answer_dir) == -1) {
+		// -c 옵션이 존재 할 경우 다른 곳으로 분기한다.
+		if (arg_option_c) {
+			no_mark = true;
+			return;
+		}
 		fprintf(stderr, "Answer Data open Error\n");
 		exit(1);
 	}
@@ -721,6 +733,7 @@ void make_student_score_table()
 
 int main(int argc, char *argv[])
 {
+	no_mark = false;
 	// parse user's arguments
 	// rmate로 수정하는 것 테스트
 	parse_args(argc, argv);
@@ -730,38 +743,53 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	if (arg_option_c) {
-		printf("C옵션 구현해야됨");
-		for (int i = 0; i < arg_option_c_argc; i++) {
-			printf("%s\n", arg_option_c_argv[i]);
-		}
-		//exit(0);
-	}
 	// compose Answer Data into RAM (include compile C & run so long time)
 	open_answer_set();
+	if (!no_mark) {
+		set_students_info();
 
-	set_students_info();
+		check_score_csv();
 
-	check_score_csv();
-
-	printf("Grading Student's test papers..\n");
-	for (int i = 0; i < number_of_students; i++) {
-		// printf("Grading %s...\n", students[i]);
-		mark_student(i);
-		// printf("score : %.2lf\n", scores[i]);
-	}
-
-	// 성적 테이블 생성
-	make_student_score_table();
-
-	if (arg_option_p) {
-		double sum = 0.0, avg;
+		printf("Grading Student's test papers..\n");
 		for (int i = 0; i < number_of_students; i++) {
-			sum += s_scores[i];
+			// printf("Grading %s...\n", students[i]);
+			mark_student(i);
+			// printf("score : %.2lf\n", scores[i]);
 		}
-		avg = sum / number_of_students;
-		printf("Total average : %.2lf\n", avg);
-	}
 
+		// 성적 테이블 생성
+		make_student_score_table();
+
+		if (arg_option_p) {
+			double sum = 0.0, avg;
+			for (int i = 0; i < number_of_students; i++) {
+				sum += s_scores[i];
+			}
+			avg = sum / number_of_students;
+			printf("Total average : %.2lf\n", avg);
+		}
+	} else {
+		// 분명히 C옵션을 주었을 것이다.
+			int csv_fd;
+			if ((csv_fd = open("score.csv", O_RDONLY) < 0)) {
+				system("pwd");
+				fprintf(stderr, "Not Found score.csv file \n");
+				exit(1);
+			}
+			
+			close(csv_fd);
+			printf("와우!");
+	}
+	if (arg_option_c) {
+		// 채점을 함.
+		for (int i = 0; i < arg_option_c_argc; i++) {
+			for (int j = 0; j < number_of_students; j++) {
+				if (strcmp(arg_option_c_argv[i], students[j]) == 0) {
+					printf("%s's score : %.2lf\n", students[j], s_scores[j]);
+					break;
+				}
+			}
+		}
+	}
 	exit(0);
 }
