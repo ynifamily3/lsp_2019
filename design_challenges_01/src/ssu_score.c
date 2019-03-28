@@ -182,9 +182,8 @@ void check_score_csv()
 		}
 		char line_buf[100];
 		int score_ptr = 0;
-		while (!feof(fp)) {
+		while (fgets(line_buf, sizeof(line_buf), fp) != NULL) {
 			if(score_ptr >= number_of_questions) break; // 추해지기 전에 은퇴해야..
-			fgets(line_buf, sizeof(line_buf), fp);
 			sscanf(line_buf, "%*[^,],%lf", &indiv_score[score_ptr++]);
 		}
 		fclose(fp);
@@ -596,9 +595,8 @@ double compile_and_return_result(int student_index, int question_index, char *di
 		FILE *fp;
 		fp = fopen(errr, "r");
 		char line_buf[500];
-		while (!feof(fp)) {
+		while (fgets(line_buf, sizeof(line_buf), fp) != NULL) {
 			char *find_warning;
-			fgets(line_buf, sizeof(line_buf), fp);
 			find_warning = strstr(line_buf, " warning: ");
 			if(find_warning) {
 				//fprintf(stderr, "워닝 찾음");
@@ -770,15 +768,42 @@ int main(int argc, char *argv[])
 		}
 	} else {
 		// 분명히 C옵션을 주었을 것이다.
-			int csv_fd;
-			if ((csv_fd = open("score.csv", O_RDONLY) < 0)) {
-				system("pwd");
-				fprintf(stderr, "Not Found score.csv file \n");
-				exit(1);
+		FILE *fp;
+		if ( !(fp = fopen("score.csv", "r")) ) {
+			fprintf(stderr, "error for open score.csv\n");
+			exit(1);
+		}
+		char line_buf[1024];
+		char curr_student_number[101];
+		while (fgets(line_buf, sizeof(line_buf), fp) != NULL) {
+			//line_buf[strlen(line_buf)-1] = 0;
+			// 학번 일치 여부 검사
+			// 첫번째 항목은 학번인데 콤마 전까지 자른다.
+			int tempPtr;
+			//printf("원본<%s>\n", line_buf);
+			for (int i = 0; i < 256; i++) {
+				if (line_buf[i] == ',') {tempPtr = i; line_buf[i] = '\0'; break;}
+			} // 학번만 보이도록 자름
+			strncpy(curr_student_number, line_buf, 100);
+			line_buf[tempPtr] = ','; // 복구
+			// printf("%s\n", curr_student_number);
+			for (int i = 0; i < arg_option_c_argc; i++) {
+				if (strcmp(arg_option_c_argv[i], curr_student_number) == 0) {
+					// 점수를 찾아서 출력
+					int lastIndex = strlen(line_buf) - 1;
+					for (int j = lastIndex; j >=0; j--) {
+						if (line_buf[j] == ',') {
+							lastIndex = j+1;
+							break;
+						}
+					}
+					// 마지막에 개행 문자 포함
+					printf("%s's score : %s", curr_student_number, line_buf+lastIndex);
+					break;
+				}
 			}
-			
-			close(csv_fd);
-			printf("와우!");
+		}
+		fclose(fp);
 	}
 	if (arg_option_c) {
 		// 채점을 함.
