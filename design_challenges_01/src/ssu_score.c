@@ -10,6 +10,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <pthread.h>
+#include <stdbool.h>
 
 #include "arg_read.h"
 #include "print_helps.h"
@@ -17,9 +18,6 @@
 #include "assert_answer.h"
 
 #define DIRECTORY_SIZE MAXNAMLEN
-
-#define true 1
-#define false 0
 
 #define WAIT_TIME 5
 
@@ -36,8 +34,6 @@ answers -> contents of ans/1-1.txt (abc : def : ghi...)
 		-> contents of ans/12.stdout
 		수정 테스트
 */
-
-typedef int bool;
 
 int number_of_questions = 0;
 
@@ -59,6 +55,7 @@ double *indiv_score; // 문제를 풀면 받는 점수
 
 int compare(const void *a, const void *b);
 double compile_and_return_result(int studnt_index, int question_index, char *dirname);
+double codeCMP(int question_index, char *dirname);
 void *mark_thread(void *arg);
 void *wait_thread(void *arg);
 int strcmp2(char *a, char *b, int tol);
@@ -227,6 +224,7 @@ void set_students_info()
 		}
 		memcpy(students[number_of_students++], dentry->d_name, 20);
 	}
+	closedir(dirp);
 	scores = (double **)calloc(number_of_students, sizeof(double *));
 	s_scores = (double *)calloc(number_of_students, sizeof(double));
 	for (i = 0; i < number_of_students; i++) {
@@ -240,7 +238,9 @@ void normalize(char *text)
 {
 	int i, j;
 	for (i = 0, j = 0; text[i] != 0; i++,j++) {
-		if (text[i] == '\n' || !isspace(text[i])) {
+		// 텍스트 정답비교 문제로 개행문자까지 무시해 보았다.
+		//if (text[i] == '\n' || !isspace(text[i])) {
+		if (!isspace(text[i])) {
 			// lower normalize
 			char t = text[i];
 			if (t >= 'A' && t <= 'Z') t += 32;
@@ -337,6 +337,7 @@ void extract_answer(int index, char *ansdir)
 		}
 		// normalize C program output answer
 		normalize(answers[index]);
+		close(fd_c);
 	}
 	else {
 		fprintf(stderr, "No file in ans_dir : %s\n", ansdir);
@@ -394,6 +395,7 @@ void open_answer_set()
 		// all of contents contain directory
 		memcpy(answer_directory[number_of_questions++], dentry->d_name, 20);
 	}
+	closedir(dirp);
 	// all of directorys must be sorted
 	qsort((void *)answer_directory, number_of_questions, sizeof(answer_directory[0]), compare);
 	for (i = 0; i < number_of_questions; i++) {
@@ -430,12 +432,27 @@ int mark_student(int student_index) {
 				// Not submit or zero-byte
 			}
         } else {
-			//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-			char students_challenge[1000]; // 
-			// mark Text
-			fprintf(stderr, "Mark Text for %s - %s : \n", students[student_index], answer_directory[i]);
-			fprintf(stderr, "answer : %s\n", answers[i]);
-			//fprintf(stderr, "challenge : %s\n", stud)
+			char pathname[15];
+			sprintf(pathname, "%s.txt", answer_directory[i]);
+			statbuf.st_size = -1;
+			if (access(pathname, F_OK) == 0)
+				stat(pathname, &statbuf);
+			if (statbuf.st_size > 0) {
+				 printf("%s : ", pathname);
+				 scores[student_index][i] = codeCMP(i, answer_directory[i]);
+				//scores[student_index][i] = compile_and_return_result(student_index, i, answer_directory[i]);
+				if (scores[student_index][i] > 0.0) {
+					printf("O - Text Correct!!");
+				} else {
+					printf("X - Text Incorrect!!");
+				}
+				sum += scores[student_index][i];
+				// fprintf(stderr, "test Score : %.2lf\n", scores[student_index][i]);
+				printf("\n");
+			} else {
+				printf("%s : X - Text Not Submitted\n", pathname);
+				// Not submit or zero-byte
+			}
 		}
     }
 	// db are
@@ -447,6 +464,62 @@ int mark_student(int student_index) {
 		printf("%s is finished..\n", students[student_index]);
 	chdir("..");
     return 0;
+}
+
+double codeCMP(int question_index, char *dirname)
+{
+	// pwd는 해당 학생의 디렉터리임으로, 학생정보는 필요치 않다.
+	char stu_buf[1024];
+	char pathname[15];
+	int fd, length;
+	int answer_candidate_number = 1;
+	char *answer_start_pointer[100];
+	double score = indiv_score[question_index]; // 일단 만점을 주고 틀리면 뺏는다.
+	// 학생파일을 분석한다.
+	sprintf(pathname, "%s.txt", dirname);
+	if ((fd = open(pathname, O_RDONLY)) < 0) {
+		//xxxxxxxxxxxxxxxxxxxxxxxxxxxx 19번학생 8-2.txt에서 죽음
+		fprintf(stderr, "open error for %s\n%s\n", pathname, strerror(errno));
+		exit(1);
+	}
+	if ((length = read(fd, stu_buf, 1023)) < 0) {
+		fprintf(stderr, "read error for %s-%s\n", dirname, pathname);
+		exit(1);
+	}
+	close(fd);
+	stu_buf[length] = 0;
+	normalize(stu_buf);
+	length = strlen(stu_buf);
+
+	normalize(answers[question_index]);
+	
+	// 여러 정답을 추출해낸다.
+	answer_start_pointer[0] = answers[question_index];
+	int ansl = strlen(answers[question_index]);
+	for (int i = 0; i < ansl; i++) {
+		// if (answers[question_index][i] == '\n') answers[question_index][i] = '\0';
+		if (answers[question_index][i] == ':') {
+			if(answers[question_index][i+1] == '\0') {
+				// 스트링 끝에 :이 붙은 경우
+				break;
+			}
+			answer_start_pointer[answer_candidate_number] = &answers[question_index][i+1];
+			++answer_candidate_number;
+			answers[question_index][i] = '\0'; // make null character
+		}
+	}
+	bool isCorrect = false;
+	for (int i = 0; i < answer_candidate_number; i++) {
+		if (strcmp(stu_buf, answer_start_pointer[i]) == 0) {
+			isCorrect = true;
+			break;
+		}
+	}
+	// 아직도 isCorrect가 false 상태라면 parseTree를 고려해본다 (미구현)
+	if (!isCorrect) {
+		score = 0.0;
+	}
+	return score;
 }
 
 double compile_and_return_result(int student_index, int question_index, char *dirname)
@@ -664,6 +737,7 @@ int main(int argc, char *argv[])
 
 	printf("Grading Student's test papers..\n");
 	for (int i = 0; i < number_of_students; i++) {
+		printf("Grading %s...\n", students[i]);
 		mark_student(i);
 		// printf("score : %.2lf\n", scores[i]);
 	}

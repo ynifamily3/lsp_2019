@@ -8,12 +8,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <string.h>
-
-
-#define true 1
-#define false 0
-
-typedef int bool;
+#include <stdbool.h>
 
 // options
 const char *student_dir;
