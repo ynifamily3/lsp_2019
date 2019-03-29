@@ -1,4 +1,4 @@
-OBJECTS = ssu_score.o print_helps.o arg_read.o assert_answer.o mark_student.o
+OBJECTS = ssu_score.o print_helps.o arg_read.o assert_answer.o mark_student.o ssu_runtime.o
 TARGET = ../ssu_score
 CC = gcc
 CFLAGS = -Wall -W -std=c99 -lpthread -pthread
@@ -20,6 +20,9 @@ assert_answer.o : assert_answer.c
 
 mark_student.o : mark_student.c
 	$(CC) $(CFLAGS) -c mark_student.c
+
+ssu_runtime.o : ssu_runtime.c
+	$(CC) $(CFLAGS) -c ssu_runtime.c
 
 clean : 
 	rm $(TARGET)

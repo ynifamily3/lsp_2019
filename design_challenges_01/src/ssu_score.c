@@ -16,10 +16,13 @@
 #include "print_helps.h"
 #include "mark_student.h"
 #include "assert_answer.h"
+#include "ssu_runtime.h"
 
 #define DIRECTORY_SIZE MAXNAMLEN
 
 #define WAIT_TIME 5
+#define WARNING_DEDUCTION_POINT 0.1
+#define ERROR_POINT 0.0
 
 
 char **answer_directory;
@@ -524,9 +527,11 @@ double codeCMP(int question_index, char *dirname)
 		if (strcmp(stu_buf, answer_start_pointer[i]) == 0) {
 			isCorrect = true;
 			break;
+		} else {
+			// take parse tree
+			//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 		}
 	}
-	// 아직도 isCorrect가 false 상태라면 parseTree를 고려해본다 (미구현)
 	if (!isCorrect) {
 		score = 0.0;
 	}
@@ -586,7 +591,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 		// printf("X - Compile Error\n");
 		if(!arg_option_e)
 			remove(errr); // error file delete
-		return 0.0;
+		return ERROR_POINT;
 	}
 	// counting warnings
 	stat(errr, &statbuf);
@@ -601,7 +606,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 			if(find_warning) {
 				//fprintf(stderr, "워닝 찾음");
 				find_warning = NULL;
-				score -= 0.1; // 추후 define 할 것
+				score -= WARNING_DEDUCTION_POINT;
 			}
 		}
 		fclose(fp);
@@ -636,7 +641,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 
 	if (t_args.isError) {
 		// printf("X - Run Time Error!\n");
-		return 0.0;
+		return ERROR_POINT;
 	}
 	if (is_time_limited) {
 		is_time_limited = false;
@@ -645,7 +650,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 		char kill_command[50];
 		sprintf(kill_command, "pkill -9 -ef %s > /dev/null", gcc_command);
 		system(kill_command);
-		return 0.0; // 0 score
+		return ERROR_POINT; // 0 score
 	}
 	// dup2(origin_fd, 1);
 	// read stdout and mark answer
@@ -731,6 +736,8 @@ void make_student_score_table()
 
 int main(int argc, char *argv[])
 {
+	struct timeval begin, end;
+	gettimeofday(&begin, NULL);
 	no_mark = false;
 	// parse user's arguments
 	// rmate로 수정하는 것 테스트
@@ -738,6 +745,8 @@ int main(int argc, char *argv[])
 
 	if (arg_option_h) {
 		print_helps();
+		gettimeofday(&end, NULL);
+		ssu_runtime(&begin, &end);
 		exit(0);
 	}
 
@@ -816,5 +825,7 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
+	gettimeofday(&end, NULL);
+	ssu_runtime(&begin, &end);
 	exit(0);
 }
