@@ -88,7 +88,6 @@ void norm_onebyte_op(_container *container)
 			if (length_stack > 0) {
 				container->is_operator[container->number_of_tokens] = false;
 				container->tokens[container->number_of_tokens] = text + pat_start_offset;
-				printf("오프셋 이동 : %d\n",  pat_start_offset); // 예상 6
 				container->tokens_length[container->number_of_tokens] = length_stack;
 				pat_start_offset += length_stack;
 				container->number_of_tokens++;
@@ -180,34 +179,92 @@ int get_priority(char op)
 	return -1;
 }
 
-
+void print_token(_container *container, int index)
+{
+	for (int j = 0; j < container->tokens_length[index]; j++) {
+		char t = *(container->tokens[index] + j);
+		if (t >= 1 && t <= 16) {
+			printf("%s", operator[t-1]);
+		} else 
+			putchar( *(container->tokens[index] + j) );
+	}
+}
 
 int main(void)
 {
 	_container container;
 	stack stk;
 	stk.top = -1;
-	char buf[] = "(stop>signal1)&&(stop<signal2)"; // raw Input
+	char buf[] = "9999=a+b*c"; // raw Input
 	char result[500]; // 후위표현식으로 전환된 문자열
 	container.stream = buf;
 	printf("%s\n", container.stream);
 	// 공백 제거, 연산자 1-byte정규화, 토큰분리
 	norm_onebyte_op(&container);
-
-	// 후위식으로 전환
-	int len = strlen(buf);
-	for (int i = 0; i < len; i++) {
-
-	}
-
 	// 테스트용 출력
-	print_opop(buf);
+	// print_opop(buf);
 
 	// 테스트용 출력 2
-	printf("컨테이너에 분리된 토큰 개수 : %d\n", container.number_of_tokens);
+	/*
 	for (int i = 0; i < container.number_of_tokens; i++) {
 		// printf("%d: [%ld, %d] ", container.is_operator[i], container.tokens[i] - container.stream, container.tokens_length[i]);
-		
+		putchar('[');
+		for (int j = 0; j < container.tokens_length[i]; j++) {
+			char t = *(container.tokens[i] + j);
+			if (t >= 1 && t <= 16) {
+				printf("%s", operator[t-1]);
+			} else 
+				putchar( *(container.tokens[i] + j) );
+		}
+		putchar(']');
+		putchar('\n');
+	}
+	*/
+	// 후위식으로 전환
+	
+	// 후위로 된 것들을 모아놓는 무언가 컨테이너
+
+	int len = container.number_of_tokens;
+	for (int i = 0; i < len; i++) {
+		if (!container.is_operator[i]) {
+			putchar('[');
+			print_token(&container, i);
+			putchar(']');
+		} else {
+			char op = container.tokens[i][0];
+			switch(op)
+			{
+				case '(':
+					st_push(&stk, op);
+				break;
+				// case 우선순위 높은 것 --> 낮은 것 --> 닫는 괄호
+				case ')':
+					while (!st_empty(&stk) && st_top(&stk) != '(')
+                    {
+                        printf("[%c]", st_top(&stk));
+                        st_pop(&stk);
+                    }
+                    st_pop(&stk);
+                    break;
+				break;
+				default:
+					//    > or >=?
+					while (!st_empty(&stk) && (get_priority(st_top(&stk)) > get_priority(op) ))
+					{
+						if (st_top(&stk) != '(')
+							printf("[%c]", st_top(&stk));
+						st_pop(&stk);
+                    }
+                    st_push(&stk, op);
+				break;
+			}
+		}
+	}
+	// 스택에 남아있는것을 모두 뺀다.
+	while (!st_empty(&stk)) {
+		if (st_top(&stk) != '(')
+			printf("[%c]", st_top(&stk));
+		st_pop(&stk);
 	}
 	return 0;
 }

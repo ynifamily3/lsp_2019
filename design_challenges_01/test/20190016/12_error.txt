@@ -1,0 +1,5 @@
+12.c: In function ‘main’:
+12.c:36:38: error: ‘ssu_thread_consumer’ undeclared (first use in this function)
+  pthread_create(&consumer_tid, NULL, ssu_thread_consumer, NULL);
+                                      ^
+12.c:36:38: note: each undeclared identifier is reported only once for each function it appears in

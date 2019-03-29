@@ -100,7 +100,7 @@ void check_score_csv()
 	// 정답 폴더에 csv 파일이 있는지 체크한다. 현재 폴더는 ... 폴더 내에 있다.
 	chdir("..");
 	chdir(answer_dir);
-	char pathname[256];
+	char pathname[512];
 	// struct stat statbuf;
 	sprintf(pathname, "score_table.csv");
 	// score_table.csv 미 존재시 메시지를 띄우고 생성한다.
@@ -492,7 +492,6 @@ double codeCMP(int question_index, char *dirname)
 	// 학생파일을 분석한다.
 	sprintf(pathname, "%s.txt", dirname);
 	if ((fd = open(pathname, O_RDONLY)) < 0) {
-		//xxxxxxxxxxxxxxxxxxxxxxxxxxxx 19번학생 8-2.txt에서 죽음
 		fprintf(stderr, "open error for %s\n%s\n", pathname, strerror(errno));
 		exit(1);
 	}
@@ -560,13 +559,25 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	char errr[256];
 	char path[256];
 	if(arg_option_e) {
-		sprintf(path, "../../%s/", arg_option_e_argv[0]);
+		if (arg_option_e_argv[0][0] != '/')
+			sprintf(path, "../../%s/", arg_option_e_argv[0]);
+		else
+			sprintf(path, "%s", arg_option_e_argv[0]);
 		if (access(path, F_OK) != 0) {
-			mkdir(path, 0777);
+			if (mkdir(path, 0777) != 0) {
+				fprintf(stderr, "error for generating -errordir\n");
+				exit(1);
+			}
 		}
-		sprintf(path, "../../%s/%s/", arg_option_e_argv[0], students[student_index]);
+		if (arg_option_e_argv[0][0] != '/')
+			sprintf(path, "../../%s/%s/", arg_option_e_argv[0], students[student_index]);
+		else
+			sprintf(path, "%s/%s/", arg_option_e_argv[0], students[student_index]);
 		if (access(path, F_OK) != 0) {
-			mkdir(path, 0777);
+			if (mkdir(path, 0777) != 0) {
+				fprintf(stderr, "error for generating -errordir\n");
+				exit(1);
+			}
 		}
 	}
 	if(!arg_option_e)
@@ -748,6 +759,13 @@ int main(int argc, char *argv[])
 		gettimeofday(&end, NULL);
 		ssu_runtime(&begin, &end);
 		exit(0);
+	}
+
+	// 기존 error directory 삭제
+	if (arg_option_e) {
+		char rmrfcmd[50];
+		sprintf(rmrfcmd, "rm -rf %s", arg_option_e_argv[0]);
+		system(rmrfcmd);
 	}
 
 	// compose Answer Data into RAM (include compile C & run so long time)
