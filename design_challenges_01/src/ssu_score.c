@@ -14,8 +14,6 @@
 
 #include "arg_read.h"
 #include "print_helps.h"
-#include "mark_student.h"
-#include "assert_answer.h"
 #include "ssu_runtime.h"
 
 #define DIRECTORY_SIZE MAXNAMLEN
@@ -29,33 +27,12 @@ char **answer_directory;
 int *problem_type; // 0 for text , 1 for c
 char **answers;
 bool no_mark;
-
-/*
-answers -> contents of ans/1-1.txt (abc : def : ghi...)
-		-> contents of ans/1-2.txt
-		-> contents of ans/1-3.txt
-		...
-		-> contents of ans/11.stdout ( alarm 0 \n alarm 1 ..)
-		-> contents of ans/12.stdout
-		수정 테스트
-*/
-
 int number_of_questions = 0;
-
 int number_of_students = 0;
 char **students; 
-
 bool is_time_limited = false;
-
 double **scores; // 학생들이 받은 점수들
 double *s_scores; // 각 학생이 받은 점수 (개별 학생의 총합)
-/*
-	(double **)scores ---->   (double *)201xxxxx(idx)  ---->  [1.0,2.0,3.0.....]
-	               						201xxxxx(idx)  ---->  [4.0,5.0,6.0.....]
-
-*/
-
-
 double *indiv_score; // 문제를 풀면 받는 점수
 
 int compare(const void *a, const void *b);
@@ -66,6 +43,12 @@ void *wait_thread(void *arg);
 int strcmp2(char *a, char *b, int tol);
 void check_score_csv();
 void make_student_score_table();
+void set_students_info();
+void normalize(char *text);
+void extract_answer(int index, char *ansdir);
+void open_answer_set();
+int mark_student(int student_index);
+
 
 struct thread_args {
 	char *gcc_command;
@@ -186,7 +169,7 @@ void check_score_csv()
 		char line_buf[100];
 		int score_ptr = 0;
 		while (fgets(line_buf, sizeof(line_buf), fp) != NULL) {
-			if(score_ptr >= number_of_questions) break; // 추해지기 전에 은퇴해야..
+			if(score_ptr >= number_of_questions) break;
 			sscanf(line_buf, "%*[^,],%lf", &indiv_score[score_ptr++]);
 		}
 		fclose(fp);
@@ -195,12 +178,6 @@ void check_score_csv()
 	chdir(student_dir);
 }
 
-/*
-	students 	-> "2016xxxx"
-				-> "2017xxxx"
-				-> "2018xxxx"
-				...
-*/
 void set_students_info()
 {
 	// sets number_of_students, students, scores

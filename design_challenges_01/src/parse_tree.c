@@ -195,7 +195,7 @@ int main(void)
 	_container container;
 	stack stk;
 	stk.top = -1;
-	char buf[] = "9999=a+b*c"; // raw Input
+	char buf[] = "-9999=a+b*c"; // raw Input
 	char result[500]; // 후위표현식으로 전환된 문자열
 	container.stream = buf;
 	printf("%s\n", container.stream);
