@@ -3,15 +3,15 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-#include "parse_tree.h"
 #define NUMBER_OF_OPERATORS 31
+
 
 int priority[NUMBER_OF_OPERATORS] = {0, 0, 8, 8, 7, 7, 6, 6, 2, 1, 0, 0, 0, 0, 0, 0, 99, 10, 10, 10, 9, 9, 7, 7, 5, 4, 3, 0, 99, 99, -1};
 char operator[NUMBER_OF_OPERATORS][4] = {"<<=", ">>=","<<", ">>","<=", ">=",  "==", "!=", "&&", "||", "+=", "*=", "/=", "%=", "&=", "|=", "->", "*", "/", "%", "+", "-",  "<",  ">", "&", "^", "|",  "=", "(", ")", ","};
 bool operator_swapable[NUMBER_OF_OPERATORS] = {false, false, false, false, false, false, true, true, true, true, false, false, false, false, false, false, false, true, false, false, true, false, false, false, true, true, true, false, false, false, false};
 int operator_convable[NUMBER_OF_OPERATORS] = {-1,-1,-1,-1,-1,5,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, (int)'<',-1,-1,-1,-1,-1,-1,-1};
 char operator_onebyte[NUMBER_OF_OPERATORS] = {(char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10, (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, '*', '/', '%', '+', '-',  '<',  '>', '&', '^', '|', '=', '(', ')', ','};
+
 
 typedef struct {
 	char *stream;
@@ -27,6 +27,7 @@ typedef struct {
 	bool is_operator[100]; //연산자 여부(0또는 1) 
 } _final_container;
 
+/*
 void print_op(char op_oneb) {
 	if (op_oneb >= 1 && op_oneb <= 17) {
 		printf("%s", operator[op_oneb-1]);
@@ -34,6 +35,7 @@ void print_op(char op_oneb) {
 		putchar(op_oneb);
 	}
 }
+*/
 
 int is_convertable_op(char op_oneb)
 {
@@ -173,21 +175,21 @@ void print_opop(const char *text)
 	// op를 적절히 변환하여 한 줄씩 출력 1~16은 매핑된것이다.
 	for (int i = 0; i < len; i++) {
 		if (text[i] >= (char)1 && text[i] <= (char)17) {
-			printf("[%s(%d)]", operator[text[i]-1], (int)operator_onebyte[text[i]-1]);
+			//printf("[%s(%d)]", operator[text[i]-1], (int)operator_onebyte[text[i]-1]);
 			continue;
 		}
 		switch (text[i])
 		{
 			case '*':case '/':case '%':case '+':case '-':case '<':case '>':case '&':case '^':case '|':case '=': case '(': case ')':
-			putchar('[');
-			putchar(text[i]);
-			putchar(']');
+			//putchar('[');
+			//putchar(text[i]);
+			//putchar(']');
 			continue;
 			break;
 		}
-		printf("%c", (char)text[i]);
+		//printf("%c", (char)text[i]);
 	}
-	putchar('\n');
+	//putchar('\n');
 }
 
 typedef struct {
@@ -232,6 +234,7 @@ int get_priority(char op)
 	return -1;
 }
 
+/*
 void print_token(_container *container, int index)
 {
 	for (int j = 0; j < container->tokens_length[index]; j++) {
@@ -242,6 +245,7 @@ void print_token(_container *container, int index)
 			putchar( *(container->tokens[index] + j) );
 	}
 }
+*/
 
 char *make_string(char *text, int len)
 {
@@ -252,19 +256,14 @@ char *make_string(char *text, int len)
 	return alloc;
 }
 
-int main(void)
+char *mpt(char *buf)
 {
 	_container container;
 	stack stk;
 	stk.top = -1;
-	char buf[] = "-1==open(fd,O_CREAT|O_RDONLY)="; // raw Input
-	char result[500]; // 후위표현식으로 전환된 문자열
 	container.stream = buf;
-	printf("%s\n", container.stream);
 	// 공백 제거, 연산자 1-byte정규화, 토큰분리
 	norm_onebyte_op(&container);
-
-
 	// 후위식으로 전환	
 	// 후위로 된 것들을 모아놓는 무언가 컨테이너
 	int len = container.number_of_tokens;
@@ -272,13 +271,13 @@ int main(void)
 	FC.number_of_tokens = 0;
 	for (int i = 0; i < len; i++) {
 		if (!container.is_operator[i]) {
-			putchar('[');
+			//putchar('[');
 			FC.tokens[FC.number_of_tokens] =  make_string(container.tokens[i], container.tokens_length[i]);
 			FC.is_operator[FC.number_of_tokens] = 0;
 			FC.number_of_tokens++;
 			// 디버깅프린트
-			print_token(&container, i);
-			putchar(']');
+			//print_token(&container, i);
+			//putchar(']');
 		} else {
 			char op = container.tokens[i][0];
 			switch(op)
@@ -294,9 +293,9 @@ int main(void)
 						FC.tokens[FC.number_of_tokens] =  make_string(&c, 1);
 						FC.is_operator[FC.number_of_tokens] = 1;
 						FC.number_of_tokens++;
-						putchar('[');
-                        print_op(c);
-						putchar(']');
+						//putchar('[');
+                        //print_op(c);
+						//putchar(']');
                         st_pop(&stk);
                     }
                     st_pop(&stk);
@@ -311,9 +310,9 @@ int main(void)
 						FC.tokens[FC.number_of_tokens] =  make_string(&c, 1);
 						FC.is_operator[FC.number_of_tokens] = 1;
 						FC.number_of_tokens++;
-							putchar('[');
-                        	print_op(c);
-							putchar(']');
+							//putchar('[');
+                        	//print_op(c);
+							//putchar(']');
 						}
 						st_pop(&stk);
                     }
@@ -329,9 +328,10 @@ int main(void)
 			FC.tokens[FC.number_of_tokens] =  make_string(&c, 1);
 			FC.is_operator[FC.number_of_tokens] = 1;
 			FC.number_of_tokens++;	
-			putchar('[');
-            print_op(c);
-			putchar(']');
+			//putchar('[');
+			//printf("%d",FC.is_operator[FC.number_of_tokens-1]);
+            //print_op(c);
+			//putchar(']');
 		}
 		st_pop(&stk);
 	}
@@ -345,7 +345,7 @@ int main(void)
 	// 배열 사이즈를 줄일 때 start지점을 조절한다.
 	int origin_size = FC.number_of_tokens;
 	int prev_ptr = 0; // 마지막으로 합친 곳
-	printf("토큰 : %d개\n", FC.number_of_tokens);
+	//printf("토큰 : %d개\n", FC.number_of_tokens);
 	//while (FC.number_of_tokens >= 2) {
 		for (int i = 0; i < origin_size; i++) {
 			if (FC.is_operator[i]) {
@@ -363,67 +363,110 @@ int main(void)
 						// 스왑어블 하다면 앞 두개를 정렬함.(정규화)
 						if (strcmp(FC.tokens[i - 1], FC.tokens[i - 2]) > 0) {
 							// i-1 i-2 i 순서로 만듦
+							//추가추가
+							if (FC.tokens[i-2] == NULL || FC.tokens[i] == NULL || FC.tokens[i-1] == NULL) {
+
+							} else {
 							char *new_token = calloc(strlen(FC.tokens[i - 1]) + strlen(FC.tokens[i - 2]) + strlen(FC.tokens[i]) + 1, sizeof(char));
 							strcat(new_token, FC.tokens[i - 1]);
 							strcat(new_token, FC.tokens[i - 2]);
 							strcat(new_token, FC.tokens[i]);
-							//free(FC.tokens[i - 1]);
-							//free(FC.tokens[i - 2]);
-							//free(FC.tokens[i]);
+							free(FC.tokens[i - 1]);
+							free(FC.tokens[i - 2]);
+							free(FC.tokens[i]);
+							FC.tokens[i-1] = NULL;
+							FC.tokens[i-2] = NULL;
+							FC.tokens[i] = NULL;
 							FC.tokens[i] = new_token;
+							}
 						} else {
 							// i-2 i-1 i 순서로 만듦
+							// 추가추가
+							if (FC.tokens[i-2] == NULL || FC.tokens[i] == NULL || FC.tokens[i-1] == NULL) {
+
+							}
+							else {
 							char *new_token = calloc(strlen(FC.tokens[i - 2]) + strlen(FC.tokens[i - 1]) + strlen(FC.tokens[i]) + 1, sizeof(char));
 							strcat(new_token, FC.tokens[i - 2]);
 							strcat(new_token, FC.tokens[i - 1]);
 							strcat(new_token, FC.tokens[i]);
-							//free(FC.tokens[i - 2]);
-							//free(FC.tokens[i - 1]);
-							//free(FC.tokens[i]);
+							free(FC.tokens[i - 2]);
+							free(FC.tokens[i - 1]);
+							free(FC.tokens[i]);
+							FC.tokens[i-1] = NULL;
+							FC.tokens[i-2] = NULL;
+							FC.tokens[i] = NULL;
 							FC.tokens[i] = new_token;
+							}
 						}
 					} else if (is_convertable_op(FC.tokens[i][0]) != -1) {
 						// 컨버터블 하다면 op 의 방향을 전환
 						FC.tokens[i][0] = is_convertable_op(FC.tokens[i][0]);
 						// 앞 두개의 순서를 바꿔 하나로 병합
+						//추가추가
+						if (FC.tokens[i-2] == NULL || FC.tokens[i] == NULL || FC.tokens[i-1] == NULL) {
+
+						} else {
 						char *new_token = calloc(strlen(FC.tokens[i - 2]) + strlen(FC.tokens[i - 1]) + strlen(FC.tokens[i]) + 1, sizeof(char));
 						strcat(new_token, FC.tokens[i - 1]);
 						strcat(new_token, FC.tokens[i - 2]);
 						strcat(new_token, FC.tokens[i]);
-						//free(FC.tokens[i - 1]);
-						//free(FC.tokens[i - 2]);
-						//free(FC.tokens[i]);
+						free(FC.tokens[i - 1]);
+						free(FC.tokens[i - 2]);
+						free(FC.tokens[i]);
+						FC.tokens[i-1] = NULL;
+						FC.tokens[i-2] = NULL;
+						FC.tokens[i] = NULL;
 						FC.tokens[i] = new_token;
+						}
 					}
 					else {
 						// 스왑어블도 아니고 컨버터블도 아님
 						// 그대로 병합
-						char *new_token = calloc(strlen(FC.tokens[i - 2]) + strlen(FC.tokens[i - 1]) + strlen(FC.tokens[i]) + 1, sizeof(char));
-						strcat(new_token, FC.tokens[i - 2]);
-						strcat(new_token, FC.tokens[i - 1]);
-						strcat(new_token, FC.tokens[i]);
-						//free(FC.tokens[i - 2]);
-						//free(FC.tokens[i - 1]);
-						//free(FC.tokens[i]);
-						FC.tokens[i] = new_token;
+						if (FC.tokens[i-2] == NULL || FC.tokens[i] == NULL || FC.tokens[i-1] == NULL) {
+
+						}
+						else {
+							char *new_token = calloc(strlen(FC.tokens[i - 2]) + strlen(FC.tokens[i - 1]) + strlen(FC.tokens[i]) + 1, sizeof(char));
+
+							strcat(new_token, FC.tokens[i - 2]);
+							strcat(new_token, FC.tokens[i - 1]);
+							strcat(new_token, FC.tokens[i]);
+
+							free(FC.tokens[i - 2]);
+							free(FC.tokens[i - 1]);
+							free(FC.tokens[i]);
+							FC.tokens[i-1] = NULL;
+							FC.tokens[i-2] = NULL;
+							FC.tokens[i] = NULL;
+							FC.tokens[i] = new_token;
+						}
 					}
 					//start_pos = i; // 병합했으므로 스타팅 포인트를 땡김
 					FC.number_of_tokens -= 2; // 세개를 먹어서 하나를 만들었으므로 두개를 줄임
 					FC.is_operator[i] = false; // 병합했으므로 연산자 취급 아님
-					printf("병 합 완 료 : %s\n", FC.tokens[i]);
+					//printf("병 합 완 료 : %s %d\n", FC.tokens[i], i);
 					//i-1을 prev_ptr 스왑
 					FC.tokens[i-1] = FC.tokens[prev_ptr];
 					prev_ptr = i; // 병합한 곳을 포인터로
 
-				} else if (i-1 >= prev_ptr) {
+				} else if (i-1 >= 0) {
 					// 앞에 1개가 있으면
 					// 그대로 합친다.
+					// 추가추가
+					if (FC.tokens[i] == NULL || FC.tokens[i-1] == NULL) {
+
+					}
+					else {
 					char *new_token = calloc(strlen(FC.tokens[i - 1]) + strlen(FC.tokens[i]) + 1, sizeof(char));
 					strcat(new_token, FC.tokens[i - 1]);
 					strcat(new_token, FC.tokens[i]);
-					//free(FC.tokens[i - 1]);
-					//free(FC.tokens[i]);
+					free(FC.tokens[i - 1]);
+					free(FC.tokens[i]);
+					FC.tokens[i-1] = NULL;
+					FC.tokens[i] = NULL;
 					FC.tokens[i] = new_token;
+					}
 					FC.is_operator[i] = false;
 					//start_pos = i; // 병합했으므로 스타팅 포인트를 땡김
 					FC.number_of_tokens-=1;
@@ -440,15 +483,13 @@ int main(void)
 				// printf("연산자아님 : %s\n", FC.tokens[i]);
 				//start_pos++;
 				//prev_ptr++;
-
 			}
 		}
 		// break;
 	//	getchar();
 	//}
-	printf("최종 식 : [%s]\n", FC.tokens[origin_size-1]);
-
-
+	//printf("남았나 ? : %d\n", FC.number_of_tokens);
+	//printf("최종 식 : [%s]\n", FC.tokens[origin_size-1]);
+	return FC.tokens[origin_size-1];
 	// fc token 에 있는 모든 것들을 free 해줘야 한다.
-	return 0;
 }

@@ -15,6 +15,7 @@
 #include "arg_read.h"
 #include "print_helps.h"
 #include "ssu_runtime.h"
+#include "parse_tree.h"
 
 #define DIRECTORY_SIZE MAXNAMLEN
 
@@ -506,6 +507,18 @@ double codeCMP(int question_index, char *dirname)
 		} else {
 			// take parse tree
 			//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+			printf("--%s--\n--%s--\n", stu_buf, answer_start_pointer[i]);
+			getchar();
+			char *treeL = mpt(stu_buf);
+			char *treeR = mpt(answer_start_pointer[i]);
+			printf("통과\n");
+			getchar();
+			if(strcmp(treeL, treeR) == 0) {
+				isCorrect = true;
+				free(treeL);
+				free(treeR);
+				break;
+			}
 		}
 	}
 	if (!isCorrect) {
