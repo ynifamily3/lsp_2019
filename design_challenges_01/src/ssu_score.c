@@ -508,11 +508,11 @@ double codeCMP(int question_index, char *dirname)
 			// take parse tree
 			//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 			printf("--%s--\n--%s--\n", stu_buf, answer_start_pointer[i]);
-			getchar();
+			//getchar();
 			char *treeL = mpt(stu_buf);
 			char *treeR = mpt(answer_start_pointer[i]);
 			printf("통과\n");
-			getchar();
+			//getchar();
 			if(strcmp(treeL, treeR) == 0) {
 				isCorrect = true;
 				free(treeL);
