@@ -16,9 +16,9 @@ char operator_onebyte[NUMBER_OF_OPERATORS] = {(char)1, (char)2, (char)3, (char)4
 typedef struct {
 	char *stream;
 	int number_of_tokens; // 토큰 갯수
-	char *tokens[100]; // 각 토큰들의 시작 위치 포인터
-	int tokens_length[100]; // 각 토큰들의 길이 (연산자는 무조건 1일 것이다..)
-	bool is_operator[100]; // 토큰이 연산자인 경우에는 true, 아니면 false
+	char *tokens[1024]; // 각 토큰들의 시작 위치 포인터
+	int tokens_length[1024]; // 각 토큰들의 길이 (연산자는 무조건 1일 것이다..)
+	bool is_operator[1024]; // 토큰이 연산자인 경우에는 true, 아니면 false
 } _container;
 
 void normalize2(char *text)
