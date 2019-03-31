@@ -290,8 +290,19 @@ void extract_answer(int index, char *ansdir)
 			}
 		}
 		// printf("making answer .... %s \n", filename_c);
+		int throw_fd, origin_error_fd;
+		int is_compile_error;
+		origin_error_fd = dup(2);
+		throw_fd = open("/dev/null", O_RDONLY);
+		dup2(throw_fd, 2);
+		
 		sprintf(gcc_command, "gcc %s %s -o %s.exe", filename_c, p, ansdir);
-		system(gcc_command);
+		is_compile_error = system(gcc_command);
+		
+		dup2(origin_error_fd, 2);
+		
+		if (is_compile_error != 0)
+			fprintf(stderr, "Answer Data %s compile Error...\n", filename_c);
 
 		// file creat
 		sprintf(gcc_command, "%s.stdout", ansdir);
@@ -305,10 +316,13 @@ void extract_answer(int index, char *ansdir)
 		sprintf(gcc_command, "./%s.exe", ansdir);
 		// write %s.stdout using dup
 		dup2(stdout_fd, 1);
+		dup2(throw_fd, 2);
 		system(gcc_command);
 		// after write. close file.
 		close(stdout_fd);
+		close(throw_fd);
 		dup2(origin_fd, 1);
+		dup2(origin_error_fd, 2);
 
 		// open %s.stdout and put into answers[number_of_questions]
 		ssize_t flength;
@@ -661,8 +675,14 @@ double compile_and_return_result(int student_index, int question_index, char *di
 		// printf("X - Time Limit Exceeded!!\n"); // 6 times
 		// process kill please
 		char kill_command[50];
-		sprintf(kill_command, "pkill -9 -ef %s > /dev/null", gcc_command);
+		int throw_fd, origin_error_fd;
+		origin_error_fd = dup(2);
+		throw_fd = open("/dev/null", O_RDONLY);
+		dup2(throw_fd, 2);
+		sprintf(kill_command, "pkill -9 -ef %s", gcc_command);
 		system(kill_command);
+		dup2(origin_error_fd, 2);
+		close(throw_fd);
 		return ERROR_POINT; // 0 score
 	}
 	// dup2(origin_fd, 1);
