@@ -93,7 +93,8 @@ void norm_onebyte_op(_container *container)
 		{
 			// 단항 연산자의 예외를 처리한다.
 			case '-':case'+':case'&':case'*':
-			if (i == 0 || text[i-1] == '(' || is_previous_op) {
+			if (i == 0 || text[i-1] != ')' && (text[i-1] == '(' || is_previous_op)) {
+				// printf("마주침 : %d %c %c\n",is_previous_op, text[i-1], text[i]);
 				goto normal_string;
 			}
 			break;
@@ -117,6 +118,7 @@ void norm_onebyte_op(_container *container)
 			container->tokens_length[container->number_of_tokens] = 1; // 연산자 길이는 1
 			container->number_of_tokens++; // 토큰 증가
 			pat_start_offset++; // 해당 연산자를 건너뛴 다음
+			// printf("어떤걸로? %c\n", *(text + i));
 			is_previous_op = true;
 			continue;
 			break;
@@ -382,6 +384,7 @@ char *postfix_regulization(_token **newTokenElem, int len) {
 
 char *mpt(char *string)
 {
+	int len;
 	if(!string || strlen(string)==0) return NULL;
 	_container container; // 토큰 분리 전
 	_tokens tokens; // 토큰 분리하고 나서 후위 전 // 안쪽에 char ** 있음
@@ -417,45 +420,41 @@ char *mpt(char *string)
 	}
 	if(ptr1 != -1 && ptr2!=-1) {
 		// 괄호를 찾음 내부적으로 mpt 를 한다.
-		if (ptr1 !=0 && !tokens.is_operator[ptr1-1]) {
-			//printf("함수 호출 같습니다. %s(...)\n", tokens.tokens[ptr1-1]);
+		char buf[1024] = "";
+		bool is_func_call = false;
+		if (ptr1 != 0 && !tokens.is_operator[ptr1-1]) {
+			is_func_call = true;
+			strncat(buf, tokens.tokens[ptr1-1], 1024);
 			ptr1 = ptr1-1;
 		}
 		int insert_pos = ptr1;
-		char buf[1024] = "";
-		for (ptr1++;ptr1!=ptr2;ptr1++) {
+		for (++ptr1;ptr1!=ptr2;ptr1++) {
 			strncat(buf, tokens.tokens[ptr1], 1024);
 		}
-		//printf("%s\n", buf);
+		// 빈괄호면 다른 처리를 해주자..
+		if (ptr2-insert_pos <= 1) {
+			free(tokens.tokens[insert_pos]);
+			free(tokens.tokens[ptr2]);
+			tokens.tokens[insert_pos] = (char *)calloc(2, sizeof(char));
+			tokens.tokens[ptr2] = (char *)calloc(2, sizeof(char));
+			strcpy(tokens.tokens[insert_pos], "$");
+			strcpy(tokens.tokens[ptr2], "$");
+			tokens.is_operator[insert_pos] = false;
+			tokens.is_operator[ptr1] = false;
+			goto none;
+		}
 		char *subroutine = mpt(buf);
-		//printf("{%s}\n", subroutine);
 		tokens.is_operator[insert_pos] = false;
 		free(tokens.tokens[insert_pos]); // 기존 내용을 덮어쓰므로 메모리 해제
-		tokens.tokens[insert_pos] = subroutine;
-
-		// 배열 덮어쓰기 전
-		//printf("비포 : ");
-		//for (int i = 0; i < tokens.length; i++) {
-		//	printf("[%s]: %d ", tokens.tokens[i], tokens.is_operator[i]);
-		//}
+		tokens.tokens[insert_pos] = subroutine; 
 
 		tokens.length -= (ptr2-insert_pos); // 내용, 닫는 괄호 제거
 		for (int i = insert_pos+1; i < tokens.length; i++) {
 			tokens.is_operator[i] = tokens.is_operator[i+(ptr2-insert_pos)];
 			tokens.tokens[i] = tokens.tokens[i+(ptr2-insert_pos)];
 		}
-
-		//printf("결과 토큰 출력 : \n");
-		//for (int i = 0; i < tokens.length; i++) {
-		//	printf("[%s] ", tokens.tokens[i]);
-		//}
-		//printf("\n");
-
 	}
-
-
-
-	int len;
+	none:
 	newTokenElem = postfix_expression(&tokens, &len);
 	result = postfix_regulization(newTokenElem, len);
 	
@@ -475,9 +474,11 @@ char *mpt(char *string)
 
 int main(int argc, char *argv[])
 {
-	char *res = mpt(argv[1]);
-	if(res)
-	printf("%s\n", res);
-	free(res);
+	for (int i = 1; i < argc; i++) {
+		char *res = mpt(argv[i]);
+		if(res)
+		printf("%s\n", res);
+		free(res);
+	}
 	return 0;
 }
