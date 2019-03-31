@@ -5,21 +5,25 @@
 #include <stdbool.h>
 #define NUMBER_OF_OPERATORS 31
 
-
 int priority[NUMBER_OF_OPERATORS] = {0, 0, 8, 8, 7, 7, 6, 6, 2, 1, 0, 0, 0, 0, 0, 0, 99, 10, 10, 10, 9, 9, 7, 7, 5, 4, 3, 0, 99, 99, -1};
 char operator[NUMBER_OF_OPERATORS][4] = {"<<=", ">>=","<<", ">>","<=", ">=",  "==", "!=", "&&", "||", "+=", "*=", "/=", "%=", "&=", "|=", "->", "*", "/", "%", "+", "-",  "<",  ">", "&", "^", "|",  "=", "(", ")", ","};
 bool operator_swapable[NUMBER_OF_OPERATORS] = {false, false, false, false, false, false, true, true, true, true, false, false, false, false, false, false, false, true, false, false, true, false, false, false, true, true, true, false, false, false, false};
 int operator_convable[NUMBER_OF_OPERATORS] = {-1,-1,-1,-1,-1,4,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 22,-1,-1,-1,-1,-1,-1,-1};
 char operator_onebyte[NUMBER_OF_OPERATORS] = {(char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10, (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, '*', '/', '%', '+', '-',  '<',  '>', '&', '^', '|', '=', '(', ')', ','};
 
-
-typedef struct {
+typedef struct { 
 	char *stream;
 	int number_of_tokens; // 토큰 갯수
 	char *tokens[1024]; // 각 토큰들의 시작 위치 포인터
 	int tokens_length[1024]; // 각 토큰들의 길이 (연산자는 무조건 1일 것이다..)
 	bool is_operator[1024]; // 토큰이 연산자인 경우에는 true, 아니면 false
 } _container;
+
+typedef struct {
+	char elem[1024];
+	bool is_operator;
+	//bool is_pure_swapable;
+} _token;
 
 void normalize2(char *text)
 {
@@ -52,7 +56,6 @@ void norm_onebyte_op(_container *container)
 	}
 	// 연산자를 정규화하느라 생긴 공백을 다시 정규화한다.
 	normalize2(text);
-	
 	// 토큰을 분리한다. 초기 토큰 갯수는 0이라고 가정한다.
 	container->number_of_tokens = 0;
 	int len = strlen(text);
@@ -82,13 +85,17 @@ void norm_onebyte_op(_container *container)
 		}
 		switch (text[i])
 		{
+			// 함수 호출문을 처리한다.
+			case '(':
+			break;
+		}
+		switch (text[i])
+		{
 			// 단항 연산자의 예외를 처리한다.
 			case '-':case'+':case'&':case'*':
-			// printf("단항인가요? : %c\n", text[i]);
 			if (i == 0 || text[i-1] == '(' || is_previous_op) {
 				goto normal_string;
 			}
-			// printf("%c는 단항이 아닌거 같아요.\n", text[i]);
 			break;
 		}
 		switch (text[i])
@@ -121,6 +128,7 @@ void norm_onebyte_op(_container *container)
 	}
 	// 남아있는 랭스택 처리
 	if (length_stack > 0) {
+		container->is_operator[container->number_of_tokens] = false; // 명시적으로 안 써줘서 에러 났다
 		container->tokens[container->number_of_tokens] = text + pat_start_offset;
 		container->tokens_length[container->number_of_tokens] = length_stack;
 		container->number_of_tokens++;
@@ -129,10 +137,10 @@ void norm_onebyte_op(_container *container)
 
 typedef struct {
 	int top;
-	char *stack_data[301]; // 스트링들을 담는다.
+	_token *stack_data[301]; // 토큰들을 담는다...
 } stackString;
 
-void st2_push(stackString *stk, char* data)
+void st2_push(stackString *stk, _token* data)
 {
 	stk->stack_data[++stk->top] = data;
 }
@@ -148,16 +156,16 @@ int st2_size(stackString *stk)
 	return stk->top + 1;
 }
 
-char* st2_top(stackString *stk)
+_token* st2_top(stackString *stk)
 {
 	if (st2_empty(stk)) return 0;
 	return stk->stack_data[stk->top];
 }
 
-char* st2_pop(stackString *stk)
+_token* st2_pop(stackString *stk)
 {
 	if (st2_empty(stk)) return 0;
-	char* ret = stk->stack_data[stk->top--];
+	_token* ret = stk->stack_data[stk->top--];
 	return ret;
 }
 
@@ -199,153 +207,201 @@ int is_operation_str(char *opstring) {
 	return -1;
 }
 
-int main(int argc, char *argv[])
-{
-	_container container;
-	char *buf = argv[1];
-	container.stream = buf;
+typedef struct {
+	char **tokens;
+	bool is_operator[1024];
+	int length;
+} _tokens;
+
+// 입력 : 문자열 , 출력 : 토큰들의 집합, 토큰들 갯수
+_tokens token_seperation(_container *container, char *buf) {
+	
+	_tokens tokens;
+	container->stream = buf;
 	// 공백 제거, 연산자 1-byte정규화, 토큰분리
-	norm_onebyte_op(&container);
-	int len = container.number_of_tokens;
-	stackString stk2;
-	stk2.top = -1;
+	norm_onebyte_op(container);
+	int len = container->number_of_tokens;
 	char **tokenElem = (char **)calloc(len, sizeof(char *));
-	char *tokenOP = (char *)calloc(len, sizeof(char)); // op인 경우 해당 one-byte operation, 아닌 경우 -1
-	char **newTokenElem = (char **)calloc(len, sizeof(char *));// 후위로 된걸 연산하는 buffer
+	// _token **newTokenElem = (_token **)calloc(len, sizeof(_token *));// 후위로 된걸 연산하는 buffer
+	// int chasePtr = 0;
+	for (int i = 0; i < len; i++) {
+		tokens.is_operator[i] = container->is_operator[i];
+		tokenElem[i] = make_string(container->tokens[i], container->tokens_length[i]);
+	}
+	tokens.length = len;
+	tokens.tokens = tokenElem;
+	return tokens;
+}
+
+// 입력 : 들어온 토큰들, 출력 : 포스트픽스로 정렬된 토콘, 그 토큰 수
+_token **postfix_expression(_tokens *tokens, int *ret_len) {
+	stackString stk;
+	stk.top = -1;
+	int len = tokens->length;
+	_token **newTokenElem = (_token **)calloc(tokens->length, sizeof(_token *));// 후위로 된걸 연산하는 buffer
 	int chasePtr = 0;
 	for (int i = 0; i < len; i++) {
-		//tokenElem[i] = (char *)calloc(container.tokens_length[i], sizeof(char) );
-		tokenElem[i] = make_string(container.tokens[i], container.tokens_length[i]);
-		printf("[%s] ", tokenElem[i]);
-	}
-	putchar('\n');
-
-	// 후위 표기식으로 전환
-	for (int i = 0; i < len; i++) {
-		if (tokenElem[i][0] == '(')
-			st2_push(&stk2, tokenElem[i]);
-		else if (tokenElem[i][0] == ')') {
-			while (!st2_empty(&stk2)) {
-				char *test = st2_pop(&stk2);
-				if (test[0] != '(') {
-					newTokenElem[chasePtr++] = test;
-				} else { 
-					// printf("여는괄호 버려");
-					break; 
+		if (tokens->tokens[i][0] == '(') {
+			_token *a = (_token *)calloc(1, sizeof(_token));
+			strncpy(a->elem, tokens->tokens[i], 100);
+			a->is_operator = true;
+			//a->is_pure_swapable = false;
+			st2_push(&stk, a);
+		}
+		else if (tokens->tokens[i][0] == ')') {
+			while (!st2_empty(&stk)) {
+				_token *a = st2_pop(&stk);
+				if (a->elem[0] != '(') {
+					newTokenElem[chasePtr++] = a;
+				}
+				else {
+					free(a);
+					break;
 				}
 			}
 		}
-		else if (container.is_operator[i]) {
-			// op 인 경우
-			while (!st2_empty(&stk2) && (get_priority_str( st2_top(&stk2) ) >= get_priority(container.tokens[i][0] ) )) {
-				char *test = st2_pop(&stk2);
-				if (test[0] != '(')
-					newTokenElem[chasePtr++] = test;
+		else if (tokens->is_operator[i]) {
+			while (!st2_empty(&stk) && (get_priority_str( st2_top(&stk)->elem ) >= get_priority_str(tokens->tokens[i]))) {
+				_token *a = st2_pop(&stk);
+				if (a->elem[0] != '(')
+					newTokenElem[chasePtr++] = a;
+				else
+					free(a);
 			}
-			// 자신을 푸시
-			st2_push(&stk2, tokenElem[i]);
+			_token *a = (_token *)calloc(1, sizeof(_token));
+			strncpy(a->elem, tokens->tokens[i], 100);
+			a->is_operator = true;
+			//a->is_pure_swapable = operator_swapable[is_operation_str(tokens->tokens[i])];
+			st2_push(&stk, a);
 		}
 		else {
-			// printf("낫 연산자 : %s\n", tokenElem[i]);
-			// char *test = st2_pop(&stk2);
-			newTokenElem[chasePtr++] = tokenElem[i];
+			_token *a = (_token *)calloc(1, sizeof(_token));
+			strncpy(a->elem, tokens->tokens[i], 100);
+			a->is_operator = false;
+			//a->is_pure_swapable = false;
+			newTokenElem[chasePtr++] = a;
 		}
 	}
-	while (!st2_empty(&stk2)) {
-		char *test = st2_pop(&stk2);
-		newTokenElem[chasePtr++] = test;
+	while (!st2_empty(&stk)) {
+		_token *a = st2_pop(&stk);
+		newTokenElem[chasePtr++] = a;
 	}
+	*ret_len = chasePtr;
+	return newTokenElem;
+}
 
-	for (int i = 0; i < chasePtr; i++) {
-		if ( is_operation_str(newTokenElem[i]) != -1 )
-			printf("[%s] ", newTokenElem[i]);
-		else
-			printf("[%s] ", newTokenElem[i]);
-	}
-	putchar('\n');
+int p_str_compare(const void* a, const void* b)
+{
+    if (*(char*)a > *(char*)b)
+        return 1;
+    else if (*(char*)a < *(char*)b)
+        return -1;
+    else
+        return 0;
+}
 
-	// 연산하고 스택에 넣는...
-	/*
-		1. 숫자를 만나면 숫자는 스택에 푸시한다.
-		2. 연산자를 만나면 스택에서 팝을 두 번하여 그 두 데이터를 가지고 연산한 다음 그 결과를 스택에 다시 푸시한다.
-	*/
-	for (int i = 0; i < chasePtr; i++) {
-		char op = is_operation_str(newTokenElem[i]);
+// 입력 : _token ** newTokenElem 의 토큰 데이터, 토큰 수 , 출력 : 완성된 char *
+char *postfix_regulization(_token **newTokenElem, int len) {
+	stackString stk2;
+	stk2.top = -1;
+	for (int i = 0; i < len; i++) {
+		int op = is_operation_str(newTokenElem[i]->elem);
 		if (op == -1) {
 			// 연산자 아님
 			st2_push(&stk2, newTokenElem[i]);
 		} else {
 			// 연산자임
-			char *curr = newTokenElem[i];
-			char *pop1 = st2_pop(&stk2);
-			char *pop2 = st2_pop(&stk2);
-			
+			_token *curr = newTokenElem[i];
+			_token *pop1 = st2_pop(&stk2);
+			_token *pop2 = st2_pop(&stk2);
 			// 유저는 어떤 수식을 넣을지 모르기 때문에 두 개가 팝되리라는 보장이 없다.
 			if (pop1 && pop2) {
-				char *newElem = (char *)calloc( strlen(pop1) + strlen(pop2) + strlen(curr) + 1, sizeof(char) );
+				_token *newElem = (_token *)calloc(1, sizeof(_token));
 				if (operator_convable[op] != -1) {
-					strcat(newElem, pop1);
-					strcat(newElem, pop2);
-					strcat(newElem, operator[operator_convable[op]]);
+					// 컨버저블
+					newElem->is_operator = false;
+					//newElem->is_pure_swapable = false;
+					strcat(newElem->elem, pop1->elem);
+					strcat(newElem->elem, pop2->elem);
+					strcat(newElem->elem, operator[operator_convable[op]]);
 				} else if (operator_swapable[op]) {
-					//printf("%s 스왑어블\n", newTokenElem[i]);
-					if (strcmp (pop1, pop2) < 0 ) {
-						strcat(newElem, pop2);
-						strcat(newElem, pop1);
+					newElem->is_operator = false;
+					if (strcmp (pop1->elem, pop2->elem) < 0 ) {
+						strcat(newElem->elem, pop2->elem);
+						strcat(newElem->elem, pop1->elem);
 					} else {
-						strcat(newElem, pop1);
-						strcat(newElem, pop2);
+						strcat(newElem->elem, pop1->elem);
+						strcat(newElem->elem, pop2->elem);
 					}
-						strcat(newElem, curr);
+						strcat(newElem->elem, curr->elem);
+					// 피연산자 둘다 스왑어블이면 둘을 섞는다.
+					/*if (pop1->is_pure_swapable && pop2->is_pure_swapable) {
+						newElem->is_pure_swapable = true;
+						// 섞어준다.
+						printf("쉐킷");
+						qsort(newElem->elem, strlen(newElem->elem), sizeof(char), p_str_compare);
+					}*/
 				} else {
-					strcat(newElem, pop2);
-					strcat(newElem, pop1);
-					strcat(newElem, curr);
+					newElem->is_operator = false;
+					//newElem->is_pure_swapable = false;
+					strcat(newElem->elem, pop2->elem);
+					strcat(newElem->elem, pop1->elem);
+					strcat(newElem->elem, curr->elem);
 				}
 				st2_push(&stk2, newElem);
-				free(curr);
-				free(pop1);
-				free(pop2);
-				curr = NULL;
-				pop1 = NULL;
-				pop2 = NULL;
 			} else {
-				char *newElem;
+				_token *newElem = (_token *)calloc(1, sizeof(_token));
+				newElem->is_operator = false;
+				//newElem->is_pure_swapable = false;
 				if (pop1) {
-					newElem = (char *)calloc( strlen(pop1) + strlen(curr) + 1, sizeof(char) );
-					strcat(newElem, pop1);
-					strcat(newElem, curr);
+					strcat(newElem->elem, pop1->elem);
+					strcat(newElem->elem, curr->elem);
 					st2_push(&stk2, newElem);
-					free(curr);
-					free(pop1);
-					curr = NULL;
-					pop1 = NULL;
 				} else if (pop2) {
-					newElem = (char *)calloc( strlen(pop2) + strlen(curr) + 1, sizeof(char) );
-					strcat(newElem, pop2);
-					strcat(newElem, curr);
+					strcat(newElem->elem, pop2->elem);
+					strcat(newElem->elem, curr->elem);
 					st2_push(&stk2, newElem);
-					free(curr);
-					free(pop2);
-					curr = NULL;
-					pop2 = NULL;
 				} else {
-					newElem = (char *)calloc(strlen(curr) + 1, sizeof(char) );
-					strcat(newElem, curr);
+					_token *newElem = (_token *)calloc(1, sizeof(_token));
+					newElem->is_operator = false;
+					//newElem->is_pure_swapable = false;
+					strcat(newElem->elem, curr->elem);
 					st2_push(&stk2, newElem);
-					free(curr);
-					curr = NULL;
 				}
 			}
 		}
 	}
-	printf("최종 식 : %s", st2_pop(&stk2));
+	char *ret = (char *)calloc(1024, sizeof(char));
 	char *t;
-	while(t = st2_pop(&stk2)) {
-		printf("%s", t);
+	strcat(ret, st2_pop(&stk2)->elem);
+	while(t = st2_pop(&stk2)->elem) {
+		strcat(ret, t);
 	}
-	printf("\n");
+	return ret;
+}
 
-	// 메모리 free 해야됨 
+// 이걸 하나의 함수로 만들고 재귀적으로 부르면 괄호 / 함수 문제 해결할 수 있을 것 같다.
+
+int main(int argc, char *argv[])
+{
+	_container container; // 토큰 분리 전
+	_tokens tokens; // 토큰 분리하고 나서 후위 전 // 안쪽에 char ** 있음
+	_token **newTokenElem; // 후위 연산 후
+	char *result;
+	char buf[100];
+	strcpy(buf, argv[1]);
+	tokens = token_seperation(&container, buf);
+	int len;
+	newTokenElem = postfix_expression(&tokens, &len);
+	result = postfix_regulization(newTokenElem, len);
+	printf("%s\n", result);
+	
+	// 메모리 해제
+	for (int i = 0; i < tokens.length; i++) {
+		free(tokens.tokens[i]);
+		free(newTokenElem[i]);
+	}
+	free(tokens.tokens);
+	free(newTokenElem);
 	return 0;
 }
