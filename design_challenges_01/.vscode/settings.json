@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "dirent.h": "c",
-        "pthread.h": "c",
-        "parse_tree.h": "c",
-        "stdbool.h": "c"
-    }
-}
