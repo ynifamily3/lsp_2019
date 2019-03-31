@@ -45,7 +45,7 @@ int strcmp2(char *a, char *b, int tol);
 void check_score_csv();
 void make_student_score_table();
 void set_students_info();
-void normalize(char *text);
+void normalize(char *text, int mode);
 void extract_answer(int index, char *ansdir);
 void open_answer_set();
 int mark_student(int student_index);
@@ -221,7 +221,7 @@ void set_students_info()
 	qsort((void *)students, number_of_students, sizeof(answer_directory[0]), compare);	
 }
 
-void normalize(char *text)
+void normalize(char *text, int mode)
 {
 	int i, j;
 	for (i = 0, j = 0; text[i] != 0; i++,j++) {
@@ -230,7 +230,8 @@ void normalize(char *text)
 		if (!isspace(text[i])) {
 			// lower normalize
 			char t = text[i];
-			if (t >= 'A' && t <= 'Z') t += 32;
+			if(mode == 1)
+				if (t >= 'A' && t <= 'Z') t += 32;
 			text[j] = t;
 		}
 		else
@@ -323,7 +324,7 @@ void extract_answer(int index, char *ansdir)
 			fprintf(stderr, "reading file error... %s\n", gcc_command);
 		}
 		// normalize C program output answer
-		normalize(answers[index]);
+		normalize(answers[index], 1);
 		close(fd_c);
 	}
 	else {
@@ -479,10 +480,11 @@ double codeCMP(int question_index, char *dirname)
 	}
 	close(fd);
 	stu_buf[length] = 0;
-	normalize(stu_buf);
+	normalize(stu_buf, 0);
 	length = strlen(stu_buf);
 
-	normalize(answers[question_index]);
+	normalize(answers[question_index] , 0);
+	// 어차피 나중에 파스트리에서 노멀라이즈 한다.
 	
 	// 여러 정답을 추출해낸다.
 	answer_start_pointer[0] = answers[question_index];
@@ -507,14 +509,20 @@ double codeCMP(int question_index, char *dirname)
 		} else {
 			// take parse tree
 			//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-			printf("--%s--\n--%s--\n", stu_buf, answer_start_pointer[i]);
+			//printf("%d\n학생 : [%s]\n정답 : [%s]\n",question_index, stu_buf, answer_start_pointer[i]);
 			//getchar();
-			char *treeL = mpt(stu_buf);
 			char *treeR = mpt(answer_start_pointer[i]);
-			printf("통과\n");
-			//getchar();
+			char *treeL = mpt(stu_buf);
+			//printf("정규화 후\n");
+			printf("원본 학생 : %s\n정답 : %s\n", stu_buf, answer_start_pointer[i]);
+			printf("변형 학생 : %s\n정답 : %s\n", treeL, treeR);
+			if(!treeL) {
+				free(treeR);
+				break;
+			}
 			if(strcmp(treeL, treeR) == 0) {
 				isCorrect = true;
+				printf("O - 정답입니다!\n");
 				free(treeL);
 				free(treeR);
 				break;
@@ -522,6 +530,7 @@ double codeCMP(int question_index, char *dirname)
 		}
 	}
 	if (!isCorrect) {
+		printf("X - 오답입니다!\n");
 		score = 0.0;
 	}
 	return score;
@@ -662,7 +671,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	size_t off = 0;
 	while ((len = read(student_fd, ansbuf, 100)) > 0) {
 		ansbuf[len] = '\0';
-		normalize(ansbuf);
+		normalize(ansbuf, 1);
 		len = strlen(ansbuf);
 		ansbuf[len] = '\0';
 		//fprintf(stderr, " 길이 ? : %ld\n", len);

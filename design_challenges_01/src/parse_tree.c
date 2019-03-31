@@ -5,6 +5,12 @@
 #include <stdbool.h>
 #include "parse_tree.h"
 
+int priority[NUMBER_OF_OPERATORS] = {0, 0, 8, 8, 7, 7, 6, 6, 2, 1, 0, 0, 0, 0, 0, 0, 99, 10, 10, 10, 9, 9, 7, 7, 5, 4, 3, 0, 99, 99, -1};
+char operator[NUMBER_OF_OPERATORS][4] = {"<<=", ">>=","<<", ">>","<=", ">=",  "==", "!=", "&&", "||", "+=", "*=", "/=", "%=", "&=", "|=", "->", "*", "/", "%", "+", "-",  "<",  ">", "&", "^", "|",  "=", "(", ")", ","};
+bool operator_swapable[NUMBER_OF_OPERATORS] = {false, false, false, false, false, false, true, true, true, true, false, false, false, false, false, false, false, true, false, false, true, false, false, false, true, true, true, false, false, false, false};
+int operator_convable[NUMBER_OF_OPERATORS] = {-1,-1,-1,-1,-1,4,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 22,-1,-1,-1,-1,-1,-1,-1};
+char operator_onebyte[NUMBER_OF_OPERATORS] = {(char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10, (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, '*', '/', '%', '+', '-',  '<',  '>', '&', '^', '|', '=', '(', ')', ','};
+
 void normalize2(char *text)
 {
 	int i, j;
@@ -73,7 +79,7 @@ void norm_onebyte_op(_container *container)
 		{
 			// 단항 연산자의 예외를 처리한다.
 			case '-':case'+':case'&':case'*':
-			if (i == 0 || text[i-1] != ')' && (text[i-1] == '(' || is_previous_op)) {
+			if (i == 0 || (text[i-1] != ')' && (text[i-1] == '(' || is_previous_op))) {
 				// printf("마주침 : %d %c %c\n",is_previous_op, text[i-1], text[i]);
 				goto normal_string;
 			}
@@ -347,7 +353,7 @@ char *postfix_regulization(_token **newTokenElem, int len)
 	char *ret = (char *)calloc(1024, sizeof(char));
 	char *t;
 	strcat(ret, st2_pop(&stk2)->elem);
-	while(t = st2_pop(&stk2)->elem) {
+	while((t = st2_pop(&stk2)->elem) != 0) {
 		strcat(ret, t);
 	}
 	return ret;
@@ -392,9 +398,7 @@ char *mpt(char *string)
 	if(ptr1 != -1 && ptr2!=-1) {
 		// 괄호를 찾음 내부적으로 mpt 를 한다.
 		char buf[1024] = "";
-		bool is_func_call = false;
 		if (ptr1 != 0 && !tokens.is_operator[ptr1-1]) {
-			is_func_call = true;
 			strncat(buf, tokens.tokens[ptr1-1], 1024);
 			ptr1 = ptr1-1;
 		}
@@ -439,17 +443,4 @@ char *mpt(char *string)
 	free(tokens.tokens);
 	free(newTokenElem);
 	return result;
-}
-
-// 이걸 하나의 함수로 만들고 재귀적으로 부르면 괄호 / 함수 문제 해결할 수 있을 것 같다.
-
-int main(int argc, char *argv[])
-{
-	for (int i = 1; i < argc; i++) {
-		char *res = mpt(argv[i]);
-		if(res)
-		printf("%s\n", res);
-		free(res);
-	}
-	return 0;
 }
