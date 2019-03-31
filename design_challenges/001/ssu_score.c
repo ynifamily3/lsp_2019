@@ -223,14 +223,17 @@ void set_students_info()
 
 void normalize(char *text, int mode)
 {
+	// mode 0 : 개행, 공백 없앰, 알파벳 대소문자 유지
+	// mode 1 : 개행, 공백 없앰, 알파벳 대->소문자 전환
+	// mode 2 : 공백만 없앰, 알파벳 대->소문자 전환
 	int i, j;
 	for (i = 0, j = 0; text[i] != 0; i++,j++) {
 		// 텍스트 정답비교 문제로 개행문자까지 무시해 보았다.
 		//if (text[i] == '\n' || !isspace(text[i])) {
-		if (!isspace(text[i])) {
+		if ( (mode==2&&text[i] == '\n') || !isspace(text[i])) {
 			// lower normalize
 			char t = text[i];
-			if(mode == 1)
+			if(mode >= 1)
 				if (t >= 'A' && t <= 'Z') t += 32;
 			text[j] = t;
 		}
@@ -324,7 +327,7 @@ void extract_answer(int index, char *ansdir)
 			fprintf(stderr, "reading file error... %s\n", gcc_command);
 		}
 		// normalize C program output answer
-		normalize(answers[index], 1);
+		normalize(answers[index], 2);
 		close(fd_c);
 	}
 	else {
@@ -671,7 +674,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	size_t off = 0;
 	while ((len = read(student_fd, ansbuf, 100)) > 0) {
 		ansbuf[len] = '\0';
-		normalize(ansbuf, 1);
+		normalize(ansbuf, 2); // 개행은 남겨놓음
 		len = strlen(ansbuf);
 		ansbuf[len] = '\0';
 		//fprintf(stderr, " 길이 ? : %ld\n", len);
