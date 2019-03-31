@@ -514,15 +514,15 @@ double codeCMP(int question_index, char *dirname)
 			char *treeR = mpt(answer_start_pointer[i]);
 			char *treeL = mpt(stu_buf);
 			//printf("정규화 후\n");
-			printf("원본 학생 : %s\n정답 : %s\n", stu_buf, answer_start_pointer[i]);
-			printf("변형 학생 : %s\n정답 : %s\n", treeL, treeR);
+			//printf("원본 학생 : %s\n정답 : %s\n", stu_buf, answer_start_pointer[i]);
+			//printf("변형 학생 : %s\n정답 : %s\n", treeL, treeR);
 			if(!treeL) {
 				free(treeR);
 				break;
 			}
 			if(strcmp(treeL, treeR) == 0) {
 				isCorrect = true;
-				printf("O - 정답입니다!\n");
+				//printf("O - 정답입니다!\n");
 				free(treeL);
 				free(treeR);
 				break;
@@ -530,7 +530,7 @@ double codeCMP(int question_index, char *dirname)
 		}
 	}
 	if (!isCorrect) {
-		printf("X - 오답입니다!\n");
+		//printf("X - 오답입니다!\n");
 		score = 0.0;
 	}
 	return score;

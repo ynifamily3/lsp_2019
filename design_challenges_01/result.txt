@@ -1,1775 +1,1775 @@
 Grading Student's test papers..
-학생 : **acehnprv
-정답 : *[]acehnprv
-학생 : char**envp
+원본 학생 : char**envp
 정답 : char*envp[]
-학생 : geten"WARNING"(
-정답 : getenv"WARNING"(
-학생 : geten("WARNING")
+변형 학생 : **acehnprv
+정답 : *[]acehnprv
+원본 학생 : geten("WARNING")
 정답 : getenv("WARNING")
+변형 학생 : geten"WARNING"(
+정답 : getenv"WARNING"(
 X - 오답입니다!
-학생 : #includetime.h<>
-정답 : #includesyswait.h/<>
-학생 : #include<time.h>
+원본 학생 : #include<time.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includetime.h<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : 0execlpvoid"date""date",*,
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("date","date",(void*)0)
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("date","date",(char*)0)
-학생 : 0execlpvoid"date""date",*,
-정답 : "date""date",0,execlp
-학생 : execlp("date","date",(void*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : 0execlpchar"date""date",*,
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("date","date",0)
-학생 : 0execlpvoid"date""date",*,
-정답 : "date""date",execlp
-학생 : execlp("date","date",(void*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : "date""date",0,execlp
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("date","date")
-학생 : 0execlpvoid"date""date",*,
-정답 : "date""date",NULL,execlp
-학생 : execlp("date","date",(void*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : "date""date",execlp
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("date","date",NULL)
-학생 : 0execlpvoid"date""date",*,
-정답 : "bin/date"/"date",NULL,execlp
-학생 : execlp("date","date",(void*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : "date""date",NULL,execlp
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("/bin/date","date",NULL)
-학생 : 0execlpvoid"date""date",*,
-정답 : ;0execlpchar"date""date",*,
-학생 : execlp("date","date",(void*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : "bin/date"/"date",NULL,execlp
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("date","date",(char*)0);
-학생 : 0execlpvoid"date""date",*,
-정답 : ;"date""date",0,execlp
-학생 : execlp("date","date",(void*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : ;0execlpchar"date""date",*,
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("date","date",0);
-학생 : 0execlpvoid"date""date",*,
-정답 : ;"date""date",execlp
-학생 : execlp("date","date",(void*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : ;"date""date",0,execlp
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("date","date");
-학생 : 0execlpvoid"date""date",*,
-정답 : ;"date""date",NULL,execlp
-학생 : execlp("date","date",(void*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : ;"date""date",execlp
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("date","date",NULL);
-학생 : 0execlpvoid"date""date",*,
-정답 : ;"bin/date"/"date",NULL,execlp
-학생 : execlp("date","date",(void*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : ;"date""date",NULL,execlp
+원본 학생 : execlp("date","date",(void*)0)
 정답 : execlp("/bin/date","date",NULL);
+변형 학생 : 0execlpvoid"date""date",*,
+정답 : ;"bin/date"/"date",NULL,execlp
 X - 오답입니다!
-학생 : 0execlpvoid"who""who",*,
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("who","who",(void*)0)
+원본 학생 : execlp("who","who",(void*)0)
 정답 : execlp("who","who",(char*)0)
-학생 : 0execlpvoid"who""who",*,
-정답 : "who""who",0,execlp
-학생 : execlp("who","who",(void*)0)
+변형 학생 : 0execlpvoid"who""who",*,
+정답 : 0execlpchar"who""who",*,
+원본 학생 : execlp("who","who",(void*)0)
 정답 : execlp("who","who",0)
-학생 : 0execlpvoid"who""who",*,
-정답 : "who""who",execlp
-학생 : execlp("who","who",(void*)0)
+변형 학생 : 0execlpvoid"who""who",*,
+정답 : "who""who",0,execlp
+원본 학생 : execlp("who","who",(void*)0)
 정답 : execlp("who","who")
-학생 : 0execlpvoid"who""who",*,
-정답 : "who""who",NULL,execlp
-학생 : execlp("who","who",(void*)0)
+변형 학생 : 0execlpvoid"who""who",*,
+정답 : "who""who",execlp
+원본 학생 : execlp("who","who",(void*)0)
 정답 : execlp("who","who",NULL)
-학생 : 0execlpvoid"who""who",*,
-정답 : ;0execlpchar"who""who",*,
-학생 : execlp("who","who",(void*)0)
+변형 학생 : 0execlpvoid"who""who",*,
+정답 : "who""who",NULL,execlp
+원본 학생 : execlp("who","who",(void*)0)
 정답 : execlp("who","who",(char*)0);
-학생 : 0execlpvoid"who""who",*,
-정답 : ;"who""who",0,execlp
-학생 : execlp("who","who",(void*)0)
+변형 학생 : 0execlpvoid"who""who",*,
+정답 : ;0execlpchar"who""who",*,
+원본 학생 : execlp("who","who",(void*)0)
 정답 : execlp("who","who",0);
-학생 : 0execlpvoid"who""who",*,
-정답 : ;"who""who",execlp
-학생 : execlp("who","who",(void*)0)
+변형 학생 : 0execlpvoid"who""who",*,
+정답 : ;"who""who",0,execlp
+원본 학생 : execlp("who","who",(void*)0)
 정답 : execlp("who","who");
-학생 : 0execlpvoid"who""who",*,
-정답 : ;"who""who",NULL,execlp
-학생 : execlp("who","who",(void*)0)
+변형 학생 : 0execlpvoid"who""who",*,
+정답 : ;"who""who",execlp
+원본 학생 : execlp("who","who",(void*)0)
 정답 : execlp("who","who",NULL);
+변형 학생 : 0execlpvoid"who""who",*,
+정답 : ;"who""who",NULL,execlp
 X - 오답입니다!
-학생 : (0===ddegiippt
-정답 : !&(-1==aadiipsstttuw
-학생 : (pid=getpid())==0
+원본 학생 : (pid=getpid())==0
 정답 : (pid=wait(&status))!=-1
-학생 : (0===ddegiippt
-정답 : pidwait&status(=0<
-학생 : (pid=getpid())==0
+변형 학생 : (0===ddegiippt
+정답 : !&(-1==aadiipsstttuw
+원본 학생 : (pid=getpid())==0
 정답 : (pid=wait(&status))<0
-학생 : (0===ddegiippt
-정답 : 0pidwait&status(=<
-학생 : (pid=getpid())==0
+변형 학생 : (0===ddegiippt
+정답 : pidwait&status(=0<
+원본 학생 : (pid=getpid())==0
 정답 : (pid=wait(&status))>0
-학생 : (0===ddegiippt
-정답 : !*-01==adiiinpttw
-학생 : (pid=getpid())==0
+변형 학생 : (0===ddegiippt
+정답 : 0pidwait&status(=<
+원본 학생 : (pid=getpid())==0
 정답 : (pid=wait((int*)0))!=-1
+변형 학생 : (0===ddegiippt
+정답 : !*-01==adiiinpttw
 X - 오답입니다!
-학생 : &(0===_aaeimmrrsssstttttt
-정답 : &(-1===_aaeimmrrsssstttttt
-학생 : (start=times(&tms_start))==0
+원본 학생 : (start=times(&tms_start))==0
 정답 : (start=times(&tms_start))==-1
-학생 : &(0===_aaeimmrrsssstttttt
-정답 : starttimes&tms_start(=0<
-학생 : (start=times(&tms_start))==0
+변형 학생 : &(0===_aaeimmrrsssstttttt
+정답 : &(-1===_aaeimmrrsssstttttt
+원본 학생 : (start=times(&tms_start))==0
 정답 : (start=times(&tms_start))<0
+변형 학생 : &(0===_aaeimmrrsssstttttt
+정답 : starttimes&tms_start(=0<
 X - 오답입니다!
-학생 : &(0===_ddeeeimmnnsstt
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : (end=times(&tms_end))==0
+원본 학생 : (end=times(&tms_end))==0
 정답 : (end=times(&tms_end))==-1
-학생 : &(0===_ddeeeimmnnsstt
-정답 : endtimes&tms_end(=0<
-학생 : (end=times(&tms_end))==0
+변형 학생 : &(0===_ddeeeimmnnsstt
+정답 : &(-1===_ddeeeimmnnsstt
+원본 학생 : (end=times(&tms_end))==0
 정답 : (end=times(&tms_end))<0
+변형 학생 : &(0===_ddeeeimmnnsstt
+정답 : endtimes&tms_end(=0<
 X - 오답입니다!
-학생 : STDIN_FILENOO_NONBLOCK,
-정답 : STDOUT_FILENOO_NONBLOCK,
-학생 : STDIN_FILENO,O_NONBLOCK
+원본 학생 : STDIN_FILENO,O_NONBLOCK
 정답 : STDOUT_FILENO,O_NONBLOCK
-학생 : STDIN_FILENOO_NONBLOCK,
-정답 : 1O_NONBLOCK,
-학생 : STDIN_FILENO,O_NONBLOCK
+변형 학생 : STDIN_FILENOO_NONBLOCK,
+정답 : STDOUT_FILENOO_NONBLOCK,
+원본 학생 : STDIN_FILENO,O_NONBLOCK
 정답 : 1,O_NONBLOCK
+변형 학생 : STDIN_FILENOO_NONBLOCK,
+정답 : 1O_NONBLOCK,
 X - 오답입니다!
-학생 : ,,-01===EFFGLT_acdffllntv
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
-학생 : valO_NONBLOCK|=
-정답 : valflags|=
-학생 : val|=O_NONBLOCK
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+정답 : valfdF_GETFL,0,fcntl=0<
+원본 학생 : val|=O_NONBLOCK
 정답 : val|=flags
-학생 : valO_NONBLOCK|=
-정답 : valaafgllsv|=
-학생 : val|=O_NONBLOCK
+변형 학생 : valO_NONBLOCK|=
+정답 : valflags|=
+원본 학생 : val|=O_NONBLOCK
 정답 : val=val|flags
-학생 : valO_NONBLOCK|=
-정답 : valflags;|=
-학생 : val|=O_NONBLOCK
+변형 학생 : valO_NONBLOCK|=
+정답 : valaafgllsv|=
+원본 학생 : val|=O_NONBLOCK
 정답 : val|=flags;
-학생 : valO_NONBLOCK|=
-정답 : val;aafgllsv|=
-학생 : val|=O_NONBLOCK
+변형 학생 : valO_NONBLOCK|=
+정답 : valflags;|=
+원본 학생 : val|=O_NONBLOCK
 정답 : val=val|flags;
+변형 학생 : valO_NONBLOCK|=
+정답 : val;aafgllsv|=
 X - 오답입니다!
-학생 : ,,-1==EFFLST_acdffllntv
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(fd,F_SETFL,val)==-1
+원본 학생 : fcntl(fd,F_SETFL,val)==-1
 정답 : fcntl(fd,F_SETFL,val)<0
-학생 : val~O_NONBLOCK&=
-정답 : val~flags&=
-학생 : val&=~O_NONBLOCK
+변형 학생 : ,,-1==EFFLST_acdffllntv
+정답 : fdF_SETFL,val,fcntl0<
+원본 학생 : val&=~O_NONBLOCK
 정답 : val&=~flags
-학생 : val~O_NONBLOCK&=
-정답 : val&aafgllsv~=
-학생 : val&=~O_NONBLOCK
+변형 학생 : val~O_NONBLOCK&=
+정답 : val~flags&=
+원본 학생 : val&=~O_NONBLOCK
 정답 : val=val&~flags
-학생 : val~O_NONBLOCK&=
+변형 학생 : val~O_NONBLOCK&=
 정답 : val&aafgllsv~=
-학생 : val&=~O_NONBLOCK
+원본 학생 : val&=~O_NONBLOCK
 정답 : val=val&(~flags)
-학생 : val~O_NONBLOCK&=
-정답 : val~flags;&=
-학생 : val&=~O_NONBLOCK
+변형 학생 : val~O_NONBLOCK&=
+정답 : val&aafgllsv~=
+원본 학생 : val&=~O_NONBLOCK
 정답 : val&=~flags;
-학생 : val~O_NONBLOCK&=
-정답 : val&;aafgllsv~=
-학생 : val&=~O_NONBLOCK
+변형 학생 : val~O_NONBLOCK&=
+정답 : val~flags;&=
+원본 학생 : val&=~O_NONBLOCK
 정답 : val=val&~flags;
-학생 : val~O_NONBLOCK&=
-정답 : val&;afgls~=val
-학생 : val&=~O_NONBLOCK
+변형 학생 : val~O_NONBLOCK&=
+정답 : val&;aafgllsv~=
+원본 학생 : val&=~O_NONBLOCK
 정답 : val=val&(~flags);
+변형 학생 : val~O_NONBLOCK&=
+정답 : val&;afgls~=val
 X - 오답입니다!
-학생 : fd1filenameO_RDWR,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR))<0
+원본 학생 : (fd1=open(filename,O_RDWR))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
-학생 : fd1filenameO_RDWR,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,open=0<
-학생 : (fd1=open(filename,O_RDWR))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+원본 학생 : (fd1=open(filename,O_RDWR))<0
 정답 : (fd1=open(filename,O_APPEND|O_RDWR))<0
-학생 : fd1filenameO_RDWR,open=0<
-정답 : ,-11===ADDENOOPPRRW__adeeeffilmnnop|
-학생 : (fd1=open(filename,O_RDWR))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,open=0<
+원본 학생 : (fd1=open(filename,O_RDWR))<0
 정답 : (fd1=open(filename,O_APPEND|O_RDWR))==-1
-학생 : fd1filenameO_RDWR,open=0<
-정답 : ,,-011446===ADDENOOPPRRW__adeeeffilmnnop|
-학생 : (fd1=open(filename,O_RDWR))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+정답 : ,-11===ADDENOOPPRRW__adeeeffilmnnop|
+원본 학생 : (fd1=open(filename,O_RDWR))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))==-1
-학생 : fd1filenameO_RDWR,open=0<
-정답 : fd1filenameAACCDDEENNOOOOPPRRRRTTUW____|||,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+정답 : ,,-011446===ADDENOOPPRRW__adeeeffilmnnop|
+원본 학생 : (fd1=open(filename,O_RDWR))<0
 정답 : (fd1=open(filename,O_RDWR|O_CREAT|O_TRUNC|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+정답 : fd1filenameAACCDDEENNOOOOPPRRRRTTUW____|||,0644,open=0<
 X - 오답입니다!
-학생 : ,,-011===DEFFST_acdfffgllnt
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : (flag=fcntl(fd1,F_SETFD,0))==-1
+원본 학생 : (flag=fcntl(fd1,F_SETFD,0))==-1
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
-학생 : ,,-011===DEFFST_acdfffgllnt
-정답 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
-학생 : (flag=fcntl(fd1,F_SETFD,0))==-1
+변형 학생 : ,,-011===DEFFST_acdfffgllnt
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+원본 학생 : (flag=fcntl(fd1,F_SETFD,0))==-1
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+변형 학생 : ,,-011===DEFFST_acdfffgllnt
+정답 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
 X - 오답입니다!
-학생 : SOG_BLOCK&sig_set,NULL,sigprocmask
-정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SOG_BLOCK,&sig_set,NULL)
+원본 학생 : sigprocmask(SOG_BLOCK,&sig_set,NULL)
 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
-학생 : SOG_BLOCK&sig_set,NULL,sigprocmask
-정답 : ;SIG_BLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SOG_BLOCK,&sig_set,NULL)
+변형 학생 : SOG_BLOCK&sig_set,NULL,sigprocmask
+정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
+원본 학생 : sigprocmask(SOG_BLOCK,&sig_set,NULL)
 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL);
+변형 학생 : SOG_BLOCK&sig_set,NULL,sigprocmask
+정답 : ;SIG_BLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
-학생 : 0execvoid"find"args,*,
-정답 : "usr/bin/find"/args,execv0<
-학생 : exec("find",args,(void*)0)
+원본 학생 : exec("find",args,(void*)0)
 정답 : execv("/usr/bin/find",args)<0
-학생 : 0execvoid"find"args,*,
-정답 : "find"args,execv0<
-학생 : exec("find",args,(void*)0)
+변형 학생 : 0execvoid"find"args,*,
+정답 : "usr/bin/find"/args,execv0<
+원본 학생 : exec("find",args,(void*)0)
 정답 : execv("find",args)<0
-학생 : 0execvoid"find"args,*,
-정답 : "",-///1==abcdeefgiinnrrssuvx
-학생 : exec("find",args,(void*)0)
+변형 학생 : 0execvoid"find"args,*,
+정답 : "find"args,execv0<
+원본 학생 : exec("find",args,(void*)0)
 정답 : execv("/usr/bin/find",args)==-1
-학생 : 0execvoid"find"args,*,
-정답 : "",-1==acdeefginrsvx
-학생 : exec("find",args,(void*)0)
+변형 학생 : 0execvoid"find"args,*,
+정답 : "",-///1==abcdeefgiinnrrssuvx
+원본 학생 : exec("find",args,(void*)0)
 정답 : execv("find",args)==-1
+변형 학생 : 0execvoid"find"args,*,
+정답 : "",-1==acdeefginrsvx
 X - 오답입니다!
-학생 : &status0,rusage,wait3
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,rusage)
+원본 학생 : wait3(&status,0,rusage)
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &status0,rusage,wait3
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
 20190001 is finished.. score : 16.00
-학생 : Don'tuseenvpaferputenv(
-정답 : getenv"WARNING"(
-학생 : Don'tuseenvpaferputenv()
+원본 학생 : Don'tuseenvpaferputenv()
 정답 : getenv("WARNING")
+변형 학생 : Don'tuseenvpaferputenv(
+정답 : getenv"WARNING"(
 X - 오답입니다!
-학생 : execlp&child1(
-정답 : 0execlpchar"date""date",*,
-학생 : execlp(&child1)
+원본 학생 : execlp(&child1)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : execlp&child1(
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : execlp&child2(
-정답 : 0execlpchar"who""who",*,
-학생 : execlp(&child2)
+원본 학생 : execlp(&child2)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : execlp&child2(
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : wait&pid(
-정답 : !&(-1==aadiipsstttuw
-학생 : wait(&pid)
+원본 학생 : wait(&pid)
 정답 : (pid=wait(&status))!=-1
+변형 학생 : wait&pid(
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : timeNULL(0<
-정답 : &(-1===_aaeimmrrsssstttttt
-학생 : time(NULL)<0
+원본 학생 : time(NULL)<0
 정답 : (start=times(&tms_start))==-1
+변형 학생 : timeNULL(0<
+정답 : &(-1===_aaeimmrrsssstttttt
 X - 오답입니다!
-학생 : timeNULL(0<
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : time(NULL)<0
+원본 학생 : time(NULL)<0
 정답 : (end=times(&tms_end))==-1
+변형 학생 : timeNULL(0<
+정답 : &(-1===_ddeeeimmnnsstt
 X - 오답입니다!
-학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
-정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
-학생 : gettid(;=tid
-정답 : tidpthread_self(=
-학생 : tid=gettid();
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
+정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+원본 학생 : tid=gettid();
 정답 : tid=pthread_self()
+변형 학생 : gettid(;=tid
+정답 : tidpthread_self(=
 X - 오답입니다!
-학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
-정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
+정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : wait&tid1(
-정답 : tid1NULL,pthread_join
-학생 : wait(&tid1)
+원본 학생 : wait(&tid1)
 정답 : pthread_join(tid1,NULL)
+변형 학생 : wait&tid1(
+정답 : tid1NULL,pthread_join
 X - 오답입니다!
-학생 : pthead_mutex_tlock
-정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
-학생 : pthead_mutex_tlock
+원본 학생 : pthead_mutex_tlock
 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : pthead_mutex_tlock
+정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
 X - 오답입니다!
-학생 : pthread_cond_tcond
-정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
-학생 : pthread_cond_tcond
+원본 학생 : pthread_cond_tcond
 정답 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER
+변형 학생 : pthread_cond_tcond
+정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
 X - 오답입니다!
-학생 : pthead_cond_signal&cond(
-정답 : &cond&lock,pthread_cond_wait
-학생 : pthead_cond_signal(&cond)
+원본 학생 : pthead_cond_signal(&cond)
 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : pthead_cond_signal&cond(
+정답 : &cond&lock,pthread_cond_wait
 X - 오답입니다!
-학생 : pthread_cond_signal&cond(
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : pthread_cond_signal(&cond)
+원본 학생 : pthread_cond_signal(&cond)
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : pthread_cond_signal&cond(
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 X - 오답입니다!
-학생 : pthread_cont_signal&cond(
-정답 : pthread_cond_signal&cond(
-학생 : pthread_cont_signal(&cond)
+원본 학생 : pthread_cont_signal(&cond)
 정답 : pthread_cond_signal(&cond)
+변형 학생 : pthread_cont_signal&cond(
+정답 : pthread_cond_signal&cond(
 X - 오답입니다!
-학생 : flagsfdF_GETFL,0,fcntl=-1==
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : flags=fcntl(fd,F_GETFL,0))==-1)
+원본 학생 : flags=fcntl(fd,F_GETFL,0))==-1)
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : flagsfdF_GETFL,0,fcntl=-1==
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : fd1filenameO_RDWR,open0<=
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : fd1=open(filename,O_RDWR)<0
+원본 학생 : fd1=open(filename,O_RDWR)<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open0<=
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : sig_setSIGUSR1,sigaddset
-정답 : &sig_setSIGINT,sigaddset
-학생 : sigaddset(sig_set,SIGUSR1)
+원본 학생 : sigaddset(sig_set,SIGUSR1)
 정답 : sigaddset(&sig_set,SIGINT)
+변형 학생 : sig_setSIGUSR1,sigaddset
+정답 : &sig_setSIGINT,sigaddset
 X - 오답입니다!
 20190002 is finished.. score : 7.50
-학생 : #includefcntl.h<>
-정답 : #includesyswait.h/<>
-학생 : #include<fcntl.h>
+원본 학생 : #include<fcntl.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includefcntl.h<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : (null)
-정답 : 0execlpchar"date""date",*,
-학생 : 
+원본 학생 : 
 정답 : execlp("date","date",(char*)0)
+변형 학생 : (null)
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : !**0=int
-정답 : !&(-1==aadiipsstttuw
-학생 : *((int*))!=0
+원본 학생 : *((int*))!=0
 정답 : (pid=wait(&status))!=-1
+변형 학생 : !**0=int
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : time_t
+원본 학생 : time_t
 정답 : structtms
-학생 : time_t
+변형 학생 : time_t
 정답 : structtms
 X - 오답입니다!
-학생 : #includepthreadh<>
-정답 : #includepthread.h<>
-학생 : #include<pthreadh>
+원본 학생 : #include<pthreadh>
 정답 : #include<pthread.h>
+변형 학생 : #includepthreadh<>
+정답 : #includepthread.h<>
 X - 오답입니다!
-학생 : &tidNULL,ssu_thread,NULL,pthread_create
-정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid,NULL,ssu_thread,NULL)
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)
 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create
+정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid1NULL,ssu_thread1,NULL,pthread_create
-정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)
 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create
+정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid2NULL,ssu_thread2,NULL,pthread_create
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : pthread_cond_tcondPTHREAD_COND_INITIALZIER=
-정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
-학생 : pthread_cond_tcond=PTHREAD_COND_INITIALZIER
+원본 학생 : pthread_cond_tcond=PTHREAD_COND_INITIALZIER
 정답 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER
+변형 학생 : pthread_cond_tcondPTHREAD_COND_INITIALZIER=
+정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
 X - 오답입니다!
-학생 : pthread_cond_signal&cond(
-정답 : &cond&lock,pthread_cond_wait
-학생 : pthread_cond_signal(&cond)
+원본 학생 : pthread_cond_signal(&cond)
 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : pthread_cond_signal&cond(
+정답 : &cond&lock,pthread_cond_wait
 X - 오답입니다!
-학생 : glo_valVALUE_STOP1<glo_val||VALUE_STOP2<=
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : glo_val<VALUE_STOP1||glo_val=<VALUE_STOP2
+원본 학생 : glo_val<VALUE_STOP1||glo_val=<VALUE_STOP2
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_valVALUE_STOP1<glo_val||VALUE_STOP2<=
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 X - 오답입니다!
-학생 : &cond&lock,pthread_cond_wait
-정답 : pthread_cond_signal&cond(
-학생 : pthread_cond_wait(&cond,&lock)
+원본 학생 : pthread_cond_wait(&cond,&lock)
 정답 : pthread_cond_signal(&cond)
+변형 학생 : &cond&lock,pthread_cond_wait
+정답 : pthread_cond_signal&cond(
 X - 오답입니다!
-학생 : STDIN_FILENOO_NONBLOCK,
-정답 : STDOUT_FILENOO_NONBLOCK,
-학생 : STDIN_FILENO,O_NONBLOCK
+원본 학생 : STDIN_FILENO,O_NONBLOCK
 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : STDIN_FILENOO_NONBLOCK,
+정답 : STDOUT_FILENOO_NONBLOCK,
 X - 오답입니다!
-학생 : ,,-01===DEEFFFGIILLNNOSTT__acfllntv
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(STDIN_FILENO,F_GETFL,0))==-1
+원본 학생 : (val=fcntl(STDIN_FILENO,F_GETFL,0))==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===DEEFFFGIILLNNOSTT__acfllntv
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : valO_NONBLOCK|=
-정답 : valflags|=
-학생 : val|=O_NONBLOCK
+원본 학생 : val|=O_NONBLOCK
 정답 : val|=flags
+변형 학생 : valO_NONBLOCK|=
+정답 : valflags|=
 X - 오답입니다!
-학생 : ,,-1==DEEFFFIILLNNOSSTT__acfllntv
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(STDIN_FILENO,F_SETFL,val)==-1
+원본 학생 : fcntl(STDIN_FILENO,F_SETFL,val)==-1
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==DEEFFFIILLNNOSSTT__acfllntv
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : val~O_NONBLOCK&=
-정답 : val~flags&=
-학생 : val&=~O_NONBLOCK
+원본 학생 : val&=~O_NONBLOCK
 정답 : val&=~flags
+변형 학생 : val~O_NONBLOCK&=
+정답 : val~flags&=
 X - 오답입니다!
-학생 : fd1filenameO_RDWR,0644,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR,0644))<0
+원본 학생 : (fd1=open(filename,O_RDWR,0644))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,0644,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : ,,-11==ADDEEFFNOPPST__cdfflnt
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : fcntl(fd1,F_SETFD,O_APPEND)==-1
+원본 학생 : fcntl(fd1,F_SETFD,O_APPEND)==-1
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-11==ADDEEFFNOPPST__cdfflnt
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 X - 오답입니다!
-학생 : CCDEEFLOX_afgl|
-정답 : &CCDEEFLOX_afgl
-학생 : flag|FD_CLOEXEC
+원본 학생 : flag|FD_CLOEXEC
 정답 : flag&FD_CLOEXEC
+변형 학생 : CCDEEFLOX_afgl|
+정답 : &CCDEEFLOX_afgl
 X - 오답입니다!
-학생 : sigemptyset&sig_set_(
-정답 : sigemptyset&sig_set(
-학생 : sigemptyset(&sig_set_)
+원본 학생 : sigemptyset(&sig_set_)
 정답 : sigemptyset(&sig_set)
+변형 학생 : sigemptyset&sig_set_(
+정답 : sigemptyset&sig_set(
 X - 오답입니다!
-학생 : !&*,,003=aaaegirssstttuuw
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(*status,0,&rusage)!=0
+원본 학생 : wait3(*status,0,&rusage)!=0
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&*,,003=aaaegirssstttuuw
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
-학생 : WIFSIGNALED#stat(
-정답 : WIFSIGNALEDstat(
-학생 : WIFSIGNALED(#stat)
+원본 학생 : WIFSIGNALED(#stat)
 정답 : WIFSIGNALED(stat)
+변형 학생 : WIFSIGNALED#stat(
+정답 : WIFSIGNALEDstat(
 X - 오답입니다!
 20190003 is finished.. score : 8.00
-학생 : Don\'tuseenvpafterputenv"="WARNINGputenv
-정답 : Don'tuseenvpafterputenv"="WARNINGputenv
-학생 : putenv("WARNING=Don\'tuseenvpafterputenv()")
+원본 학생 : putenv("WARNING=Don\'tuseenvpafterputenv()")
 정답 : putenv("WARNING=Don'tuseenvpafterputenv()")
+변형 학생 : Don\'tuseenvpafterputenv"="WARNINGputenv
+정답 : Don'tuseenvpafterputenv"="WARNINGputenv
 X - 오답입니다!
-학생 : !&(-1=aaisstttuw
-정답 : !&(-1==aadiipsstttuw
-학생 : wait(&status)!=-1
+원본 학생 : wait(&status)!=-1
 정답 : (pid=wait(&status))!=-1
+변형 학생 : !&(-1=aaisstttuw
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : -lphtread
+원본 학생 : -lphtread
 정답 : -lpthread
-학생 : -lphtread
+변형 학생 : -lphtread
 정답 : -lpthread
 X - 오답입니다!
-학생 : !&,,,012=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread1,NULL)!=0
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread1,NULL)!=0
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : !&,,,012=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : glo_val4<7glo_val<||
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : glo_val<4||glo_val>7
+원본 학생 : glo_val<4||glo_val>7
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val4<7glo_val<||
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 X - 오답입니다!
-학생 : ,,-01===EFGLTT_acdffllntv
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(fd,F_GETTL,0))==-1
+원본 학생 : (val=fcntl(fd,F_GETTL,0))==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFGLTT_acdffllntv
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : ,,-1==EFFLST_acdfffgllnst
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(fd,F_SETFL,flags)==-1
+원본 학생 : fcntl(fd,F_SETFL,flags)==-1
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_acdfffgllnst
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : valflags&=
-정답 : val~flags&=
-학생 : val&=flags
+원본 학생 : val&=flags
 정답 : val&=~flags
+변형 학생 : valflags&=
+정답 : val~flags&=
 X - 오답입니다!
-학생 : ,-11===ADDENOOPPRRW__adeeeffilmnnop|
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR|O_APPEND))==-1
+원본 학생 : (fd1=open(filename,O_RDWR|O_APPEND))==-1
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : ,-11===ADDENOOPPRRW__adeeeffilmnnop|
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : flagFD_CLOEXEC&=
-정답 : &CCDEEFLOX_afgl
-학생 : flag&=FD_CLOEXEC
+원본 학생 : flag&=FD_CLOEXEC
 정답 : flag&FD_CLOEXEC
+변형 학생 : flagFD_CLOEXEC&=
+정답 : &CCDEEFLOX_afgl
 X - 오답입니다!
-학생 : "",-1==acdeefginprsvx
-정답 : "usr/bin/find"/args,execv0<
-학생 : execvp("find",args)==-1
+원본 학생 : execvp("find",args)==-1
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-1==acdeefginprsvx
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
-학생 : !&&,,-013=aaaegirssstttuuw
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,&rusage)!=-1
+원본 학생 : wait3(&status,0,&rusage)!=-1
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&&,,-013=aaaegirssstttuuw
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
-학생 : WIFSIGNALED!stat(
-정답 : WIFSIGNALEDstat(
-학생 : WIFSIGNALED(!stat)
+원본 학생 : WIFSIGNALED(!stat)
 정답 : WIFSIGNALED(stat)
+변형 학생 : WIFSIGNALED!stat(
+정답 : WIFSIGNALEDstat(
 X - 오답입니다!
-학생 : rusageru_utime->
-정답 : &rusageru_utime->
-학생 : rusage->ru_utime
+원본 학생 : rusage->ru_utime
 정답 : &rusage->ru_utime
+변형 학생 : rusageru_utime->
+정답 : &rusageru_utime->
 X - 오답입니다!
 20190004 is finished.. score : 17.00
-학생 : *acehnprv
-정답 : *[]acehnprv
-학생 : char*envp
+원본 학생 : char*envp
 정답 : char*envp[]
+변형 학생 : *acehnprv
+정답 : *[]acehnprv
 X - 오답입니다!
-학생 : #includewait.h<>
-정답 : #includesyswait.h/<>
-학생 : #include<wait.h>
+원본 학생 : #include<wait.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includewait.h<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : "date""date",NULL,execlp
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("date","date",NULL)
+원본 학생 : execlp("date","date",NULL)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""date",NULL,execlp
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : statustimes&tms_start(=0<
-정답 : &(-1===_aaeimmrrsssstttttt
-학생 : (status=times(&tms_start))<0
+원본 학생 : (status=times(&tms_start))<0
 정답 : (start=times(&tms_start))==-1
+변형 학생 : statustimes&tms_start(=0<
+정답 : &(-1===_aaeimmrrsssstttttt
 X - 오답입니다!
-학생 : 0statustimes&tms_end(=<
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : (status=times(&tms_end))>0
+원본 학생 : (status=times(&tms_end))>0
 정답 : (end=times(&tms_end))==-1
+변형 학생 : 0statustimes&tms_end(=<
+정답 : &(-1===_ddeeeimmnnsstt
 X - 오답입니다!
-학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
-정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
+정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid1NULL,0,NULL,pthread_create0<
-정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid1,NULL,0,NULL)<0
+원본 학생 : pthread_create(&tid1,NULL,0,NULL)<0
 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,0,NULL,pthread_create0<
+정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : fdF_SETFL,val,fcntl0<
-정답 : fdF_SETFL,val,fcntl0<
-학생 : (fcntl(fd,F_SETFL,val))<0
+원본 학생 : (fcntl(fd,F_SETFL,val))<0
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : fdF_SETFL,val,fcntl0<
+정답 : fdF_SETFL,val,fcntl0<
 O - 정답입니다!
-학생 : fd1filenameADDENOOPPRRW__|,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR|O_APPEND))<0
+원본 학생 : (fd1=open(filename,O_RDWR|O_APPEND))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameADDENOOPPRRW__|,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : ".find"/args,execvp0<
-정답 : "usr/bin/find"/args,execv0<
-학생 : execvp("./find",args)<0
+원본 학생 : execvp("./find",args)<0
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : ".find"/args,execvp0<
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
-학생 : &status0,&rusage,wait30<
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,&rusage)<0
+원본 학생 : wait3(&status,0,&rusage)<0
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &status0,&rusage,wait30<
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
 20190005 is finished.. score : 19.50
-학생 : envp[]char***
-정답 : *[]acehnprv
-학생 : char***envp[]
+원본 학생 : char***envp[]
 정답 : char*envp[]
+변형 학생 : envp[]char***
+정답 : *[]acehnprv
 X - 오답입니다!
-학생 : NULLexeclpchar"bin/date"/"echo",*,
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("/bin/date","echo",(char*)NULL)
+원본 학생 : execlp("/bin/date","echo",(char*)NULL)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : NULLexeclpchar"bin/date"/"echo",*,
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : NULLexeclpchar"usr/bin/who"/"echo",*,
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("/usr/bin/who","echo",(char*)NULL)
+원본 학생 : execlp("/usr/bin/who","echo",(char*)NULL)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : NULLexeclpchar"usr/bin/who"/"echo",*,
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : starttimes&tms_start(=0<
-정답 : &(-1===_aaeimmrrsssstttttt
-학생 : (start=times(&tms_start))<0
+원본 학생 : (start=times(&tms_start))<0
 정답 : (start=times(&tms_start))==-1
+변형 학생 : starttimes&tms_start(=0<
+정답 : &(-1===_aaeimmrrsssstttttt
 X - 오답입니다!
-학생 : endtimes&tms_end(=0<
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : (end=times(&tms_end))<0
+원본 학생 : (end=times(&tms_end))<0
 정답 : (end=times(&tms_end))==-1
+변형 학생 : endtimes&tms_end(=0<
+정답 : &(-1===_ddeeeimmnnsstt
 X - 오답입니다!
-학생 : fd1filenameAACDEENOOPPRT__|,644,open=0<=
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_CREAT|O_APPEND,644))<=0
+원본 학생 : (fd1=open(filename,O_CREAT|O_APPEND,644))<=0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameAACDEENOOPPRT__|,644,open=0<=
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : ,,-11===CCDDEEEFFFLOSTX__acdfffgllnt
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : (flag=fcntl(fd1,F_SETFD,FD_CLOEXEC))==-1
+원본 학생 : (flag=fcntl(fd1,F_SETFD,FD_CLOEXEC))==-1
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-11===CCDDEEEFFFLOSTX__acdfffgllnt
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 X - 오답입니다!
-학생 : includesignal.h<>
-정답 : #includesignal.h<>
-학생 : include<signal.h>
+원본 학생 : include<signal.h>
 정답 : #include<signal.h>
+변형 학생 : includesignal.h<>
+정답 : #includesignal.h<>
 X - 오답입니다!
-학생 : !&&,,013=aaaegirssstttuuw
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,&rusage)!=1
+원본 학생 : wait3(&status,0,&rusage)!=1
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&&,,013=aaaegirssstttuuw
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
 20190006 is finished.. score : 20.00
-학생 : *acehnprv
-정답 : *[]acehnprv
-학생 : char*envp
+원본 학생 : char*envp
 정답 : char*envp[]
+변형 학생 : *acehnprv
+정답 : *[]acehnprv
 X - 오답입니다!
-학생 : Don'tuseenvpafterputenv"="Warningputenv
-정답 : Don'tuseenvpafterputenv"="WARNINGputenv
-학생 : putenv("Warning=Don'tuseenvpafterputenv()")
+원본 학생 : putenv("Warning=Don'tuseenvpafterputenv()")
 정답 : putenv("WARNING=Don'tuseenvpafterputenv()")
+변형 학생 : Don'tuseenvpafterputenv"="Warningputenv
+정답 : Don'tuseenvpafterputenv"="WARNINGputenv
 X - 오답입니다!
-학생 : getenv"Warning"(
-정답 : getenv"WARNING"(
-학생 : getenv("Warning")
+원본 학생 : getenv("Warning")
 정답 : getenv("WARNING")
+변형 학생 : getenv"Warning"(
+정답 : getenv"WARNING"(
 X - 오답입니다!
-학생 : "date""date",NULL,execlp
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("date","date",NULL)
+원본 학생 : execlp("date","date",NULL)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""date",NULL,execlp
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : "who""who",NULL,execlp
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("who","who",NULL)
+원본 학생 : execlp("who","who",NULL)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who""who",NULL,execlp
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : 0pidwait&status(=<
-정답 : !&(-1==aadiipsstttuw
-학생 : (pid=wait(&status))>0
+원본 학생 : (pid=wait(&status))>0
 정답 : (pid=wait(&status))!=-1
+변형 학생 : 0pidwait&status(=<
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
-정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
+정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : pthread_self(;=tid
-정답 : tidpthread_self(=
-학생 : tid=pthread_self();
+원본 학생 : tid=pthread_self();
 정답 : tid=pthread_self()
+변형 학생 : pthread_self(;=tid
+정답 : tidpthread_self(=
 X - 오답입니다!
-학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
-정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
+정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : valfdF_GETFL,NULL,fcntl0<=
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : val=fcntl(fd,F_GETFL,NULL)<0
+원본 학생 : val=fcntl(fd,F_GETFL,NULL)<0
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : valfdF_GETFL,NULL,fcntl0<=
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : fd1filenameADDENOOPPRRW__|,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR|O_APPEND))<0
+원본 학생 : (fd1=open(filename,O_RDWR|O_APPEND))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameADDENOOPPRRW__|,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+원본 학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 X - 오답입니다!
-학생 : ;sigemptyset&sig_set(
-정답 : sigemptyset&sig_set(
-학생 : sigemptyset(&sig_set);
+원본 학생 : sigemptyset(&sig_set);
 정답 : sigemptyset(&sig_set)
+변형 학생 : ;sigemptyset&sig_set(
+정답 : sigemptyset&sig_set(
 X - 오답입니다!
-학생 : ;&sig_setSIGINT,sigaddset
-정답 : &sig_setSIGINT,sigaddset
-학생 : sigaddset(&sig_set,SIGINT);
+원본 학생 : sigaddset(&sig_set,SIGINT);
 정답 : sigaddset(&sig_set,SIGINT)
+변형 학생 : ;&sig_setSIGINT,sigaddset
+정답 : &sig_setSIGINT,sigaddset
 X - 오답입니다!
-학생 : ;SIG_UNBLOCK&sig_set,NULL,sigprocmask
-정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL);
+원본 학생 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL);
 정답 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL)
+변형 학생 : ;SIG_UNBLOCK&sig_set,NULL,sigprocmask
+정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
-학생 : WTERMSIGstat(
-정답 : WIFSIGNALEDstat(
-학생 : WTERMSIG(stat)
+원본 학생 : WTERMSIG(stat)
 정답 : WIFSIGNALED(stat)
+변형 학생 : WTERMSIGstat(
+정답 : WIFSIGNALEDstat(
 X - 오답입니다!
-20190007 is finished.. score : 13.00
-학생 : !&(-1=aaisstttuw
-정답 : !&(-1==aadiipsstttuw
-학생 : wait(&status)!=-1
+20190007 is finished.. score : 12.00
+원본 학생 : wait(&status)!=-1
 정답 : (pid=wait(&status))!=-1
+변형 학생 : !&(-1=aaisstttuw
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : times&tms_start(0<
-정답 : &(-1===_aaeimmrrsssstttttt
-학생 : times(&tms_start)<0
+원본 학생 : times(&tms_start)<0
 정답 : (start=times(&tms_start))==-1
+변형 학생 : times&tms_start(0<
+정답 : &(-1===_aaeimmrrsssstttttt
 X - 오답입니다!
-학생 : times&tms_end(0<
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : times(&tms_end)<0
+원본 학생 : times(&tms_end)<0
 정답 : (end=times(&tms_end))==-1
+변형 학생 : times&tms_end(0<
+정답 : &(-1===_ddeeeimmnnsstt
 X - 오답입니다!
-학생 : phread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
-정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
-학생 : phread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+원본 학생 : phread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : phread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
 X - 오답입니다!
-학생 : pthread_cond_wait&cond(
-정답 : &cond&lock,pthread_cond_wait
-학생 : pthread_cond_wait(&cond)
+원본 학생 : pthread_cond_wait(&cond)
 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : pthread_cond_wait&cond(
+정답 : &cond&lock,pthread_cond_wait
 X - 오답입니다!
-학생 : val~O_NONBLOCK&=
-정답 : val~flags&=
-학생 : val&=~O_NONBLOCK
+원본 학생 : val&=~O_NONBLOCK
 정답 : val&=~flags
+변형 학생 : val~O_NONBLOCK&=
+정답 : val~flags&=
 X - 오답입니다!
-학생 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_APPEND|O_RDWR,0644))<0
+원본 학생 : (fd1=open(filename,O_APPEND|O_RDWR,0644))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 O - 정답입니다!
-학생 : ,,-111==DEFFST_cdfflnt
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : fcntl(fd1,F_SETFD,1)==-1
+원본 학생 : fcntl(fd1,F_SETFD,1)==-1
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-111==DEFFST_cdfflnt
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 X - 오답입니다!
-학생 : 0execvpchar"find"args,*,
-정답 : "usr/bin/find"/args,execv0<
-학생 : execvp("find",args,(char*)0)
+원본 학생 : execvp("find",args,(char*)0)
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : 0execvpchar"find"args,*,
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
-학생 : !&&,,-013=aaaegirssstttuuw
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,&rusage)!=-1
+원본 학생 : wait3(&status,0,&rusage)!=-1
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&&,,-013=aaaegirssstttuuw
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
-학생 : rusagetv_usec->
-정답 : &rusageru_utime->
-학생 : rusage->tv_usec
+원본 학생 : rusage->tv_usec
 정답 : &rusage->ru_utime
+변형 학생 : rusagetv_usec->
+정답 : &rusageru_utime->
 X - 오답입니다!
 20190008 is finished.. score : 19.00
-학생 : putenv
-정답 : "TZPST8PDT"=putenv
-학생 : putenv
+원본 학생 : putenv
 정답 : putenv("TZ=PST8PDT")
+변형 학생 : putenv
+정답 : "TZPST8PDT"=putenv
 X - 오답입니다!
-학생 : ;0execlpchar"date"".date"/,*,
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("date","./date",(char*)0);
+원본 학생 : execlp("date","./date",(char*)0);
 정답 : execlp("date","date",(char*)0)
+변형 학생 : ;0execlpchar"date"".date"/,*,
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : ;0execlpchar"who"".who"/,*,
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("who","./who",(char*)0);
+원본 학생 : execlp("who","./who",(char*)0);
 정답 : execlp("who","who",(char*)0)
+변형 학생 : ;0execlpchar"who"".who"/,*,
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : !&(-1=aaisstttuw
-정답 : !&(-1==aadiipsstttuw
-학생 : wait(&status)!=-1
+원본 학생 : wait(&status)!=-1
 정답 : (pid=wait(&status))!=-1
+변형 학생 : !&(-1=aaisstttuw
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : &tidNULL,ssy_thread,NULL,pthread_create
-정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid,NULL,ssy_thread,NULL)
+원본 학생 : pthread_create(&tid,NULL,ssy_thread,NULL)
 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssy_thread,NULL,pthread_create
+정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : gettid(;=tid
-정답 : tidpthread_self(=
-학생 : tid=gettid();
+원본 학생 : tid=gettid();
 정답 : tid=pthread_self()
+변형 학생 : gettid(;=tid
+정답 : tidpthread_self(=
 X - 오답입니다!
-학생 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER;=
-정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
-학생 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER;
+원본 학생 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER;
 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER;=
+정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
 X - 오답입니다!
-학생 : pthrad_cond_tcondPTHREAD_COND_INITIALIZER;=
-정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
-학생 : pthrad_cond_tcond=PTHREAD_COND_INITIALIZER;
+원본 학생 : pthrad_cond_tcond=PTHREAD_COND_INITIALIZER;
 정답 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER
+변형 학생 : pthrad_cond_tcondPTHREAD_COND_INITIALIZER;=
+정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
 X - 오답입니다!
-학생 : ;pthread_cond_signal&cond(VALUE_STOP1glo_val<if
-정답 : &cond&lock,pthread_cond_wait
-학생 : if(glo_val>VALUE_STOP1)pthread_cond_signal(&cond);
+원본 학생 : if(glo_val>VALUE_STOP1)pthread_cond_signal(&cond);
 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : ;pthread_cond_signal&cond(VALUE_STOP1glo_val<if
+정답 : &cond&lock,pthread_cond_wait
 X - 오답입니다!
-학생 : glo_val>
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : glo_val>
+원본 학생 : glo_val>
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val>
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 X - 오답입니다!
-학생 : ntowriteO_NONBLOCK,
-정답 : STDOUT_FILENOO_NONBLOCK,
-학생 : ntowrite,O_NONBLOCK
+원본 학생 : ntowrite,O_NONBLOCK
 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : ntowriteO_NONBLOCK,
+정답 : STDOUT_FILENOO_NONBLOCK,
 X - 오답입니다!
-학생 : ,,-01===EFFGLT_acdffllntv
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : ,,-1==DEFFST_acdffllntv
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(fd,F_SETFD,val)==-1
+원본 학생 : fcntl(fd,F_SETFD,val)==-1
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==DEFFST_acdffllntv
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : valflags&=
-정답 : val~flags&=
-학생 : val&=flags
+원본 학생 : val&=flags
 정답 : val&=~flags
+변형 학생 : valflags&=
+정답 : val~flags&=
 X - 오답입니다!
-학생 : "",-11===DORRW_adeeeffilmnnop
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,"O_RDWR"))==-1
+원본 학생 : (fd1=open(filename,"O_RDWR"))==-1
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : "",-11===DORRW_adeeeffilmnnop
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : &==AADDEENNOOPPPP__afgl
-정답 : &ADENOPP_afgl
-학생 : flag&O_APPEND==O_APPEND
+원본 학생 : flag&O_APPEND==O_APPEND
 정답 : flag&O_APPEND
+변형 학생 : &==AADDEENNOOPPPP__afgl
+정답 : &ADENOPP_afgl
 X - 오답입니다!
-학생 : &==CCCCDDEEEEFFLLOOXX__afgl
-정답 : &CCDEEFLOX_afgl
-학생 : flag&FD_CLOEXEC==FD_CLOEXEC
+원본 학생 : flag&FD_CLOEXEC==FD_CLOEXEC
 정답 : flag&FD_CLOEXEC
+변형 학생 : &==CCCCDDEEEEFFLLOOXX__afgl
+정답 : &CCDEEFLOX_afgl
 X - 오답입니다!
-학생 : "",-1==acdeefginrsvx
-정답 : "usr/bin/find"/args,execv0<
-학생 : execv("find",args)==-1
+원본 학생 : execv("find",args)==-1
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-1==acdeefginrsvx
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
 20190009 is finished.. score : 10.50
-학생 : #includepthread.h<>
-정답 : #includesyswait.h/<>
-학생 : #include<pthread.h>
+원본 학생 : #include<pthread.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includepthread.h<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : "date""date",NULL,execlp
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("date","date",NULL)
+원본 학생 : execlp("date","date",NULL)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""date",NULL,execlp
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : "who""who",NULL,execlp
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("who","who",NULL)
+원본 학생 : execlp("who","who",NULL)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who""who",NULL,execlp
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : (null)
-정답 : !&(-1==aadiipsstttuw
-학생 : 
+원본 학생 : 
 정답 : (pid=wait(&status))!=-1
+변형 학생 : (null)
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : times&tms_start(
-정답 : &(-1===_aaeimmrrsssstttttt
-학생 : times(&tms_start)
+원본 학생 : times(&tms_start)
 정답 : (start=times(&tms_start))==-1
+변형 학생 : times&tms_start(
+정답 : &(-1===_aaeimmrrsssstttttt
 X - 오답입니다!
-학생 : times&tms_end(
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : times(&tms_end)
+원본 학생 : times(&tms_end)
 정답 : (end=times(&tms_end))==-1
+변형 학생 : times&tms_end(
+정답 : &(-1===_ddeeeimmnnsstt
 X - 오답입니다!
-학생 : glo_val3<6glo_val<||
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : glo_val<3||glo_val>6
+원본 학생 : glo_val<3||glo_val>6
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val3<6glo_val<||
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 X - 오답입니다!
-학생 : valflags;|=
-정답 : valflags|=
-학생 : val|=flags;
+원본 학생 : val|=flags;
 정답 : val|=flags
+변형 학생 : valflags;|=
+정답 : valflags|=
 X - 오답입니다!
-학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+원본 학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 X - 오답입니다!
-학생 : SIG_BLOCKsig_set,NULL,sigprocmask
-정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SIG_BLOCK,sig_set,NULL)
+원본 학생 : sigprocmask(SIG_BLOCK,sig_set,NULL)
 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : SIG_BLOCKsig_set,NULL,sigprocmask
+정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
-학생 : "",-1==acdeefginprsvx
-정답 : "usr/bin/find"/args,execv0<
-학생 : execvp("find",args)==-1
+원본 학생 : execvp("find",args)==-1
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-1==acdeefginprsvx
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
-학생 : &&,,-013==aaaegirssstttuuw
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,&rusage)==-1
+원본 학생 : wait3(&status,0,&rusage)==-1
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &&,,-013==aaaegirssstttuuw
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
 20190010 is finished.. score : 16.50
-학생 : **;aceeehinnnorrrtvx
-정답 : **aceeehinnnorrrtvx
-학생 : externchar**environ;
+원본 학생 : externchar**environ;
 정답 : externchar**environ
+변형 학생 : **;aceeehinnnorrrtvx
+정답 : **aceeehinnnorrrtvx
 X - 오답입니다!
-학생 : **acehnprv
-정답 : *[]acehnprv
-학생 : char**envp
+원본 학생 : char**envp
 정답 : char*envp[]
+변형 학생 : **acehnprv
+정답 : *[]acehnprv
 X - 오답입니다!
-학생 : ;"TZ""PST8PDT",1,setenv
-정답 : "TZPST8PDT"=putenv
-학생 : setenv("TZ","PST8PDT",1);
+원본 학생 : setenv("TZ","PST8PDT",1);
 정답 : putenv("TZ=PST8PDT")
+변형 학생 : ;"TZ""PST8PDT",1,setenv
+정답 : "TZPST8PDT"=putenv
 X - 오답입니다!
-학생 : ;Don'tuseenvpafterputenv"="WARNINGputenv
-정답 : Don'tuseenvpafterputenv"="WARNINGputenv
-학생 : putenv("WARNING=Don'tuseenvpafterputenv()");
+원본 학생 : putenv("WARNING=Don'tuseenvpafterputenv()");
 정답 : putenv("WARNING=Don'tuseenvpafterputenv()")
+변형 학생 : ;Don'tuseenvpafterputenv"="WARNINGputenv
+정답 : Don'tuseenvpafterputenv"="WARNINGputenv
 X - 오답입니다!
-학생 : #includewait.h<>
-정답 : #includesyswait.h/<>
-학생 : #include<wait.h>
+원본 학생 : #include<wait.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includewait.h<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : ;0execlpvoid"date""date",*,
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("date","date",(void*)0);
+원본 학생 : execlp("date","date",(void*)0);
 정답 : execlp("date","date",(char*)0)
+변형 학생 : ;0execlpvoid"date""date",*,
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : ;0execvvoid"who""who",*,
-정답 : 0execlpchar"who""who",*,
-학생 : execv("who","who",(void*)0);
+원본 학생 : execv("who","who",(void*)0);
 정답 : execlp("who","who",(char*)0)
+변형 학생 : ;0execvvoid"who""who",*,
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : starttimes&tms_start(=0<
-정답 : &(-1===_aaeimmrrsssstttttt
-학생 : (start=times(&tms_start))<0
+원본 학생 : (start=times(&tms_start))<0
 정답 : (start=times(&tms_start))==-1
+변형 학생 : starttimes&tms_start(=0<
+정답 : &(-1===_aaeimmrrsssstttttt
 X - 오답입니다!
-학생 : endtimes&tms_end(=0<
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : (end=times(&tms_end))<0
+원본 학생 : (end=times(&tms_end))<0
 정답 : (end=times(&tms_end))==-1
+변형 학생 : endtimes&tms_end(=0<
+정답 : &(-1===_ddeeeimmnnsstt
 X - 오답입니다!
-학생 : #includelpthread.h<>
-정답 : #includepthread.h<>
-학생 : #include<lpthread.h>
+원본 학생 : #include<lpthread.h>
 정답 : #include<pthread.h>
+변형 학생 : #includelpthread.h<>
+정답 : #includepthread.h<>
 X - 오답입니다!
-학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
-정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
+정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : pthread_self(;=tid
-정답 : tidpthread_self(=
-학생 : tid=pthread_self();
+원본 학생 : tid=pthread_self();
 정답 : tid=pthread_self()
+변형 학생 : pthread_self(;=tid
+정답 : tidpthread_self(=
 X - 오답입니다!
-학생 : #includelpthread.h<>
-정답 : #includepthread.h<>
-학생 : #include<lpthread.h>
+원본 학생 : #include<lpthread.h>
 정답 : #include<pthread.h>
+변형 학생 : #includelpthread.h<>
+정답 : #includepthread.h<>
 X - 오답입니다!
-학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
-정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
+정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : ;tid1NULL,pthread_join
-정답 : tid1NULL,pthread_join
-학생 : pthread_join(tid1,NULL);
+원본 학생 : pthread_join(tid1,NULL);
 정답 : pthread_join(tid1,NULL)
+변형 학생 : ;tid1NULL,pthread_join
+정답 : tid1NULL,pthread_join
 X - 오답입니다!
-학생 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER;=
-정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
-학생 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER;
+원본 학생 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER;
 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER;=
+정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
 X - 오답입니다!
-학생 : pthread_cond_tcondPTHREAD_COND_INITIALIZER;=
-정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
-학생 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER;
+원본 학생 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER;
 정답 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER
+변형 학생 : pthread_cond_tcondPTHREAD_COND_INITIALIZER;=
+정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
 X - 오답입니다!
-학생 : ;&cond&lock,pthread_cond_wait
-정답 : &cond&lock,pthread_cond_wait
-학생 : pthread_cond_wait(&cond,&lock);
+원본 학생 : pthread_cond_wait(&cond,&lock);
 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : ;&cond&lock,pthread_cond_wait
+정답 : &cond&lock,pthread_cond_wait
 X - 오답입니다!
-학생 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<=||
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : glo_val<VALUE_STOP1||glo_val>=VALUE_STOP2
+원본 학생 : glo_val<VALUE_STOP1||glo_val>=VALUE_STOP2
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<=||
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 X - 오답입니다!
-학생 : ;pthread_cond_signal&cond(
-정답 : pthread_cond_signal&cond(
-학생 : pthread_cond_signal(&cond);
+원본 학생 : pthread_cond_signal(&cond);
 정답 : pthread_cond_signal(&cond)
+변형 학생 : ;pthread_cond_signal&cond(
+정답 : pthread_cond_signal&cond(
 X - 오답입니다!
-학생 : valflags;|=
-정답 : valflags|=
-학생 : val|=flags;
+원본 학생 : val|=flags;
 정답 : val|=flags
+변형 학생 : valflags;|=
+정답 : valflags|=
 X - 오답입니다!
-학생 : val~flags;&=
-정답 : val~flags&=
-학생 : val&=~flags;
+원본 학생 : val&=~flags;
 정답 : val&=~flags
+변형 학생 : val~flags;&=
+정답 : val~flags&=
 X - 오답입니다!
-학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+원본 학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 X - 오답입니다!
-학생 : sigset
+원본 학생 : sigset
 정답 : sigset_t
-학생 : sigset
+변형 학생 : sigset
 정답 : sigset_t
 X - 오답입니다!
-학생 : ;sigemptyset&sig_set(
-정답 : sigemptyset&sig_set(
-학생 : sigemptyset(&sig_set);
+원본 학생 : sigemptyset(&sig_set);
 정답 : sigemptyset(&sig_set)
+변형 학생 : ;sigemptyset&sig_set(
+정답 : sigemptyset&sig_set(
 X - 오답입니다!
-학생 : ;&sig_setSIGINT,sigaddset
-정답 : &sig_setSIGINT,sigaddset
-학생 : sigaddset(&sig_set,SIGINT);
+원본 학생 : sigaddset(&sig_set,SIGINT);
 정답 : sigaddset(&sig_set,SIGINT)
+변형 학생 : ;&sig_setSIGINT,sigaddset
+정답 : &sig_setSIGINT,sigaddset
 X - 오답입니다!
-학생 : ;SIG_BLOCK&sig_set,NULL,sigprocmask
-정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SIG_BLOCK,&sig_set,NULL);
+원본 학생 : sigprocmask(SIG_BLOCK,&sig_set,NULL);
 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : ;SIG_BLOCK&sig_set,NULL,sigprocmask
+정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
-학생 : ;SIG_UNBLOCK&sig_set,NULL,sigprocmask
-정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL);
+원본 학생 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL);
 정답 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL)
+변형 학생 : ;SIG_UNBLOCK&sig_set,NULL,sigprocmask
+정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
-학생 : "find"args,execvp0<
-정답 : "usr/bin/find"/args,execv0<
-학생 : execvp("find",args)<0
+원본 학생 : execvp("find",args)<0
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "find"args,execvp0<
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
-학생 : 0&status0,rusage,wait3<
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,rusage)>0
+원본 학생 : wait3(&status,0,rusage)>0
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : 0&status0,rusage,wait3<
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
-학생 : rusageru_utime->&
-정답 : &rusageru_utime->
-학생 : &(rusage->ru_utime)
+원본 학생 : &(rusage->ru_utime)
 정답 : &rusage->ru_utime
+변형 학생 : rusageru_utime->&
+정답 : &rusageru_utime->
 X - 오답입니다!
 20190011 is finished.. score : 8.50
-학생 : #includewait.h<>
-정답 : #includesyswait.h/<>
-학생 : #include<wait.h>
+원본 학생 : #include<wait.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includewait.h<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : 0execlpvoid"usr/bin/who"/"who",*,
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("/usr/bin/who","who",(void*)0)
+원본 학생 : execlp("/usr/bin/who","who",(void*)0)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : 0execlpvoid"usr/bin/who"/"who",*,
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : 0execlpvoid"bin/date"/"date",*,
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("/bin/date","date",(void*)0)
+원본 학생 : execlp("/bin/date","date",(void*)0)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : 0execlpvoid"bin/date"/"date",*,
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : 0pidwait&status(=<
-정답 : !&(-1==aadiipsstttuw
-학생 : (pid=wait(&status))>0
+원본 학생 : (pid=wait(&status))>0
 정답 : (pid=wait(&status))!=-1
+변형 학생 : 0pidwait&status(=<
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : structtimeval
+원본 학생 : structtimeval
 정답 : structtms
-학생 : structtimeval
+변형 학생 : structtimeval
 정답 : structtms
 X - 오답입니다!
-학생 : &tid2NULL,ssu_thread2,NULL,pthread_create
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : glo_val3<6glo_val<||
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : glo_val<3||glo_val>6
+원본 학생 : glo_val<3||glo_val>6
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val3<6glo_val<||
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 X - 오답입니다!
-학생 : valO_NONBLOCK|=
-정답 : valflags|=
-학생 : val|=O_NONBLOCK
+원본 학생 : val|=O_NONBLOCK
 정답 : val|=flags
+변형 학생 : valO_NONBLOCK|=
+정답 : valflags|=
 X - 오답입니다!
-학생 : val~O_NONBLOCK&=
-정답 : val~flags&=
-학생 : val&=~O_NONBLOCK
+원본 학생 : val&=~O_NONBLOCK
 정답 : val&=~flags
+변형 학생 : val~O_NONBLOCK&=
+정답 : val~flags&=
 X - 오답입니다!
-학생 : fd1filenameADDENOOPPRRW__|,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR|O_APPEND))<0
+원본 학생 : (fd1=open(filename,O_RDWR|O_APPEND))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameADDENOOPPRRW__|,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+원본 학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 X - 오답입니다!
-학생 : !"",///0=abcdeefgiinnrrssuvx
-정답 : "usr/bin/find"/args,execv0<
-학생 : execv("/usr/bin/find",args)!=0
+원본 학생 : execv("/usr/bin/find",args)!=0
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : !"",///0=abcdeefgiinnrrssuvx
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
 20190012 is finished.. score : 17.50
-학생 : 0execchar"who""who",*,
-정답 : 0execlpchar"who""who",*,
-학생 : exec("who","who",(char*)0)
+원본 학생 : exec("who","who",(char*)0)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : 0execchar"who""who",*,
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : &(-1==_deeimmnsstt
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : times(&tms_end)==-1
+원본 학생 : times(&tms_end)==-1
 정답 : (end=times(&tms_end))==-1
+변형 학생 : &(-1==_deeimmnsstt
+정답 : &(-1===_ddeeeimmnnsstt
 X - 오답입니다!
-학생 : !&,,,012=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread1,NULL)!=0
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread1,NULL)!=0
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : !&,,,012=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &cond&mutex,pthread_cond_wait
-정답 : &cond&lock,pthread_cond_wait
-학생 : pthread_cond_wait(&cond,&mutex)
+원본 학생 : pthread_cond_wait(&cond,&mutex)
 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : &cond&mutex,pthread_cond_wait
+정답 : &cond&lock,pthread_cond_wait
 X - 오답입니다!
-학생 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : glo_val<VALUE_STOP1||VALUE_STOP2<glo_val
+원본 학생 : glo_val<VALUE_STOP1||VALUE_STOP2<glo_val
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 O - 정답입니다!
-학생 : ,,-01===EFFGLT_acdffllntv
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : ,,-1==EFFLST_acdffllntv
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(fd,F_SETFL,val)==-1
+원본 학생 : fcntl(fd,F_SETFL,val)==-1
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_acdffllntv
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : fd1filenameO_RDWR,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR))<0
+원본 학생 : (fd1=open(filename,O_RDWR))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : SIG_SETMASK&sig_set,NULL,sigprocmask
-정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SIG_SETMASK,&sig_set,NULL)
+원본 학생 : sigprocmask(SIG_SETMASK,&sig_set,NULL)
 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : SIG_SETMASK&sig_set,NULL,sigprocmask
+정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
-학생 : "",-///1==abcdeefgiinnrrssuvx
-정답 : "usr/bin/find"/args,execv0<
-학생 : execv("/usr/bin/find",args)==-1
+원본 학생 : execv("/usr/bin/find",args)==-1
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-///1==abcdeefgiinnrrssuvx
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
-학생 : &status0,&rusage,wait30<
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,&rusage)<0
+원본 학생 : wait3(&status,0,&rusage)<0
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &status0,&rusage,wait30<
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
 20190013 is finished.. score : 20.50
-학생 : "TZPST8P"=putenv
-정답 : "TZPST8PDT"=putenv
-학생 : putenv("TZ=PST8P")
+원본 학생 : putenv("TZ=PST8P")
 정답 : putenv("TZ=PST8PDT")
+변형 학생 : "TZPST8P"=putenv
+정답 : "TZPST8PDT"=putenv
 X - 오답입니다!
-학생 : #includepthread.h<>
-정답 : #includesyswait.h/<>
-학생 : #include<pthread.h>
+원본 학생 : #include<pthread.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includepthread.h<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : "who"NULL,execlp
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("who",NULL)
+원본 학생 : execlp("who",NULL)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who"NULL,execlp
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : !(-1==adiiptw
-정답 : !&(-1==aadiipsstttuw
-학생 : (pid=wait())!=-1
+원본 학생 : (pid=wait())!=-1
 정답 : (pid=wait(&status))!=-1
+변형 학생 : !(-1==adiiptw
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : tms_starttimes&start(=0<
-정답 : &(-1===_aaeimmrrsssstttttt
-학생 : (tms_start=times(&start))<0
+원본 학생 : (tms_start=times(&start))<0
 정답 : (start=times(&tms_start))==-1
+변형 학생 : tms_starttimes&start(=0<
+정답 : &(-1===_aaeimmrrsssstttttt
 X - 오답입니다!
-학생 : tms_endtimes&end(=0<
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : (tms_end=times(&end))<0
+원본 학생 : (tms_end=times(&end))<0
 정답 : (end=times(&tms_end))==-1
+변형 학생 : tms_endtimes&end(=0<
+정답 : &(-1===_ddeeeimmnnsstt
 X - 오답입니다!
-학생 : #includepthead.h<>
-정답 : #includepthread.h<>
-학생 : #include<pthead.h>
+원본 학생 : #include<pthead.h>
 정답 : #include<pthread.h>
+변형 학생 : #includepthead.h<>
+정답 : #includepthread.h<>
 X - 오답입니다!
-학생 : tid10,pthread_join
-정답 : tid1NULL,pthread_join
-학생 : pthread_join(tid1,0)
+원본 학생 : pthread_join(tid1,0)
 정답 : pthread_join(tid1,NULL)
+변형 학생 : tid10,pthread_join
+정답 : tid1NULL,pthread_join
 X - 오답입니다!
-학생 : glo_val2<7glo_val<&&
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : glo_val<2&&glo_val>7
+원본 학생 : glo_val<2&&glo_val>7
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val2<7glo_val<&&
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 X - 오답입니다!
-학생 : pthread_cond_signal&lock(
-정답 : pthread_cond_signal&cond(
-학생 : pthread_cond_signal(&lock)
+원본 학생 : pthread_cond_signal(&lock)
 정답 : pthread_cond_signal(&cond)
+변형 학생 : pthread_cond_signal&lock(
+정답 : pthread_cond_signal&cond(
 X - 오답입니다!
-학생 : ntowriteO_NONBLOCK,
-정답 : STDOUT_FILENOO_NONBLOCK,
-학생 : ntowrite,O_NONBLOCK
+원본 학생 : ntowrite,O_NONBLOCK
 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : ntowriteO_NONBLOCK,
+정답 : STDOUT_FILENOO_NONBLOCK,
 X - 오답입니다!
-학생 : ,,-1===EFFGLT_aacdfffglllnstv
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(fd,F_GETFL,flags))==-1
+원본 학생 : (val=fcntl(fd,F_GETFL,flags))==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-1===EFFGLT_aacdfffglllnstv
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : flagsflags;|=
-정답 : valflags|=
-학생 : flags|=flags;
+원본 학생 : flags|=flags;
 정답 : val|=flags
+변형 학생 : flagsflags;|=
+정답 : valflags|=
 X - 오답입니다!
-학생 : ,,-1===EFFLST_aacdfffglllnstv
-정답 : fdF_SETFL,val,fcntl0<
-학생 : (val=fcntl(fd,F_SETFL,flags))==-1
+원본 학생 : (val=fcntl(fd,F_SETFL,flags))==-1
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1===EFFLST_aacdfffglllnstv
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : flags~!flags=
-정답 : val~flags&=
-학생 : flags~=!flags
+원본 학생 : flags~=!flags
 정답 : val&=~flags
+변형 학생 : flags~!flags=
+정답 : val~flags&=
 X - 오답입니다!
-학생 : filenameO_RDWR,open0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : open(filename,O_RDWR)<0
+원본 학생 : open(filename,O_RDWR)<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : filenameO_RDWR,open0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : structsigacion
+원본 학생 : structsigacion
 정답 : sigset_t
-학생 : structsigacion
+변형 학생 : structsigacion
 정답 : sigset_t
 X - 오답입니다!
-학생 : "usrbin/find"/args,execv0<
-정답 : "usr/bin/find"/args,execv0<
-학생 : execv("usr/bin/find",args)<0
+원본 학생 : execv("usr/bin/find",args)<0
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "usrbin/find"/args,execv0<
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
-학생 : &status0,&rusage,wait30<
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,&rusage)<0
+원본 학생 : wait3(&status,0,&rusage)<0
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &status0,&rusage,wait30<
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
-학생 : rusageru_utime->
-정답 : &rusageru_utime->
-학생 : rusage->ru_utime
+원본 학생 : rusage->ru_utime
 정답 : &rusage->ru_utime
+변형 학생 : rusageru_utime->
+정답 : &rusageru_utime->
 X - 오답입니다!
 20190014 is finished.. score : 11.00
-학생 : "date""dat",NULL,execlp
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("date","dat",NULL)
+원본 학생 : execlp("date","dat",NULL)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""dat",NULL,execlp
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : "who""who",NULL,execlp
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("who","who",NULL)
+원본 학생 : execlp("who","who",NULL)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who""who",NULL,execlp
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : pidwait&status(=
-정답 : !&(-1==aadiipsstttuw
-학생 : (pid=wait(&status))
+원본 학생 : (pid=wait(&status))
 정답 : (pid=wait(&status))!=-1
+변형 학생 : pidwait&status(=
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : tidpthread_self=
-정답 : tidpthread_self(=
-학생 : tid=pthread_self
+원본 학생 : tid=pthread_self
 정답 : tid=pthread_self()
+변형 학생 : tidpthread_self=
+정답 : tidpthread_self(=
 X - 오답입니다!
-학생 : ,,-01===EFFGLT_acdffllntv
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : ,,-1==EFFLST_acdffllntv
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(fd,F_SETFL,val)==-1
+원본 학생 : fcntl(fd,F_SETFL,val)==-1
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_acdffllntv
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : "",-///1==abcdeefgiinnrrssuvx
-정답 : "usr/bin/find"/args,execv0<
-학생 : execv("/usr/bin/find",args)==-1
+원본 학생 : execv("/usr/bin/find",args)==-1
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-///1==abcdeefgiinnrrssuvx
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
-학생 : !&&,,-013=aaaegirssstttuuw
-정답 : &&,,03==aaadegiiprssstttuuw
-학생 : wait3(&status,0,&rusage)!=-1
+원본 학생 : wait3(&status,0,&rusage)!=-1
 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&&,,-013=aaaegirssstttuuw
+정답 : &&,,03==aaadegiiprssstttuuw
 X - 오답입니다!
-학생 : rusageru_utime->
-정답 : &rusageru_utime->
-학생 : rusage->ru_utime
+원본 학생 : rusage->ru_utime
 정답 : &rusage->ru_utime
+변형 학생 : rusageru_utime->
+정답 : &rusageru_utime->
 X - 오답입니다!
 20190015 is finished.. score : 21.00
-학생 : *acehinnorrv
-정답 : **aceeehinnnorrrtvx
-학생 : char*environ
+원본 학생 : char*environ
 정답 : externchar**environ
+변형 학생 : *acehinnorrv
+정답 : **aceeehinnnorrrtvx
 X - 오답입니다!
-학생 : **einnpptv
-정답 : *[]acehnprv
-학생 : int**envpp
+원본 학생 : int**envpp
 정답 : char*envp[]
+변형 학생 : **einnpptv
+정답 : *[]acehnprv
 X - 오답입니다!
-학생 : ;putenv&envp(
-정답 : "TZPST8PDT"=putenv
-학생 : putenv(&envp);
+원본 학생 : putenv(&envp);
 정답 : putenv("TZ=PST8PDT")
+변형 학생 : ;putenv&envp(
+정답 : "TZPST8PDT"=putenv
 X - 오답입니다!
-학생 : *environ
-정답 : getenv"WARNING"(
-학생 : *environ
+원본 학생 : *environ
 정답 : getenv("WARNING")
+변형 학생 : *environ
+정답 : getenv"WARNING"(
 X - 오답입니다!
-학생 : #includesysstat.h/<>
-정답 : #includesyswait.h/<>
-학생 : #include<sys/stat.h>
+원본 학생 : #include<sys/stat.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includesysstat.h/<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : ".date"/"date",NULL,execlp
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("./date","date",NULL)
+원본 학생 : execlp("./date","date",NULL)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : ".date"/"date",NULL,execlp
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : ;".who"/"who",NULL,execlp
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("./who","who",NULL);
+원본 학생 : execlp("./who","who",NULL);
 정답 : execlp("who","who",(char*)0)
+변형 학생 : ;".who"/"who",NULL,execlp
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : (0==_aeimmrssstttt
-정답 : &(-1===_aaeimmrrsssstttttt
-학생 : times(tms_start)==0
+원본 학생 : times(tms_start)==0
 정답 : (start=times(&tms_start))==-1
+변형 학생 : (0==_aeimmrssstttt
+정답 : &(-1===_aaeimmrrsssstttttt
 X - 오답입니다!
-학생 : timestms_end(
-정답 : &(-1===_ddeeeimmnnsstt
-학생 : times(tms_end)
+원본 학생 : times(tms_end)
 정답 : (end=times(&tms_end))==-1
+변형 학생 : timestms_end(
+정답 : &(-1===_ddeeeimmnnsstt
 X - 오답입니다!
-학생 : includepthread.h<>
-정답 : #includepthread.h<>
-학생 : include<pthread.h>
+원본 학생 : include<pthread.h>
 정답 : #include<pthread.h>
+변형 학생 : includepthread.h<>
+정답 : #includepthread.h<>
 X - 오답입니다!
-학생 : !&&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid,NULL,&ssu_thread,NULL)!=0
+원본 학생 : pthread_create(&tid,NULL,&ssu_thread,NULL)!=0
 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : !&&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : getppid(;=tid
-정답 : tidpthread_self(=
-학생 : tid=getppid();
+원본 학생 : tid=getppid();
 정답 : tid=pthread_self()
+변형 학생 : getppid(;=tid
+정답 : tidpthread_self(=
 X - 오답입니다!
-학생 : !&&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid1,NULL,&ssu_thread1,NULL)!=0
+원본 학생 : pthread_create(&tid1,NULL,&ssu_thread1,NULL)!=0
 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : !&&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : !&&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,&ssu_thread2,NULL)!=0
+원본 학생 : pthread_create(&tid2,NULL,&ssu_thread2,NULL)!=0
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : !&&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : STDIN_FILENOO_NONBLOCK,
-정답 : STDOUT_FILENOO_NONBLOCK,
-학생 : STDIN_FILENO,O_NONBLOCK
+원본 학생 : STDIN_FILENO,O_NONBLOCK
 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : STDIN_FILENOO_NONBLOCK,
+정답 : STDOUT_FILENOO_NONBLOCK,
 X - 오답입니다!
-학생 : ,,-01===EFFGT_acdfflllntv
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(fd,F_GETFl,0))==-1
+원본 학생 : (val=fcntl(fd,F_GETFl,0))==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGT_acdfflllntv
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : flagsO_NONBLOCK|=
-정답 : valflags|=
-학생 : flags|=O_NONBLOCK
+원본 학생 : flags|=O_NONBLOCK
 정답 : val|=flags
+변형 학생 : flagsO_NONBLOCK|=
+정답 : valflags|=
 X - 오답입니다!
-학생 : ,,-1==EFFLST_aacffglllnstv
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(val,F_SETFL,flags)==-1
+원본 학생 : fcntl(val,F_SETFL,flags)==-1
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_aacffglllnstv
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : val~O_NONBLOCK&=
-정답 : val~flags&=
-학생 : val&=~O_NONBLOCK
+원본 학생 : val&=~O_NONBLOCK
 정답 : val&=~flags
+변형 학생 : val~O_NONBLOCK&=
+정답 : val~flags&=
 X - 오답입니다!
-학생 : fd1filename"rw",O_APPEND,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,"rw",O_APPEND))<0
+원본 학생 : (fd1=open(filename,"rw",O_APPEND))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filename"rw",O_APPEND,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : fnctl(fd1,F_SETFD,FD_CLOEXEC)==-1
+원본 학생 : fnctl(fd1,F_SETFD,FD_CLOEXEC)==-1
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 O - 정답입니다!
-학생 : flagO_APPEND&=
-정답 : &ADENOPP_afgl
-학생 : flag&=O_APPEND
+원본 학생 : flag&=O_APPEND
 정답 : flag&O_APPEND
+변형 학생 : flagO_APPEND&=
+정답 : &ADENOPP_afgl
 X - 오답입니다!
-학생 : flagFD_CLOEXEC&=
-정답 : &CCDEEFLOX_afgl
-학생 : flag&=FD_CLOEXEC
+원본 학생 : flag&=FD_CLOEXEC
 정답 : flag&FD_CLOEXEC
+변형 학생 : flagFD_CLOEXEC&=
+정답 : &CCDEEFLOX_afgl
 X - 오답입니다!
-학생 : sigset
+원본 학생 : sigset
 정답 : sigset_t
-학생 : sigset
+변형 학생 : sigset
 정답 : sigset_t
 X - 오답입니다!
-학생 : execv(
-정답 : "usr/bin/find"/args,execv0<
-학생 : execv(
+원본 학생 : execv(
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : execv(
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
 20190016 is finished.. score : 7.50
-학생 : 0execlpchar".date"/"date",*,
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("./date","date",(char*)0)
+원본 학생 : execlp("./date","date",(char*)0)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : 0execlpchar".date"/"date",*,
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : 0execlpvoid".who"/"where",*,
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("./who","where",(void*)0)
+원본 학생 : execlp("./who","where",(void*)0)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : 0execlpvoid".who"/"where",*,
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : !&(-1=aaisstttuw
-정답 : !&(-1==aadiipsstttuw
-학생 : wait(&status)!=-1
+원본 학생 : wait(&status)!=-1
 정답 : (pid=wait(&status))!=-1
+변형 학생 : !&(-1=aaisstttuw
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : pid1NULL,pthread_join
-정답 : tid1NULL,pthread_join
-학생 : pthread_join(pid1,NULL)
+원본 학생 : pthread_join(pid1,NULL)
 정답 : pthread_join(tid1,NULL)
+변형 학생 : pid1NULL,pthread_join
+정답 : tid1NULL,pthread_join
 X - 오답입니다!
-학생 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER|=
-정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
-학생 : pthread_mutex_tlock|=PTHREAD_MUTEX_INITIALIZER
+원본 학생 : pthread_mutex_tlock|=PTHREAD_MUTEX_INITIALIZER
 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER|=
+정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
 X - 오답입니다!
-학생 : fd1filenameO_RDWR,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR))<0
+원본 학생 : (fd1=open(filename,O_RDWR))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : &1ADENOPP_df
-정답 : &ADENOPP_afgl
-학생 : fd1&O_APPEND
+원본 학생 : fd1&O_APPEND
 정답 : flag&O_APPEND
+변형 학생 : &1ADENOPP_df
+정답 : &ADENOPP_afgl
 X - 오답입니다!
-학생 : &1CCDEEFLOX_df
-정답 : &CCDEEFLOX_afgl
-학생 : fd1&FD_CLOEXEC
+원본 학생 : fd1&FD_CLOEXEC
 정답 : flag&FD_CLOEXEC
+변형 학생 : &1CCDEEFLOX_df
+정답 : &CCDEEFLOX_afgl
 X - 오답입니다!
-학생 : "",-///1==abcdeefgiinnrrsuvvx
-정답 : "usr/bin/find"/args,execv0<
-학생 : execv("/usr/bin/find",argv)==-1
+원본 학생 : execv("/usr/bin/find",argv)==-1
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-///1==abcdeefgiinnrrsuvvx
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
 20190017 is finished.. score : 13.50
-학생 : **aceehinnnorrrtuvx
-정답 : **aceeehinnnorrrtvx
-학생 : exturnchar**environ
+원본 학생 : exturnchar**environ
 정답 : externchar**environ
+변형 학생 : **aceehinnnorrrtuvx
+정답 : **aceeehinnnorrrtvx
 X - 오답입니다!
-학생 : **acehnprv
-정답 : *[]acehnprv
-학생 : char**envp
+원본 학생 : char**envp
 정답 : char*envp[]
+변형 학생 : **acehnprv
+정답 : *[]acehnprv
 X - 오답입니다!
-학생 : Don`tuseenvpafterputenv"="WARNINGputenv
-정답 : Don'tuseenvpafterputenv"="WARNINGputenv
-학생 : putenv("WARNING=Don`tuseenvpafterputenv()")
+원본 학생 : putenv("WARNING=Don`tuseenvpafterputenv()")
 정답 : putenv("WARNING=Don'tuseenvpafterputenv()")
+변형 학생 : Don`tuseenvpafterputenv"="WARNINGputenv
+정답 : Don'tuseenvpafterputenv"="WARNINGputenv
 X - 오답입니다!
-학생 : pidwait&status(=0<
-정답 : !&(-1==aadiipsstttuw
-학생 : (pid=wait(&status))<0
+원본 학생 : (pid=wait(&status))<0
 정답 : (pid=wait(&status))!=-1
+변형 학생 : pidwait&status(=0<
+정답 : !&(-1==aadiipsstttuw
 X - 오답입니다!
-학생 : (0===dfikopr
-정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : (pid=fork())==0
+원본 학생 : (pid=fork())==0
 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : (0===dfikopr
+정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
-정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
+정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : tid10,pthread_join
-정답 : tid1NULL,pthread_join
-학생 : pthread_join(tid1,0)
+원본 학생 : pthread_join(tid1,0)
 정답 : pthread_join(tid1,NULL)
+변형 학생 : tid10,pthread_join
+정답 : tid1NULL,pthread_join
 X - 오답입니다!
-학생 : pthread_cond_signal&cond(
-정답 : &cond&lock,pthread_cond_wait
-학생 : pthread_cond_signal(&cond)
+원본 학생 : pthread_cond_signal(&cond)
 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : pthread_cond_signal&cond(
+정답 : &cond&lock,pthread_cond_wait
 X - 오답입니다!
-학생 : &cond&lock,pthread_cond_wait
-정답 : pthread_cond_signal&cond(
-학생 : pthread_cond_wait(&cond,&lock)
+원본 학생 : pthread_cond_wait(&cond,&lock)
 정답 : pthread_cond_signal(&cond)
+변형 학생 : &cond&lock,pthread_cond_wait
+정답 : pthread_cond_signal&cond(
 X - 오답입니다!
-학생 : STDOUT_FILENOFD_CLOEXEC,
-정답 : STDOUT_FILENOO_NONBLOCK,
-학생 : STDOUT_FILENO,FD_CLOEXEC
+원본 학생 : STDOUT_FILENO,FD_CLOEXEC
 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : STDOUT_FILENOFD_CLOEXEC,
+정답 : STDOUT_FILENOO_NONBLOCK,
 X - 오답입니다!
-학생 : ,,-01===EFFGLT_acdffllntv
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : valFD_CLOEXEC|=
-정답 : valflags|=
-학생 : val|=FD_CLOEXEC
+원본 학생 : val|=FD_CLOEXEC
 정답 : val|=flags
+변형 학생 : valFD_CLOEXEC|=
+정답 : valflags|=
 X - 오답입니다!
-학생 : ,,-1==EFFLST_acdffllntv
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(fd,F_SETFL,val)==-1
+원본 학생 : fcntl(fd,F_SETFL,val)==-1
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_acdffllntv
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : fd1filenameO_APPEND,0644,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_APPEND,0644))<0
+원본 학생 : (fd1=open(filename,O_APPEND,0644))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_APPEND,0644,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : sigempytset&sig_set(
-정답 : sigemptyset&sig_set(
-학생 : sigempytset(&sig_set)
+원본 학생 : sigempytset(&sig_set)
 정답 : sigemptyset(&sig_set)
+변형 학생 : sigempytset&sig_set(
+정답 : sigemptyset&sig_set(
 X - 오답입니다!
-학생 : SIG_NONBLOCK&sig_set,NULL,sigprocmask
-정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SIG_NONBLOCK,&sig_set,NULL)
+원본 학생 : sigprocmask(SIG_NONBLOCK,&sig_set,NULL)
 정답 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL)
+변형 학생 : SIG_NONBLOCK&sig_set,NULL,sigprocmask
+정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
-학생 : "find"args,execv0<
-정답 : "usr/bin/find"/args,execv0<
-학생 : execv("find",args)<0
+원본 학생 : execv("find",args)<0
 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "find"args,execv0<
+정답 : "usr/bin/find"/args,execv0<
 X - 오답입니다!
-학생 : WIFEXITED&stat(
-정답 : WIFEXITEDstat(
-학생 : WIFEXITED(&stat)
+원본 학생 : WIFEXITED(&stat)
 정답 : WIFEXITED(stat)
+변형 학생 : WIFEXITED&stat(
+정답 : WIFEXITEDstat(
 X - 오답입니다!
-학생 : WIFSIGNALED&stat(
-정답 : WIFSIGNALEDstat(
-학생 : WIFSIGNALED(&stat)
+원본 학생 : WIFSIGNALED(&stat)
 정답 : WIFSIGNALED(stat)
+변형 학생 : WIFSIGNALED&stat(
+정답 : WIFSIGNALEDstat(
 X - 오답입니다!
-20190018 is finished.. score : 11.50
-학생 : (null)
-정답 : **aceeehinnnorrrtvx
-학생 : 
+20190018 is finished.. score : 12.50
+원본 학생 : 
 정답 : externchar**environ
+변형 학생 : (null)
+정답 : **aceeehinnnorrrtvx
 X - 오답입니다!
-학생 : **[]acehnpprv
-정답 : *[]acehnprv
-학생 : char**envpp[]
+원본 학생 : char**envpp[]
 정답 : char*envp[]
+변형 학생 : **[]acehnpprv
+정답 : *[]acehnprv
 X - 오답입니다!
-학생 : #includesysstat.h/<>
-정답 : #includesyswait.h/<>
-학생 : #include<sys/stat.h>
+원본 학생 : #include<sys/stat.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includesysstat.h/<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : "date""date",NULL,execlp
-정답 : 0execlpchar"date""date",*,
-학생 : execlp("date","date",NULL)
+원본 학생 : execlp("date","date",NULL)
 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""date",NULL,execlp
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : "who""who",NULL,execlp
-정답 : 0execlpchar"who""who",*,
-학생 : execlp("who","who",NULL)
+원본 학생 : execlp("who","who",NULL)
 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who""who",NULL,execlp
+정답 : 0execlpchar"who""who",*,
 X - 오답입니다!
-학생 : &,,,022==LLLLNNUU__aaacdddeeeehhiprrrssttttu
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)==0
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)==0
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &,,,022==LLLLNNUU__aaacdddeeeehhiprrrssttttu
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : ptrhead_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
-정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
-학생 : ptrhead_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+원본 학생 : ptrhead_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : ptrhead_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
 X - 오답입니다!
-학생 : glo_valVALUE_STOP1<VALUE_STOPglo_val<||
-정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
-학생 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP
+원본 학생 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP
 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_valVALUE_STOP1<VALUE_STOPglo_val<||
+정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
 X - 오답입니다!
-학생 : ,,-01==EFFGLT_cdfflnt
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : fcntl(fd,F_GETFL,0)==-1
+원본 학생 : fcntl(fd,F_GETFL,0)==-1
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01==EFFGLT_cdfflnt
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : ,,-01==EFFLST_cdfflnt
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(fd,F_SETFL,0)==-1
+원본 학생 : fcntl(fd,F_SETFL,0)==-1
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-01==EFFLST_cdfflnt
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : fd1filenameO_RDWR,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR))<0
+원본 학생 : (fd1=open(filename,O_RDWR))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : ,,-0112===DEFFST_cddffflnt
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : (fd2=fcntl(fd1,F_SETFD,0))==-1
+원본 학생 : (fd2=fcntl(fd1,F_SETFD,0))==-1
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-0112===DEFFST_cddffflnt
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 X - 오답입니다!
-학생 : SIGINT&sig_set,NULL,sigprocmask
-정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SIGINT,&sig_set,NULL)
+원본 학생 : sigprocmask(SIGINT,&sig_set,NULL)
 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : SIGINT&sig_set,NULL,sigprocmask
+정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
-학생 : WEXITTERMstat(
-정답 : WIFEXITEDstat(
-학생 : WEXITTERM(stat)
+원본 학생 : WEXITTERM(stat)
 정답 : WIFEXITED(stat)
+변형 학생 : WEXITTERMstat(
+정답 : WIFEXITEDstat(
 X - 오답입니다!
-학생 : WSIGTERM
-정답 : WIFSIGNALEDstat(
-학생 : WSIGTERM
+원본 학생 : WSIGTERM
 정답 : WIFSIGNALED(stat)
+변형 학생 : WSIGTERM
+정답 : WIFSIGNALEDstat(
 X - 오답입니다!
 20190019 is finished.. score : 7.50
-학생 : **[]eeeinnnorrtvx
-정답 : **aceeehinnnorrrtvx
-학생 : extern**environ[]
+원본 학생 : extern**environ[]
 정답 : externchar**environ
+변형 학생 : **[]eeeinnnorrtvx
+정답 : **aceeehinnnorrrtvx
 X - 오답입니다!
-학생 : putenv"WARNING"(
-정답 : getenv"WARNING"(
-학생 : putenv("WARNING")
+원본 학생 : putenv("WARNING")
 정답 : getenv("WARNING")
+변형 학생 : putenv"WARNING"(
+정답 : getenv"WARNING"(
 X - 오답입니다!
-학생 : #includesysstat.h/<>
-정답 : #includesyswait.h/<>
-학생 : #include<sys/stat.h>
+원본 학생 : #include<sys/stat.h>
 정답 : #include<sys/wait.h>
+변형 학생 : #includesysstat.h/<>
+정답 : #includesyswait.h/<>
 X - 오답입니다!
-학생 : execlp(
-정답 : 0execlpchar"date""date",*,
-학생 : execlp(
+원본 학생 : execlp(
 정답 : execlp("date","date",(char*)0)
+변형 학생 : execlp(
+정답 : 0execlpchar"date""date",*,
 X - 오답입니다!
-학생 : &tidNULL,ssu_thread,NULL,pthread_creat
-정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_creat(&tid,NULL,ssu_thread,NULL)
+원본 학생 : pthread_creat(&tid,NULL,ssu_thread,NULL)
 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_creat
+정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid1NULL,ssu_thread1,NULL,pthread_create
-정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)
 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create
+정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : &tid2NULL,ssu_thread2,NULL,pthread_create
-정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
-학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)
 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create
+정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
 X - 오답입니다!
-학생 : valfdF_GETFD,0,fcntl=0<=
-정답 : valfdF_GETFL,0,fcntl=0<
-학생 : (val=fcntl(fd,F_GETFD,0))<=0
+원본 학생 : (val=fcntl(fd,F_GETFD,0))<=0
 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : valfdF_GETFD,0,fcntl=0<=
+정답 : valfdF_GETFL,0,fcntl=0<
 X - 오답입니다!
-학생 : fdF_SETFD,val,fcntl
-정답 : fdF_SETFL,val,fcntl0<
-학생 : fcntl(fd,F_SETFD,val)
+원본 학생 : fcntl(fd,F_SETFD,val)
 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : fdF_SETFD,val,fcntl
+정답 : fdF_SETFL,val,fcntl0<
 X - 오답입니다!
-학생 : fd1filenameO_RDWR,open=0<
-정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
-학생 : (fd1=open(filename,O_RDWR))<0
+원본 학생 : (fd1=open(filename,O_RDWR))<0
 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
 X - 오답입니다!
-학생 : ,,-011===EFFGLT_acdfffgllnt
-정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
-학생 : (flag=fcntl(fd1,F_GETFL,0))==-1
+원본 학생 : (flag=fcntl(fd1,F_GETFL,0))==-1
 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-011===EFFGLT_acdfffgllnt
+정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
 X - 오답입니다!
-학생 : &sig_setSIG,sigaddset
-정답 : &sig_setSIGINT,sigaddset
-학생 : sigaddset(&sig_set,SIG)
+원본 학생 : sigaddset(&sig_set,SIG)
 정답 : sigaddset(&sig_set,SIGINT)
+변형 학생 : &sig_setSIG,sigaddset
+정답 : &sig_setSIGINT,sigaddset
 X - 오답입니다!
-학생 : SIG_SETMASKsig_set,NULL,sigprocmask
-정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SIG_SETMASK,sig_set,NULL)
+원본 학생 : sigprocmask(SIG_SETMASK,sig_set,NULL)
 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : SIG_SETMASKsig_set,NULL,sigprocmask
+정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
-학생 : SIG_UNBLOCKsig_set,NULL,sigprocmask
-정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
-학생 : sigprocmask(SIG_UNBLOCK,sig_set,NULL)
+원본 학생 : sigprocmask(SIG_UNBLOCK,sig_set,NULL)
 정답 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL)
+변형 학생 : SIG_UNBLOCKsig_set,NULL,sigprocmask
+정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
 X - 오답입니다!
 20190020 is finished.. score : 12.00
 Total average : 13.88
-Runtime : 105:073592(sec:usec)
+Runtime : 105:227329(sec:usec)
