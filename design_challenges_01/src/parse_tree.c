@@ -3,27 +3,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#define NUMBER_OF_OPERATORS 31
-
-int priority[NUMBER_OF_OPERATORS] = {0, 0, 8, 8, 7, 7, 6, 6, 2, 1, 0, 0, 0, 0, 0, 0, 99, 10, 10, 10, 9, 9, 7, 7, 5, 4, 3, 0, 99, 99, -1};
-char operator[NUMBER_OF_OPERATORS][4] = {"<<=", ">>=","<<", ">>","<=", ">=",  "==", "!=", "&&", "||", "+=", "*=", "/=", "%=", "&=", "|=", "->", "*", "/", "%", "+", "-",  "<",  ">", "&", "^", "|",  "=", "(", ")", ","};
-bool operator_swapable[NUMBER_OF_OPERATORS] = {false, false, false, false, false, false, true, true, true, true, false, false, false, false, false, false, false, true, false, false, true, false, false, false, true, true, true, false, false, false, false};
-int operator_convable[NUMBER_OF_OPERATORS] = {-1,-1,-1,-1,-1,4,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 22,-1,-1,-1,-1,-1,-1,-1};
-char operator_onebyte[NUMBER_OF_OPERATORS] = {(char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10, (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, '*', '/', '%', '+', '-',  '<',  '>', '&', '^', '|', '=', '(', ')', ','};
-
-typedef struct { 
-	char *stream;
-	int number_of_tokens; // 토큰 갯수
-	char *tokens[1024]; // 각 토큰들의 시작 위치 포인터
-	int tokens_length[1024]; // 각 토큰들의 길이 (연산자는 무조건 1일 것이다..)
-	bool is_operator[1024]; // 토큰이 연산자인 경우에는 true, 아니면 false
-} _container;
-
-typedef struct {
-	char elem[1024];
-	bool is_operator;
-	bool is_pure_swapable;
-} _token;
+#include "parse_tree.h"
 
 void normalize2(char *text)
 {
@@ -137,10 +117,7 @@ void norm_onebyte_op(_container *container)
 	}
 }
 
-typedef struct {
-	int top;
-	_token *stack_data[301]; // 토큰들을 담는다...
-} stackString;
+
 
 void st2_push(stackString *stk, _token* data)
 {
@@ -171,14 +148,6 @@ _token* st2_pop(stackString *stk)
 	return ret;
 }
 
-int get_priority(char op)
-{
-	for (int i = 0; i < NUMBER_OF_OPERATORS; i++) {
-		if (operator_onebyte[i] == op) return priority[i];
-	}
-	return -1;
-}
-
 char *make_string(char *text, int len)
 {
 	char *alloc = calloc(len+4, sizeof(char));
@@ -194,7 +163,8 @@ char *make_string(char *text, int len)
 	return alloc;
 }
 
-int get_priority_str(char *opstring) {
+int get_priority_str(char *opstring)
+{
 	for (int i = 0; i < NUMBER_OF_OPERATORS; i++) {
 		if (strcmp(opstring, operator[i]) == 0) return priority[i];
 	}
@@ -202,21 +172,19 @@ int get_priority_str(char *opstring) {
 }
 
 // 문자열이 operation인 경우 해당 operation의 위치를 알려주고 operation이 아닌 경우 -1을 리턴한다.
-int is_operation_str(char *opstring) {
+int is_operation_str(char *opstring)
+{
 	for (int i = 0; i < NUMBER_OF_OPERATORS; i++) {
 		if (strcmp(opstring, operator[i]) == 0) return i;
 	}
 	return -1;
 }
 
-typedef struct {
-	char **tokens;
-	bool is_operator[1024];
-	int length;
-} _tokens;
+
 
 // 입력 : 문자열 , 출력 : 토큰들의 집합, 토큰들 갯수
-_tokens token_seperation(_container *container, char *buf) {
+_tokens token_seperation(_container *container, char *buf)
+{
 	
 	_tokens tokens;
 	container->stream = buf;
@@ -236,7 +204,8 @@ _tokens token_seperation(_container *container, char *buf) {
 }
 
 // 입력 : 들어온 토큰들, 출력 : 포스트픽스로 정렬된 토콘, 그 토큰 수
-_token **postfix_expression(_tokens *tokens, int *ret_len) {
+_token **postfix_expression(_tokens *tokens, int *ret_len)
+{
 	stackString stk;
 	stk.top = -1;
 	int len = tokens->length;
@@ -303,7 +272,8 @@ int p_str_compare(const void* a, const void* b)
 }
 
 // 입력 : _token ** newTokenElem 의 토큰 데이터, 토큰 수 , 출력 : 완성된 char *
-char *postfix_regulization(_token **newTokenElem, int len) {
+char *postfix_regulization(_token **newTokenElem, int len)
+{
 	stackString stk2;
 	stk2.top = -1;
 	for (int i = 0; i < len; i++) {
