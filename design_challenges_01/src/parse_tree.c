@@ -22,7 +22,7 @@ typedef struct {
 typedef struct {
 	char elem[1024];
 	bool is_operator;
-	//bool is_pure_swapable;
+	bool is_pure_swapable;
 } _token;
 
 void normalize2(char *text)
@@ -247,7 +247,7 @@ _token **postfix_expression(_tokens *tokens, int *ret_len) {
 			_token *a = (_token *)calloc(1, sizeof(_token));
 			strncpy(a->elem, tokens->tokens[i], 100);
 			a->is_operator = true;
-			//a->is_pure_swapable = false;
+			a->is_pure_swapable = false;
 			st2_push(&stk, a);
 		}
 		else if (tokens->tokens[i][0] == ')') {
@@ -273,14 +273,14 @@ _token **postfix_expression(_tokens *tokens, int *ret_len) {
 			_token *a = (_token *)calloc(1, sizeof(_token));
 			strncpy(a->elem, tokens->tokens[i], 100);
 			a->is_operator = true;
-			//a->is_pure_swapable = operator_swapable[is_operation_str(tokens->tokens[i])];
+			a->is_pure_swapable = operator_swapable[is_operation_str(tokens->tokens[i])];
 			st2_push(&stk, a);
 		}
 		else {
 			_token *a = (_token *)calloc(1, sizeof(_token));
 			strncpy(a->elem, tokens->tokens[i], 100);
 			a->is_operator = false;
-			//a->is_pure_swapable = false;
+			a->is_pure_swapable = true;
 			newTokenElem[chasePtr++] = a;
 		}
 	}
@@ -322,7 +322,7 @@ char *postfix_regulization(_token **newTokenElem, int len) {
 				if (operator_convable[op] != -1) {
 					// 컨버저블
 					newElem->is_operator = false;
-					//newElem->is_pure_swapable = false;
+					newElem->is_pure_swapable = false;
 					strcat(newElem->elem, pop1->elem);
 					strcat(newElem->elem, pop2->elem);
 					strcat(newElem->elem, operator[operator_convable[op]]);
@@ -337,15 +337,16 @@ char *postfix_regulization(_token **newTokenElem, int len) {
 					}
 						strcat(newElem->elem, curr->elem);
 					// 피연산자 둘다 스왑어블이면 둘을 섞는다.
-					/*if (pop1->is_pure_swapable && pop2->is_pure_swapable) {
+					// printf("스왑어블\n");
+					if (pop1->is_pure_swapable && pop2->is_pure_swapable) {
 						newElem->is_pure_swapable = true;
 						// 섞어준다.
-						printf("쉐킷");
+						// printf("쉐킷\n");
 						qsort(newElem->elem, strlen(newElem->elem), sizeof(char), p_str_compare);
-					}*/
+					}
 				} else {
 					newElem->is_operator = false;
-					//newElem->is_pure_swapable = false;
+					newElem->is_pure_swapable = false;
 					strcat(newElem->elem, pop2->elem);
 					strcat(newElem->elem, pop1->elem);
 					strcat(newElem->elem, curr->elem);
@@ -354,7 +355,7 @@ char *postfix_regulization(_token **newTokenElem, int len) {
 			} else {
 				_token *newElem = (_token *)calloc(1, sizeof(_token));
 				newElem->is_operator = false;
-				//newElem->is_pure_swapable = false;
+				newElem->is_pure_swapable = false;
 				if (pop1) {
 					strcat(newElem->elem, pop1->elem);
 					strcat(newElem->elem, curr->elem);
@@ -366,7 +367,7 @@ char *postfix_regulization(_token **newTokenElem, int len) {
 				} else {
 					_token *newElem = (_token *)calloc(1, sizeof(_token));
 					newElem->is_operator = false;
-					//newElem->is_pure_swapable = false;
+					newElem->is_pure_swapable = false;
 					strcat(newElem->elem, curr->elem);
 					st2_push(&stk2, newElem);
 				}
