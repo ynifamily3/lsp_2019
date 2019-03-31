@@ -399,6 +399,8 @@ int main(int argc, char *argv[])
 	// 메모리 해제
 	for (int i = 0; i < tokens.length; i++) {
 		free(tokens.tokens[i]);
+	}
+	for (int i = 0; i < len; i++) {
 		free(newTokenElem[i]);
 	}
 	free(tokens.tokens);
