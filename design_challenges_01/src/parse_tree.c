@@ -380,21 +380,84 @@ char *postfix_regulization(_token **newTokenElem, int len) {
 	return ret;
 }
 
-// 이걸 하나의 함수로 만들고 재귀적으로 부르면 괄호 / 함수 문제 해결할 수 있을 것 같다.
-
-int main(int argc, char *argv[])
+char *mpt(char *string)
 {
+	if(!string || strlen(string)==0) return NULL;
 	_container container; // 토큰 분리 전
 	_tokens tokens; // 토큰 분리하고 나서 후위 전 // 안쪽에 char ** 있음
 	_token **newTokenElem; // 후위 연산 후
 	char *result;
-	char buf[100];
-	strcpy(buf, argv[1]);
+	char buf[1024];
+	strncpy(buf, string, 1024);
 	tokens = token_seperation(&container, buf);
+
+	// 분리된 토큰에서 () 내용은 따로 mpt한 다음 토큰으로 다시 편입해준다.
+	// 만약 () 앞이 함수명이라면 그거랑 같이 편입한다..
+	// ( 앞이 연산자가 아니면 된다!
+	/*
+		[-1] [==] [open] [(fd, O_RDONLY|O_CREAT)]
+		에서 3번째 내용을 편집하고 다시 토큰으로 편입
+	*/
+	int bracket_depth = 0;
+	int ptr1 = -1, ptr2 = -1;
+	for (int i = 0; i < tokens.length; i++) {
+		if (tokens.is_operator[i] && tokens.tokens[i][0] == '(') {
+			// 다음 닫는 괄호를 찾는다.
+			++bracket_depth;
+			if(bracket_depth == 1) {
+				ptr1 = i;
+			}
+		}
+		if (tokens.is_operator[i] && tokens.tokens[i][0] == ')') {
+			--bracket_depth;
+			if (bracket_depth == 0) {
+				ptr2 = i;
+			}
+		}
+	}
+	if(ptr1 != -1 && ptr2!=-1) {
+		// 괄호를 찾음 내부적으로 mpt 를 한다.
+		if (ptr1 !=0 && !tokens.is_operator[ptr1-1]) {
+			//printf("함수 호출 같습니다. %s(...)\n", tokens.tokens[ptr1-1]);
+			ptr1 = ptr1-1;
+		}
+		int insert_pos = ptr1;
+		char buf[1024] = "";
+		for (ptr1++;ptr1!=ptr2;ptr1++) {
+			strncat(buf, tokens.tokens[ptr1], 1024);
+		}
+		//printf("%s\n", buf);
+		char *subroutine = mpt(buf);
+		//printf("{%s}\n", subroutine);
+		tokens.is_operator[insert_pos] = false;
+		free(tokens.tokens[insert_pos]); // 기존 내용을 덮어쓰므로 메모리 해제
+		tokens.tokens[insert_pos] = subroutine;
+
+		// 배열 덮어쓰기 전
+		//printf("비포 : ");
+		//for (int i = 0; i < tokens.length; i++) {
+		//	printf("[%s]: %d ", tokens.tokens[i], tokens.is_operator[i]);
+		//}
+
+		tokens.length -= (ptr2-insert_pos); // 내용, 닫는 괄호 제거
+		for (int i = insert_pos+1; i < tokens.length; i++) {
+			tokens.is_operator[i] = tokens.is_operator[i+(ptr2-insert_pos)];
+			tokens.tokens[i] = tokens.tokens[i+(ptr2-insert_pos)];
+		}
+
+		//printf("결과 토큰 출력 : \n");
+		//for (int i = 0; i < tokens.length; i++) {
+		//	printf("[%s] ", tokens.tokens[i]);
+		//}
+		//printf("\n");
+
+	}
+
+
+
 	int len;
 	newTokenElem = postfix_expression(&tokens, &len);
 	result = postfix_regulization(newTokenElem, len);
-	printf("%s\n", result);
 	
 	// 메모리 해제
 	for (int i = 0; i < tokens.length; i++) {
@@ -405,5 +468,16 @@ int main(int argc, char *argv[])
 	}
 	free(tokens.tokens);
 	free(newTokenElem);
+	return result;
+}
+
+// 이걸 하나의 함수로 만들고 재귀적으로 부르면 괄호 / 함수 문제 해결할 수 있을 것 같다.
+
+int main(int argc, char *argv[])
+{
+	char *res = mpt(argv[1]);
+	if(res)
+	printf("%s\n", res);
+	free(res);
 	return 0;
 }
