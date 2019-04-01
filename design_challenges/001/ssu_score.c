@@ -223,23 +223,24 @@ void set_students_info()
 
 void normalize(char *text, int mode)
 {
-	// mode 0 : 개행, 공백 없앰, 알파벳 대소문자 유지
-	// mode 1 : 개행, 공백 없앰, 알파벳 대->소문자 전환
-	// mode 2 : 공백만 없앰, 알파벳 대->소문자 전환
+	// mode 0 : 마지막 개행, ' ' 없앰, 알파벳 대소문자 유지
+	// mode 1 : 마지막 개행, ' ' 없앰, 알파벳 대->소문자 전환
 	int i, j;
 	for (i = 0, j = 0; text[i] != 0; i++,j++) {
-		// 텍스트 정답비교 문제로 개행문자까지 무시해 보았다.
-		//if (text[i] == '\n' || !isspace(text[i])) {
-		if ( (mode==2&&text[i] == '\n') || !isspace(text[i])) {
+		if (text[i] != ' ') {
 			// lower normalize
 			char t = text[i];
 			if(mode >= 1)
 				if (t >= 'A' && t <= 'Z') t += 32;
 			text[j] = t;
 		}
-		else
+		else {
+			// ' ' 없앰
 			j--;
+		}
 	}
+	if (j-1 >= 0 && text[j-1] == '\n') text[j-1] = '\0';
+	// 마지막 라인의 개행은 무시
 	text[j] = '\0';
 }
 
@@ -341,7 +342,7 @@ void extract_answer(int index, char *ansdir)
 			fprintf(stderr, "reading file error... %s\n", gcc_command);
 		}
 		// normalize C program output answer
-		normalize(answers[index], 2);
+		normalize(answers[index], 1);
 		close(fd_c);
 	}
 	else {
@@ -526,13 +527,13 @@ double codeCMP(int question_index, char *dirname)
 		} else {
 			// take parse tree
 			//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-			//printf("%d\n학생 : [%s]\n정답 : [%s]\n",question_index, stu_buf, answer_start_pointer[i]);
+			printf("%d정규화 전\n학생 : [%s]\n정답 : [%s]\n",question_index, stu_buf, answer_start_pointer[i]);
 			//getchar();
 			char *treeR = mpt(answer_start_pointer[i]);
 			char *treeL = mpt(stu_buf);
-			//printf("정규화 후\n");
-			//printf("원본 학생 : %s\n정답 : %s\n", stu_buf, answer_start_pointer[i]);
-			//printf("변형 학생 : %s\n정답 : %s\n", treeL, treeR);
+			printf("정규화 후\n");
+			printf("원본 학생 : %s\n원본 정답 : %s\n", stu_buf, answer_start_pointer[i]);
+			printf("변형 학생 : %s\n변형 정답 : %s\n", treeL, treeR);
 			if(!treeL) {
 				free(treeR);
 				break;
@@ -694,7 +695,7 @@ double compile_and_return_result(int student_index, int question_index, char *di
 	size_t off = 0;
 	while ((len = read(student_fd, ansbuf, 100)) > 0) {
 		ansbuf[len] = '\0';
-		normalize(ansbuf, 2); // 개행은 남겨놓음
+		normalize(ansbuf, 1);
 		len = strlen(ansbuf);
 		ansbuf[len] = '\0';
 		//fprintf(stderr, " 길이 ? : %ld\n", len);

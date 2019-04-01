@@ -13,10 +13,9 @@ char operator_onebyte[NUMBER_OF_OPERATORS] = {(char)1, (char)2, (char)3, (char)4
 
 void normalize2(char *text)
 {
-	// '공백'만 제거
 	int i, j;
 	for (i = 0, j = 0; text[i] != 0; i++,j++) {
-		if ( (text[i]>=1 && text[i]<=17) || text[i] != ' ') {
+		if ( (text[i]>=1 && text[i]<=17) || !isspace(text[i])) {
 			char t = text[i];
 			text[j] = t;
 		}
@@ -444,4 +443,15 @@ char *mpt(char *string)
 	free(tokens.tokens);
 	free(newTokenElem);
 	return result;
+}
+
+int main(int argc, char *argv[])
+{
+	for (int i = 1; i < argc; i++) {
+		char *res = mpt(argv[i]);
+		if(res)
+		printf("%s\n", res);
+		free(res);
+	}
+	return 0;
 }

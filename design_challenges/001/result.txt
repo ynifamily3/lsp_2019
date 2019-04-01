@@ -1,0 +1,2911 @@
+Preparing Answer data...
+Grading Student's test papers..
+1정규화 전
+학생 : [char**envp]
+정답 : [char*envp[]]
+정규화 후
+원본 학생 : char**envp
+원본 정답 : char*envp[]
+변형 학생 : **acehnprv
+변형 정답 : *[]acehnprv
+4정규화 전
+학생 : [geten("WARNING")]
+정답 : [getenv("WARNING")]
+정규화 후
+원본 학생 : geten("WARNING")
+원본 정답 : getenv("WARNING")
+변형 학생 : geten"WARNING"(
+변형 정답 : getenv"WARNING"(
+5정규화 전
+학생 : [#include<time.h>]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<time.h>
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includetime.h<>
+변형 정답 : #includesyswait.h/<>
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : 0execlpchar"date""date",*,
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("date","date",0)]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("date","date",0)
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : "date""date",0,execlp
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("date","date")]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("date","date")
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : "date""date",execlp
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("date","date",NULL)]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("date","date",NULL)
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : "date""date",NULL,execlp
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("/bin/date","date",NULL)]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("/bin/date","date",NULL)
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : "bin/date"/"date",NULL,execlp
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("date","date",(char*)0);]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("date","date",(char*)0);
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : ;0execlpchar"date""date",*,
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("date","date",0);]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("date","date",0);
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : ;"date""date",0,execlp
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("date","date");]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("date","date");
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : ;"date""date",execlp
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("date","date",NULL);]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("date","date",NULL);
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : ;"date""date",NULL,execlp
+6정규화 전
+학생 : [execlp("date","date",(void*)0)]
+정답 : [execlp("/bin/date","date",NULL);]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0)
+원본 정답 : execlp("/bin/date","date",NULL);
+변형 학생 : 0execlpvoid"date""date",*,
+변형 정답 : ;"bin/date"/"date",NULL,execlp
+7정규화 전
+학생 : [execlp("who","who",(void*)0)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("who","who",(void*)0)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : 0execlpvoid"who""who",*,
+변형 정답 : 0execlpchar"who""who",*,
+7정규화 전
+학생 : [execlp("who","who",(void*)0)]
+정답 : [execlp("who","who",0)]
+정규화 후
+원본 학생 : execlp("who","who",(void*)0)
+원본 정답 : execlp("who","who",0)
+변형 학생 : 0execlpvoid"who""who",*,
+변형 정답 : "who""who",0,execlp
+7정규화 전
+학생 : [execlp("who","who",(void*)0)]
+정답 : [execlp("who","who")]
+정규화 후
+원본 학생 : execlp("who","who",(void*)0)
+원본 정답 : execlp("who","who")
+변형 학생 : 0execlpvoid"who""who",*,
+변형 정답 : "who""who",execlp
+7정규화 전
+학생 : [execlp("who","who",(void*)0)]
+정답 : [execlp("who","who",NULL)]
+정규화 후
+원본 학생 : execlp("who","who",(void*)0)
+원본 정답 : execlp("who","who",NULL)
+변형 학생 : 0execlpvoid"who""who",*,
+변형 정답 : "who""who",NULL,execlp
+7정규화 전
+학생 : [execlp("who","who",(void*)0)]
+정답 : [execlp("who","who",(char*)0);]
+정규화 후
+원본 학생 : execlp("who","who",(void*)0)
+원본 정답 : execlp("who","who",(char*)0);
+변형 학생 : 0execlpvoid"who""who",*,
+변형 정답 : ;0execlpchar"who""who",*,
+7정규화 전
+학생 : [execlp("who","who",(void*)0)]
+정답 : [execlp("who","who",0);]
+정규화 후
+원본 학생 : execlp("who","who",(void*)0)
+원본 정답 : execlp("who","who",0);
+변형 학생 : 0execlpvoid"who""who",*,
+변형 정답 : ;"who""who",0,execlp
+7정규화 전
+학생 : [execlp("who","who",(void*)0)]
+정답 : [execlp("who","who");]
+정규화 후
+원본 학생 : execlp("who","who",(void*)0)
+원본 정답 : execlp("who","who");
+변형 학생 : 0execlpvoid"who""who",*,
+변형 정답 : ;"who""who",execlp
+7정규화 전
+학생 : [execlp("who","who",(void*)0)]
+정답 : [execlp("who","who",NULL);]
+정규화 후
+원본 학생 : execlp("who","who",(void*)0)
+원본 정답 : execlp("who","who",NULL);
+변형 학생 : 0execlpvoid"who""who",*,
+변형 정답 : ;"who""who",NULL,execlp
+8정규화 전
+학생 : [(pid=getpid())==0]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : (pid=getpid())==0
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : (0===ddegiippt
+변형 정답 : !&(-1==aadiipsstttuw
+8정규화 전
+학생 : [(pid=getpid())==0]
+정답 : [(pid=wait(&status))<0]
+정규화 후
+원본 학생 : (pid=getpid())==0
+원본 정답 : (pid=wait(&status))<0
+변형 학생 : (0===ddegiippt
+변형 정답 : pidwait&status(=0<
+8정규화 전
+학생 : [(pid=getpid())==0]
+정답 : [(pid=wait(&status))>0]
+정규화 후
+원본 학생 : (pid=getpid())==0
+원본 정답 : (pid=wait(&status))>0
+변형 학생 : (0===ddegiippt
+변형 정답 : 0pidwait&status(=<
+8정규화 전
+학생 : [(pid=getpid())==0]
+정답 : [(pid=wait((int*)0))!=-1]
+정규화 후
+원본 학생 : (pid=getpid())==0
+원본 정답 : (pid=wait((int*)0))!=-1
+변형 학생 : (0===ddegiippt
+변형 정답 : !*-01==adiiinpttw
+10정규화 전
+학생 : [(start=times(&tms_start))==0]
+정답 : [(start=times(&tms_start))==-1]
+정규화 후
+원본 학생 : (start=times(&tms_start))==0
+원본 정답 : (start=times(&tms_start))==-1
+변형 학생 : &(0===_aaeimmrrsssstttttt
+변형 정답 : &(-1===_aaeimmrrsssstttttt
+10정규화 전
+학생 : [(start=times(&tms_start))==0]
+정답 : [(start=times(&tms_start))<0]
+정규화 후
+원본 학생 : (start=times(&tms_start))==0
+원본 정답 : (start=times(&tms_start))<0
+변형 학생 : &(0===_aaeimmrrsssstttttt
+변형 정답 : starttimes&tms_start(=0<
+11정규화 전
+학생 : [(end=times(&tms_end))==0]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : (end=times(&tms_end))==0
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : &(0===_ddeeeimmnnsstt
+변형 정답 : &(-1===_ddeeeimmnnsstt
+11정규화 전
+학생 : [(end=times(&tms_end))==0]
+정답 : [(end=times(&tms_end))<0]
+정규화 후
+원본 학생 : (end=times(&tms_end))==0
+원본 정답 : (end=times(&tms_end))<0
+변형 학생 : &(0===_ddeeeimmnnsstt
+변형 정답 : endtimes&tms_end(=0<
+25정규화 전
+학생 : [STDIN_FILENO,O_NONBLOCK]
+정답 : [STDOUT_FILENO,O_NONBLOCK]
+정규화 후
+원본 학생 : STDIN_FILENO,O_NONBLOCK
+원본 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : STDIN_FILENOO_NONBLOCK,
+변형 정답 : STDOUT_FILENOO_NONBLOCK,
+25정규화 전
+학생 : [STDIN_FILENO,O_NONBLOCK]
+정답 : [1,O_NONBLOCK]
+정규화 후
+원본 학생 : STDIN_FILENO,O_NONBLOCK
+원본 정답 : 1,O_NONBLOCK
+변형 학생 : STDIN_FILENOO_NONBLOCK,
+변형 정답 : 1O_NONBLOCK,
+26정규화 전
+학생 : [(val=fcntl(fd,F_GETFL,0))==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+27정규화 전
+학생 : [val|=O_NONBLOCK]
+정답 : [val|=flags]
+정규화 후
+원본 학생 : val|=O_NONBLOCK
+원본 정답 : val|=flags
+변형 학생 : valO_NONBLOCK|=
+변형 정답 : valflags|=
+27정규화 전
+학생 : [val|=O_NONBLOCK]
+정답 : [val=val|flags]
+정규화 후
+원본 학생 : val|=O_NONBLOCK
+원본 정답 : val=val|flags
+변형 학생 : valO_NONBLOCK|=
+변형 정답 : valaafgllsv|=
+27정규화 전
+학생 : [val|=O_NONBLOCK]
+정답 : [val|=flags;]
+정규화 후
+원본 학생 : val|=O_NONBLOCK
+원본 정답 : val|=flags;
+변형 학생 : valO_NONBLOCK|=
+변형 정답 : valflags;|=
+27정규화 전
+학생 : [val|=O_NONBLOCK]
+정답 : [val=val|flags;]
+정규화 후
+원본 학생 : val|=O_NONBLOCK
+원본 정답 : val=val|flags;
+변형 학생 : valO_NONBLOCK|=
+변형 정답 : val;aafgllsv|=
+28정규화 전
+학생 : [fcntl(fd,F_SETFL,val)==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(fd,F_SETFL,val)==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_acdffllntv
+변형 정답 : fdF_SETFL,val,fcntl0<
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val&=~flags]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val&=~flags
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val~flags&=
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val=val&~flags]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val=val&~flags
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val&aafgllsv~=
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val=val&(~flags)]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val=val&(~flags)
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val&aafgllsv~=
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val&=~flags;]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val&=~flags;
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val~flags;&=
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val=val&~flags;]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val=val&~flags;
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val&;aafgllsv~=
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val=val&(~flags);]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val=val&(~flags);
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val&;afgls~=val
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR))<0]
+정답 : [(fd1=open(filename,O_APPEND|O_RDWR))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR))<0
+원본 정답 : (fd1=open(filename,O_APPEND|O_RDWR))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,open=0<
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR))<0]
+정답 : [(fd1=open(filename,O_APPEND|O_RDWR))==-1]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR))<0
+원본 정답 : (fd1=open(filename,O_APPEND|O_RDWR))==-1
+변형 학생 : fd1filenameO_RDWR,open=0<
+변형 정답 : ,-11===ADDENOOPPRRW__adeeeffilmnnop|
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))==-1]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))==-1
+변형 학생 : fd1filenameO_RDWR,open=0<
+변형 정답 : ,,-011446===ADDENOOPPRRW__adeeeffilmnnop|
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_CREAT|O_TRUNC|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_CREAT|O_TRUNC|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+변형 정답 : fd1filenameAACCDDEENNOOOOPPRRRRTTUW____|||,0644,open=0<
+31정규화 전
+학생 : [(flag=fcntl(fd1,F_SETFD,0))==-1]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : (flag=fcntl(fd1,F_SETFD,0))==-1
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-011===DEFFST_acdfffgllnt
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+31정규화 전
+학생 : [(flag=fcntl(fd1,F_SETFD,0))==-1]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)<0]
+정규화 후
+원본 학생 : (flag=fcntl(fd1,F_SETFD,0))==-1
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+변형 학생 : ,,-011===DEFFST_acdfffgllnt
+변형 정답 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
+38정규화 전
+학생 : [sigprocmask(SOG_BLOCK,&sig_set,NULL)]
+정답 : [sigprocmask(SIG_BLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SOG_BLOCK,&sig_set,NULL)
+원본 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : SOG_BLOCK&sig_set,NULL,sigprocmask
+변형 정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
+38정규화 전
+학생 : [sigprocmask(SOG_BLOCK,&sig_set,NULL)]
+정답 : [sigprocmask(SIG_BLOCK,&sig_set,NULL);]
+정규화 후
+원본 학생 : sigprocmask(SOG_BLOCK,&sig_set,NULL)
+원본 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL);
+변형 학생 : SOG_BLOCK&sig_set,NULL,sigprocmask
+변형 정답 : ;SIG_BLOCK&sig_set,NULL,sigprocmask
+40정규화 전
+학생 : [exec("find",args,(void*)0)]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : exec("find",args,(void*)0)
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : 0execvoid"find"args,*,
+변형 정답 : "usr/bin/find"/args,execv0<
+40정규화 전
+학생 : [exec("find",args,(void*)0)]
+정답 : [execv("find",args)<0]
+정규화 후
+원본 학생 : exec("find",args,(void*)0)
+원본 정답 : execv("find",args)<0
+변형 학생 : 0execvoid"find"args,*,
+변형 정답 : "find"args,execv0<
+40정규화 전
+학생 : [exec("find",args,(void*)0)]
+정답 : [execv("/usr/bin/find",args)==-1]
+정규화 후
+원본 학생 : exec("find",args,(void*)0)
+원본 정답 : execv("/usr/bin/find",args)==-1
+변형 학생 : 0execvoid"find"args,*,
+변형 정답 : "",-///1==abcdeefgiinnrrssuvx
+40정규화 전
+학생 : [exec("find",args,(void*)0)]
+정답 : [execv("find",args)==-1]
+정규화 후
+원본 학생 : exec("find",args,(void*)0)
+원본 정답 : execv("find",args)==-1
+변형 학생 : 0execvoid"find"args,*,
+변형 정답 : "",-1==acdeefginrsvx
+41정규화 전
+학생 : [wait3(&status,0,rusage)]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,rusage)
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &status0,rusage,wait3
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+20190001 is finished..
+4정규화 전
+학생 : [Don'tuseenvpaferputenv()]
+정답 : [getenv("WARNING")]
+정규화 후
+원본 학생 : Don'tuseenvpaferputenv()
+원본 정답 : getenv("WARNING")
+변형 학생 : Don'tuseenvpaferputenv(
+변형 정답 : getenv"WARNING"(
+6정규화 전
+학생 : [execlp(&child1)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp(&child1)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : execlp&child1(
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp(&child2)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp(&child2)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : execlp&child2(
+변형 정답 : 0execlpchar"who""who",*,
+8정규화 전
+학생 : [wait(&pid)]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : wait(&pid)
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : wait&pid(
+변형 정답 : !&(-1==aadiipsstttuw
+10정규화 전
+학생 : [time(NULL)<0]
+정답 : [(start=times(&tms_start))==-1]
+정규화 후
+원본 학생 : time(NULL)<0
+원본 정답 : (start=times(&tms_start))==-1
+변형 학생 : timeNULL(0<
+변형 정답 : &(-1===_aaeimmrrsssstttttt
+11정규화 전
+학생 : [time(NULL)<0]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : time(NULL)<0
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : timeNULL(0<
+변형 정답 : &(-1===_ddeeeimmnnsstt
+13정규화 전
+학생 : [pthread_create(&tid,NULL,ssu_thread,NULL)<0]
+정답 : [pthread_create(&tid,NULL,ssu_thread,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
+원본 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
+변형 정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+14정규화 전
+학생 : [tid=gettid();]
+정답 : [tid=pthread_self()]
+정규화 후
+원본 학생 : tid=gettid();
+원본 정답 : tid=pthread_self()
+변형 학생 : gettid(;=tid
+변형 정답 : tidpthread_self(=
+17정규화 전
+학생 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)<0]
+정답 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
+원본 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
+변형 정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)<0]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+19정규화 전
+학생 : [wait(&tid1)]
+정답 : [pthread_join(tid1,NULL)]
+정규화 후
+원본 학생 : wait(&tid1)
+원본 정답 : pthread_join(tid1,NULL)
+변형 학생 : wait&tid1(
+변형 정답 : tid1NULL,pthread_join
+20정규화 전
+학생 : [pthead_mutex_tlock]
+정답 : [pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER]
+정규화 후
+원본 학생 : pthead_mutex_tlock
+원본 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : pthead_mutex_tlock
+변형 정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+21정규화 전
+학생 : [pthread_cond_tcond]
+정답 : [pthread_cond_tcond=PTHREAD_COND_INITIALIZER]
+정규화 후
+원본 학생 : pthread_cond_tcond
+원본 정답 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER
+변형 학생 : pthread_cond_tcond
+변형 정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
+22정규화 전
+학생 : [pthead_cond_signal(&cond)]
+정답 : [pthread_cond_wait(&cond,&lock)]
+정규화 후
+원본 학생 : pthead_cond_signal(&cond)
+원본 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : pthead_cond_signal&cond(
+변형 정답 : &cond&lock,pthread_cond_wait
+23정규화 전
+학생 : [pthread_cond_signal(&cond)]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : pthread_cond_signal(&cond)
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : pthread_cond_signal&cond(
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+24정규화 전
+학생 : [pthread_cont_signal(&cond)]
+정답 : [pthread_cond_signal(&cond)]
+정규화 후
+원본 학생 : pthread_cont_signal(&cond)
+원본 정답 : pthread_cond_signal(&cond)
+변형 학생 : pthread_cont_signal&cond(
+변형 정답 : pthread_cond_signal&cond(
+26정규화 전
+학생 : [flags=fcntl(fd,F_GETFL,0))==-1)]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : flags=fcntl(fd,F_GETFL,0))==-1)
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : flagsfdF_GETFL,0,fcntl=-1==
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+30정규화 전
+학생 : [fd1=open(filename,O_RDWR)<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : fd1=open(filename,O_RDWR)<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open0<=
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+35정규화 전
+학생 : [	sigset_t]
+정답 : [sigset_t]
+정규화 후
+원본 학생 : 	sigset_t
+원본 정답 : sigset_t
+변형 학생 : sigset_t&&
+변형 정답 : sigset_t
+37정규화 전
+학생 : [sigaddset(sig_set,SIGUSR1)]
+정답 : [sigaddset(&sig_set,SIGINT)]
+정규화 후
+원본 학생 : sigaddset(sig_set,SIGUSR1)
+원본 정답 : sigaddset(&sig_set,SIGINT)
+변형 학생 : sig_setSIGUSR1,sigaddset
+변형 정답 : &sig_setSIGINT,sigaddset
+20190002 is finished..
+5정규화 전
+학생 : [#include<fcntl.h>
+]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<fcntl.h>
+
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includefcntl.h<>||
+변형 정답 : #includesyswait.h/<>
+6정규화 전
+학생 : []
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : 
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : (null)
+변형 정답 : 0execlpchar"date""date",*,
+8정규화 전
+학생 : [*((int*))!=0]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : *((int*))!=0
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : !**0=int
+변형 정답 : !&(-1==aadiipsstttuw
+9정규화 전
+학생 : [time_t]
+정답 : [structtms]
+정규화 후
+원본 학생 : time_t
+원본 정답 : structtms
+변형 학생 : time_t
+변형 정답 : structtms
+12정규화 전
+학생 : [#include<pthreadh>]
+정답 : [#include<pthread.h>]
+정규화 후
+원본 학생 : #include<pthreadh>
+원본 정답 : #include<pthread.h>
+변형 학생 : #includepthreadh<>
+변형 정답 : #includepthread.h<>
+13정규화 전
+학생 : [pthread_create(&tid,NULL,ssu_thread,NULL)]
+정답 : [pthread_create(&tid,NULL,ssu_thread,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)
+원본 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create
+변형 정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+17정규화 전
+학생 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)]
+정답 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)
+원본 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create
+변형 정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+21정규화 전
+학생 : [pthread_cond_tcond=PTHREAD_COND_INITIALZIER]
+정답 : [pthread_cond_tcond=PTHREAD_COND_INITIALIZER]
+정규화 후
+원본 학생 : pthread_cond_tcond=PTHREAD_COND_INITIALZIER
+원본 정답 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER
+변형 학생 : pthread_cond_tcondPTHREAD_COND_INITIALZIER=
+변형 정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
+22정규화 전
+학생 : [pthread_cond_signal(&cond)]
+정답 : [pthread_cond_wait(&cond,&lock)]
+정규화 후
+원본 학생 : pthread_cond_signal(&cond)
+원본 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : pthread_cond_signal&cond(
+변형 정답 : &cond&lock,pthread_cond_wait
+23정규화 전
+학생 : [glo_val<VALUE_STOP1||glo_val=<VALUE_STOP2]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : glo_val<VALUE_STOP1||glo_val=<VALUE_STOP2
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_valVALUE_STOP1<glo_val||VALUE_STOP2<=
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+24정규화 전
+학생 : [pthread_cond_wait(&cond,&lock)]
+정답 : [pthread_cond_signal(&cond)]
+정규화 후
+원본 학생 : pthread_cond_wait(&cond,&lock)
+원본 정답 : pthread_cond_signal(&cond)
+변형 학생 : &cond&lock,pthread_cond_wait
+변형 정답 : pthread_cond_signal&cond(
+25정규화 전
+학생 : [STDIN_FILENO,O_NONBLOCK]
+정답 : [STDOUT_FILENO,O_NONBLOCK]
+정규화 후
+원본 학생 : STDIN_FILENO,O_NONBLOCK
+원본 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : STDIN_FILENOO_NONBLOCK,
+변형 정답 : STDOUT_FILENOO_NONBLOCK,
+26정규화 전
+학생 : [(val=fcntl(STDIN_FILENO,F_GETFL,0))==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(STDIN_FILENO,F_GETFL,0))==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===DEEFFFGIILLNNOSTT__acfllntv
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+27정규화 전
+학생 : [val|=O_NONBLOCK]
+정답 : [val|=flags]
+정규화 후
+원본 학생 : val|=O_NONBLOCK
+원본 정답 : val|=flags
+변형 학생 : valO_NONBLOCK|=
+변형 정답 : valflags|=
+28정규화 전
+학생 : [fcntl(STDIN_FILENO,F_SETFL,val)==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(STDIN_FILENO,F_SETFL,val)==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==DEEFFFIILLNNOSSTT__acfllntv
+변형 정답 : fdF_SETFL,val,fcntl0<
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val&=~flags]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val&=~flags
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val~flags&=
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR,0644))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR,0644))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,0644,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+31정규화 전
+학생 : [fcntl(fd1,F_SETFD,O_APPEND)==-1]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : fcntl(fd1,F_SETFD,O_APPEND)==-1
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-11==ADDEEFFNOPPST__cdfflnt
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+33정규화 전
+학생 : [flag|FD_CLOEXEC]
+정답 : [flag&FD_CLOEXEC]
+정규화 후
+원본 학생 : flag|FD_CLOEXEC
+원본 정답 : flag&FD_CLOEXEC
+변형 학생 : CCDEEFLOX_afgl|
+변형 정답 : &CCDEEFLOX_afgl
+36정규화 전
+학생 : [sigemptyset(&sig_set_)]
+정답 : [sigemptyset(&sig_set)]
+정규화 후
+원본 학생 : sigemptyset(&sig_set_)
+원본 정답 : sigemptyset(&sig_set)
+변형 학생 : sigemptyset&sig_set_(
+변형 정답 : sigemptyset&sig_set(
+41정규화 전
+학생 : [wait3(*status,0,&rusage)!=0]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(*status,0,&rusage)!=0
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&*,,003=aaaegirssstttuuw
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+43정규화 전
+학생 : [WIFSIGNALED(#stat)]
+정답 : [WIFSIGNALED(stat)]
+정규화 후
+원본 학생 : WIFSIGNALED(#stat)
+원본 정답 : WIFSIGNALED(stat)
+변형 학생 : WIFSIGNALED#stat(
+변형 정답 : WIFSIGNALEDstat(
+20190003 is finished..
+3정규화 전
+학생 : [putenv("WARNING=Don\'tuseenvpafterputenv()")]
+정답 : [putenv("WARNING=Don'tuseenvpafterputenv()")]
+정규화 후
+원본 학생 : putenv("WARNING=Don\'tuseenvpafterputenv()")
+원본 정답 : putenv("WARNING=Don'tuseenvpafterputenv()")
+변형 학생 : Don\'tuseenvpafterputenv"="WARNINGputenv
+변형 정답 : Don'tuseenvpafterputenv"="WARNINGputenv
+8정규화 전
+학생 : [wait(&status)!=-1]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : wait(&status)!=-1
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : !&(-1=aaisstttuw
+변형 정답 : !&(-1==aadiipsstttuw
+15정규화 전
+학생 : [-lphtread]
+정답 : [-lpthread]
+정규화 후
+원본 학생 : -lphtread
+원본 정답 : -lpthread
+변형 학생 : -lphtread
+변형 정답 : -lpthread
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread1,NULL)!=0]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread1,NULL)!=0
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : !&,,,012=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+23정규화 전
+학생 : [glo_val<4||glo_val>7]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : glo_val<4||glo_val>7
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val4<7glo_val<||
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+26정규화 전
+학생 : [(val=fcntl(fd,F_GETTL,0))==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_GETTL,0))==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFGLTT_acdffllntv
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+28정규화 전
+학생 : [fcntl(fd,F_SETFL,flags)==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(fd,F_SETFL,flags)==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_acdfffgllnst
+변형 정답 : fdF_SETFL,val,fcntl0<
+29정규화 전
+학생 : [val&=flags]
+정답 : [val&=~flags]
+정규화 후
+원본 학생 : val&=flags
+원본 정답 : val&=~flags
+변형 학생 : valflags&=
+변형 정답 : val~flags&=
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR|O_APPEND))==-1]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR|O_APPEND))==-1
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : ,-11===ADDENOOPPRRW__adeeeffilmnnop|
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+33정규화 전
+학생 : [flag&=FD_CLOEXEC]
+정답 : [flag&FD_CLOEXEC]
+정규화 후
+원본 학생 : flag&=FD_CLOEXEC
+원본 정답 : flag&FD_CLOEXEC
+변형 학생 : flagFD_CLOEXEC&=
+변형 정답 : &CCDEEFLOX_afgl
+40정규화 전
+학생 : [execvp("find",args)==-1]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execvp("find",args)==-1
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-1==acdeefginprsvx
+변형 정답 : "usr/bin/find"/args,execv0<
+41정규화 전
+학생 : [wait3(&status,0,&rusage)!=-1]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,&rusage)!=-1
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&&,,-013=aaaegirssstttuuw
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+43정규화 전
+학생 : [WIFSIGNALED(!stat)]
+정답 : [WIFSIGNALED(stat)]
+정규화 후
+원본 학생 : WIFSIGNALED(!stat)
+원본 정답 : WIFSIGNALED(stat)
+변형 학생 : WIFSIGNALED!stat(
+변형 정답 : WIFSIGNALEDstat(
+44정규화 전
+학생 : [rusage->ru_utime]
+정답 : [&rusage->ru_utime]
+정규화 후
+원본 학생 : rusage->ru_utime
+원본 정답 : &rusage->ru_utime
+변형 학생 : rusageru_utime->
+변형 정답 : &rusageru_utime->
+20190004 is finished..
+1정규화 전
+학생 : [char*envp]
+정답 : [char*envp[]]
+정규화 후
+원본 학생 : char*envp
+원본 정답 : char*envp[]
+변형 학생 : *acehnprv
+변형 정답 : *[]acehnprv
+5정규화 전
+학생 : [#include<wait.h>]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<wait.h>
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includewait.h<>
+변형 정답 : #includesyswait.h/<>
+6정규화 전
+학생 : [execlp("date","date",NULL)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("date","date",NULL)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""date",NULL,execlp
+변형 정답 : 0execlpchar"date""date",*,
+10정규화 전
+학생 : [(status=times(&tms_start))<0]
+정답 : [(start=times(&tms_start))==-1]
+정규화 후
+원본 학생 : (status=times(&tms_start))<0
+원본 정답 : (start=times(&tms_start))==-1
+변형 학생 : statustimes&tms_start(=0<
+변형 정답 : &(-1===_aaeimmrrsssstttttt
+11정규화 전
+학생 : [(status=times(&tms_end))>0]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : (status=times(&tms_end))>0
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : 0statustimes&tms_end(=<
+변형 정답 : &(-1===_ddeeeimmnnsstt
+13정규화 전
+학생 : [pthread_create(&tid,NULL,ssu_thread,NULL)<0]
+정답 : [pthread_create(&tid,NULL,ssu_thread,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
+원본 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
+변형 정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+17정규화 전
+학생 : [pthread_create(&tid1,NULL,0,NULL)<0]
+정답 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid1,NULL,0,NULL)<0
+원본 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,0,NULL,pthread_create0<
+변형 정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)<0]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+28정규화 전
+학생 : [(fcntl(fd,F_SETFL,val))<0]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : (fcntl(fd,F_SETFL,val))<0
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : fdF_SETFL,val,fcntl0<
+변형 정답 : fdF_SETFL,val,fcntl0<
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR|O_APPEND))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR|O_APPEND))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameADDENOOPPRRW__|,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+40정규화 전
+학생 : [execvp("./find",args)<0]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execvp("./find",args)<0
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : ".find"/args,execvp0<
+변형 정답 : "usr/bin/find"/args,execv0<
+41정규화 전
+학생 : [wait3(&status,0,&rusage)<0]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,&rusage)<0
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &status0,&rusage,wait30<
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+20190005 is finished..
+1정규화 전
+학생 : [char***envp[]]
+정답 : [char*envp[]]
+정규화 후
+원본 학생 : char***envp[]
+원본 정답 : char*envp[]
+변형 학생 : envp[]char***
+변형 정답 : *[]acehnprv
+6정규화 전
+학생 : [execlp("/bin/date","echo",(char*)NULL)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("/bin/date","echo",(char*)NULL)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : NULLexeclpchar"bin/date"/"echo",*,
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp("/usr/bin/who","echo",(char*)NULL)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("/usr/bin/who","echo",(char*)NULL)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : NULLexeclpchar"usr/bin/who"/"echo",*,
+변형 정답 : 0execlpchar"who""who",*,
+10정규화 전
+학생 : [(start=times(&tms_start))<0]
+정답 : [(start=times(&tms_start))==-1]
+정규화 후
+원본 학생 : (start=times(&tms_start))<0
+원본 정답 : (start=times(&tms_start))==-1
+변형 학생 : starttimes&tms_start(=0<
+변형 정답 : &(-1===_aaeimmrrsssstttttt
+11정규화 전
+학생 : [(end=times(&tms_end))<0]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : (end=times(&tms_end))<0
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : endtimes&tms_end(=0<
+변형 정답 : &(-1===_ddeeeimmnnsstt
+30정규화 전
+학생 : [(fd1=open(filename,O_CREAT|O_APPEND,644))<=0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_CREAT|O_APPEND,644))<=0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameAACDEENOOPPRT__|,644,open=0<=
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+31정규화 전
+학생 : [(flag=fcntl(fd1,F_SETFD,FD_CLOEXEC))==-1]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : (flag=fcntl(fd1,F_SETFD,FD_CLOEXEC))==-1
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-11===CCDDEEEFFFLOSTX__acdfffgllnt
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+34정규화 전
+학생 : [include<signal.h>]
+정답 : [#include<signal.h>]
+정규화 후
+원본 학생 : include<signal.h>
+원본 정답 : #include<signal.h>
+변형 학생 : includesignal.h<>
+변형 정답 : #includesignal.h<>
+41정규화 전
+학생 : [wait3(&status,0,&rusage)!=1]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,&rusage)!=1
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&&,,013=aaaegirssstttuuw
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+20190006 is finished..
+1정규화 전
+학생 : [char*envp]
+정답 : [char*envp[]]
+정규화 후
+원본 학생 : char*envp
+원본 정답 : char*envp[]
+변형 학생 : *acehnprv
+변형 정답 : *[]acehnprv
+3정규화 전
+학생 : [putenv("Warning=Don'tuseenvpafterputenv()")]
+정답 : [putenv("WARNING=Don'tuseenvpafterputenv()")]
+정규화 후
+원본 학생 : putenv("Warning=Don'tuseenvpafterputenv()")
+원본 정답 : putenv("WARNING=Don'tuseenvpafterputenv()")
+변형 학생 : Don'tuseenvpafterputenv"="Warningputenv
+변형 정답 : Don'tuseenvpafterputenv"="WARNINGputenv
+4정규화 전
+학생 : [getenv("Warning")]
+정답 : [getenv("WARNING")]
+정규화 후
+원본 학생 : getenv("Warning")
+원본 정답 : getenv("WARNING")
+변형 학생 : getenv"Warning"(
+변형 정답 : getenv"WARNING"(
+6정규화 전
+학생 : [execlp("date","date",NULL)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("date","date",NULL)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""date",NULL,execlp
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp("who","who",NULL)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("who","who",NULL)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who""who",NULL,execlp
+변형 정답 : 0execlpchar"who""who",*,
+8정규화 전
+학생 : [(pid=wait(&status))>0]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : (pid=wait(&status))>0
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : 0pidwait&status(=<
+변형 정답 : !&(-1==aadiipsstttuw
+13정규화 전
+학생 : [pthread_create(&tid,NULL,ssu_thread,NULL)<0]
+정답 : [pthread_create(&tid,NULL,ssu_thread,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
+원본 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
+변형 정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+14정규화 전
+학생 : [tid=pthread_self();]
+정답 : [tid=pthread_self()]
+정규화 후
+원본 학생 : tid=pthread_self();
+원본 정답 : tid=pthread_self()
+변형 학생 : pthread_self(;=tid
+변형 정답 : tidpthread_self(=
+17정규화 전
+학생 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)<0]
+정답 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
+원본 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
+변형 정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)<0]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+26정규화 전
+학생 : [val=fcntl(fd,F_GETFL,NULL)<0]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : val=fcntl(fd,F_GETFL,NULL)<0
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : valfdF_GETFL,NULL,fcntl0<=
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR|O_APPEND))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR|O_APPEND))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameADDENOOPPRRW__|,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+31정규화 전
+학생 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)<0]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+36정규화 전
+학생 : [sigemptyset(&sig_set);]
+정답 : [sigemptyset(&sig_set)]
+정규화 후
+원본 학생 : sigemptyset(&sig_set);
+원본 정답 : sigemptyset(&sig_set)
+변형 학생 : ;sigemptyset&sig_set(
+변형 정답 : sigemptyset&sig_set(
+37정규화 전
+학생 : [sigaddset(&sig_set,SIGINT);]
+정답 : [sigaddset(&sig_set,SIGINT)]
+정규화 후
+원본 학생 : sigaddset(&sig_set,SIGINT);
+원본 정답 : sigaddset(&sig_set,SIGINT)
+변형 학생 : ;&sig_setSIGINT,sigaddset
+변형 정답 : &sig_setSIGINT,sigaddset
+39정규화 전
+학생 : [sigprocmask(SIG_UNBLOCK,&sig_set,NULL);]
+정답 : [sigprocmask(SIG_UNBLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL);
+원본 정답 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL)
+변형 학생 : ;SIG_UNBLOCK&sig_set,NULL,sigprocmask
+변형 정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
+43정규화 전
+학생 : [WTERMSIG(stat)]
+정답 : [WIFSIGNALED(stat)]
+정규화 후
+원본 학생 : WTERMSIG(stat)
+원본 정답 : WIFSIGNALED(stat)
+변형 학생 : WTERMSIGstat(
+변형 정답 : WIFSIGNALEDstat(
+20190007 is finished..
+8정규화 전
+학생 : [wait(&status)!=-1]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : wait(&status)!=-1
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : !&(-1=aaisstttuw
+변형 정답 : !&(-1==aadiipsstttuw
+10정규화 전
+학생 : [times(&tms_start)<0]
+정답 : [(start=times(&tms_start))==-1]
+정규화 후
+원본 학생 : times(&tms_start)<0
+원본 정답 : (start=times(&tms_start))==-1
+변형 학생 : times&tms_start(0<
+변형 정답 : &(-1===_aaeimmrrsssstttttt
+11정규화 전
+학생 : [times(&tms_end)<0]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : times(&tms_end)<0
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : times&tms_end(0<
+변형 정답 : &(-1===_ddeeeimmnnsstt
+20정규화 전
+학생 : [phread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER]
+정답 : [pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER]
+정규화 후
+원본 학생 : phread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+원본 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : phread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+변형 정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+22정규화 전
+학생 : [pthread_cond_wait(&cond)]
+정답 : [pthread_cond_wait(&cond,&lock)]
+정규화 후
+원본 학생 : pthread_cond_wait(&cond)
+원본 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : pthread_cond_wait&cond(
+변형 정답 : &cond&lock,pthread_cond_wait
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val&=~flags]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val&=~flags
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val~flags&=
+30정규화 전
+학생 : [(fd1=open(filename,O_APPEND|O_RDWR,0644))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_APPEND|O_RDWR,0644))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+31정규화 전
+학생 : [fcntl(fd1,F_SETFD,1)==-1]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : fcntl(fd1,F_SETFD,1)==-1
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-111==DEFFST_cdfflnt
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+40정규화 전
+학생 : [execvp("find",args,(char*)0)]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execvp("find",args,(char*)0)
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : 0execvpchar"find"args,*,
+변형 정답 : "usr/bin/find"/args,execv0<
+41정규화 전
+학생 : [wait3(&status,0,&rusage)!=-1]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,&rusage)!=-1
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&&,,-013=aaaegirssstttuuw
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+44정규화 전
+학생 : [rusage->tv_usec]
+정답 : [&rusage->ru_utime]
+정규화 후
+원본 학생 : rusage->tv_usec
+원본 정답 : &rusage->ru_utime
+변형 학생 : rusagetv_usec->
+변형 정답 : &rusageru_utime->
+20190008 is finished..
+2정규화 전
+학생 : [putenv]
+정답 : [putenv("TZ=PST8PDT")]
+정규화 후
+원본 학생 : putenv
+원본 정답 : putenv("TZ=PST8PDT")
+변형 학생 : putenv
+변형 정답 : "TZPST8PDT"=putenv
+6정규화 전
+학생 : [execlp("date","./date",(char*)0);]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("date","./date",(char*)0);
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : ;0execlpchar"date"".date"/,*,
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp("who","./who",(char*)0);]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("who","./who",(char*)0);
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : ;0execlpchar"who"".who"/,*,
+변형 정답 : 0execlpchar"who""who",*,
+8정규화 전
+학생 : [wait(&status)!=-1]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : wait(&status)!=-1
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : !&(-1=aaisstttuw
+변형 정답 : !&(-1==aadiipsstttuw
+13정규화 전
+학생 : [pthread_create(&tid,NULL,ssy_thread,NULL)]
+정답 : [pthread_create(&tid,NULL,ssu_thread,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid,NULL,ssy_thread,NULL)
+원본 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssy_thread,NULL,pthread_create
+변형 정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+14정규화 전
+학생 : [tid=gettid();]
+정답 : [tid=pthread_self()]
+정규화 후
+원본 학생 : tid=gettid();
+원본 정답 : tid=pthread_self()
+변형 학생 : gettid(;=tid
+변형 정답 : tidpthread_self(=
+20정규화 전
+학생 : [pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER;]
+정답 : [pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER]
+정규화 후
+원본 학생 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER;
+원본 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER;=
+변형 정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+21정규화 전
+학생 : [pthrad_cond_tcond=PTHREAD_COND_INITIALIZER;]
+정답 : [pthread_cond_tcond=PTHREAD_COND_INITIALIZER]
+정규화 후
+원본 학생 : pthrad_cond_tcond=PTHREAD_COND_INITIALIZER;
+원본 정답 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER
+변형 학생 : pthrad_cond_tcondPTHREAD_COND_INITIALIZER;=
+변형 정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
+22정규화 전
+학생 : [if(glo_val>VALUE_STOP1)
+	pthread_cond_signal(&cond);
+]
+정답 : [pthread_cond_wait(&cond,&lock)]
+정규화 후
+원본 학생 : if(glo_val>VALUE_STOP1)
+	pthread_cond_signal(&cond);
+
+원본 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : ifVALUE_STOP1glo_val<&&&(;__aaccdddeghilnnnooprst||||
+변형 정답 : &cond&lock,pthread_cond_wait
+23정규화 전
+학생 : [glo_val>]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : glo_val>
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val>
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+25정규화 전
+학생 : [ntowrite,O_NONBLOCK]
+정답 : [STDOUT_FILENO,O_NONBLOCK]
+정규화 후
+원본 학생 : ntowrite,O_NONBLOCK
+원본 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : ntowriteO_NONBLOCK,
+변형 정답 : STDOUT_FILENOO_NONBLOCK,
+26정규화 전
+학생 : [(val=fcntl(fd,F_GETFL,0))==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+28정규화 전
+학생 : [fcntl(fd,F_SETFD,val)==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(fd,F_SETFD,val)==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==DEFFST_acdffllntv
+변형 정답 : fdF_SETFL,val,fcntl0<
+29정규화 전
+학생 : [val&=flags]
+정답 : [val&=~flags]
+정규화 후
+원본 학생 : val&=flags
+원본 정답 : val&=~flags
+변형 학생 : valflags&=
+변형 정답 : val~flags&=
+30정규화 전
+학생 : [(fd1=open(filename,"O_RDWR"))==-1]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,"O_RDWR"))==-1
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : "",-11===DORRW_adeeeffilmnnop
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+32정규화 전
+학생 : [flag&O_APPEND==O_APPEND]
+정답 : [flag&O_APPEND]
+정규화 후
+원본 학생 : flag&O_APPEND==O_APPEND
+원본 정답 : flag&O_APPEND
+변형 학생 : &==AADDEENNOOPPPP__afgl
+변형 정답 : &ADENOPP_afgl
+33정규화 전
+학생 : [flag&FD_CLOEXEC==FD_CLOEXEC]
+정답 : [flag&FD_CLOEXEC]
+정규화 후
+원본 학생 : flag&FD_CLOEXEC==FD_CLOEXEC
+원본 정답 : flag&FD_CLOEXEC
+변형 학생 : &==CCCCDDEEEEFFLLOOXX__afgl
+변형 정답 : &CCDEEFLOX_afgl
+40정규화 전
+학생 : [execv("find",args)==-1]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execv("find",args)==-1
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-1==acdeefginrsvx
+변형 정답 : "usr/bin/find"/args,execv0<
+20190009 is finished..
+5정규화 전
+학생 : [#include<pthread.h>]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<pthread.h>
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includepthread.h<>
+변형 정답 : #includesyswait.h/<>
+6정규화 전
+학생 : [execlp("date","date",NULL)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("date","date",NULL)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""date",NULL,execlp
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp("who","who",NULL)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("who","who",NULL)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who""who",NULL,execlp
+변형 정답 : 0execlpchar"who""who",*,
+8정규화 전
+학생 : []
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : 
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : (null)
+변형 정답 : !&(-1==aadiipsstttuw
+10정규화 전
+학생 : [times(&tms_start)]
+정답 : [(start=times(&tms_start))==-1]
+정규화 후
+원본 학생 : times(&tms_start)
+원본 정답 : (start=times(&tms_start))==-1
+변형 학생 : times&tms_start(
+변형 정답 : &(-1===_aaeimmrrsssstttttt
+11정규화 전
+학생 : [times(&tms_end)]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : times(&tms_end)
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : times&tms_end(
+변형 정답 : &(-1===_ddeeeimmnnsstt
+23정규화 전
+학생 : [glo_val<3||glo_val>6]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : glo_val<3||glo_val>6
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val3<6glo_val<||
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+27정규화 전
+학생 : [val|=flags;]
+정답 : [val|=flags]
+정규화 후
+원본 학생 : val|=flags;
+원본 정답 : val|=flags
+변형 학생 : valflags;|=
+변형 정답 : valflags|=
+31정규화 전
+학생 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)<0]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+38정규화 전
+학생 : [sigprocmask(SIG_BLOCK,sig_set,NULL)]
+정답 : [sigprocmask(SIG_BLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SIG_BLOCK,sig_set,NULL)
+원본 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : SIG_BLOCKsig_set,NULL,sigprocmask
+변형 정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
+40정규화 전
+학생 : [execvp("find",args)==-1]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execvp("find",args)==-1
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-1==acdeefginprsvx
+변형 정답 : "usr/bin/find"/args,execv0<
+41정규화 전
+학생 : [wait3(&status,0,&rusage)==-1]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,&rusage)==-1
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &&,,-013==aaaegirssstttuuw
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+20190010 is finished..
+0정규화 전
+학생 : [externchar**environ;]
+정답 : [externchar**environ]
+정규화 후
+원본 학생 : externchar**environ;
+원본 정답 : externchar**environ
+변형 학생 : **;aceeehinnnorrrtvx
+변형 정답 : **aceeehinnnorrrtvx
+1정규화 전
+학생 : [char**envp]
+정답 : [char*envp[]]
+정규화 후
+원본 학생 : char**envp
+원본 정답 : char*envp[]
+변형 학생 : **acehnprv
+변형 정답 : *[]acehnprv
+2정규화 전
+학생 : [setenv("TZ","PST8PDT",1);]
+정답 : [putenv("TZ=PST8PDT")]
+정규화 후
+원본 학생 : setenv("TZ","PST8PDT",1);
+원본 정답 : putenv("TZ=PST8PDT")
+변형 학생 : ;"TZ""PST8PDT",1,setenv
+변형 정답 : "TZPST8PDT"=putenv
+3정규화 전
+학생 : [putenv("WARNING=Don'tuseenvpafterputenv()");]
+정답 : [putenv("WARNING=Don'tuseenvpafterputenv()")]
+정규화 후
+원본 학생 : putenv("WARNING=Don'tuseenvpafterputenv()");
+원본 정답 : putenv("WARNING=Don'tuseenvpafterputenv()")
+변형 학생 : ;Don'tuseenvpafterputenv"="WARNINGputenv
+변형 정답 : Don'tuseenvpafterputenv"="WARNINGputenv
+5정규화 전
+학생 : [#include<wait.h>]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<wait.h>
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includewait.h<>
+변형 정답 : #includesyswait.h/<>
+6정규화 전
+학생 : [execlp("date","date",(void*)0);]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("date","date",(void*)0);
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : ;0execlpvoid"date""date",*,
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execv("who","who",(void*)0);]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execv("who","who",(void*)0);
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : ;0execvvoid"who""who",*,
+변형 정답 : 0execlpchar"who""who",*,
+10정규화 전
+학생 : [(start=times(&tms_start))<0]
+정답 : [(start=times(&tms_start))==-1]
+정규화 후
+원본 학생 : (start=times(&tms_start))<0
+원본 정답 : (start=times(&tms_start))==-1
+변형 학생 : starttimes&tms_start(=0<
+변형 정답 : &(-1===_aaeimmrrsssstttttt
+11정규화 전
+학생 : [(end=times(&tms_end))<0]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : (end=times(&tms_end))<0
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : endtimes&tms_end(=0<
+변형 정답 : &(-1===_ddeeeimmnnsstt
+12정규화 전
+학생 : [#include<lpthread.h>]
+정답 : [#include<pthread.h>]
+정규화 후
+원본 학생 : #include<lpthread.h>
+원본 정답 : #include<pthread.h>
+변형 학생 : #includelpthread.h<>
+변형 정답 : #includepthread.h<>
+13정규화 전
+학생 : [pthread_create(&tid,NULL,ssu_thread,NULL)<0]
+정답 : [pthread_create(&tid,NULL,ssu_thread,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid,NULL,ssu_thread,NULL)<0
+원본 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_create0<
+변형 정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+14정규화 전
+학생 : [tid=pthread_self();]
+정답 : [tid=pthread_self()]
+정규화 후
+원본 학생 : tid=pthread_self();
+원본 정답 : tid=pthread_self()
+변형 학생 : pthread_self(;=tid
+변형 정답 : tidpthread_self(=
+16정규화 전
+학생 : [#include<lpthread.h>]
+정답 : [#include<pthread.h>]
+정규화 후
+원본 학생 : #include<lpthread.h>
+원본 정답 : #include<pthread.h>
+변형 학생 : #includelpthread.h<>
+변형 정답 : #includepthread.h<>
+17정규화 전
+학생 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)<0]
+정답 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
+원본 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
+변형 정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)<0]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+19정규화 전
+학생 : [pthread_join(tid1,NULL);]
+정답 : [pthread_join(tid1,NULL)]
+정규화 후
+원본 학생 : pthread_join(tid1,NULL);
+원본 정답 : pthread_join(tid1,NULL)
+변형 학생 : ;tid1NULL,pthread_join
+변형 정답 : tid1NULL,pthread_join
+20정규화 전
+학생 : [pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER;]
+정답 : [pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER]
+정규화 후
+원본 학생 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER;
+원본 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER;=
+변형 정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+21정규화 전
+학생 : [pthread_cond_tcond=PTHREAD_COND_INITIALIZER;]
+정답 : [pthread_cond_tcond=PTHREAD_COND_INITIALIZER]
+정규화 후
+원본 학생 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER;
+원본 정답 : pthread_cond_tcond=PTHREAD_COND_INITIALIZER
+변형 학생 : pthread_cond_tcondPTHREAD_COND_INITIALIZER;=
+변형 정답 : pthread_cond_tcondPTHREAD_COND_INITIALIZER=
+22정규화 전
+학생 : [pthread_cond_wait(&cond,&lock);]
+정답 : [pthread_cond_wait(&cond,&lock)]
+정규화 후
+원본 학생 : pthread_cond_wait(&cond,&lock);
+원본 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : ;&cond&lock,pthread_cond_wait
+변형 정답 : &cond&lock,pthread_cond_wait
+23정규화 전
+학생 : [glo_val<VALUE_STOP1||glo_val>=VALUE_STOP2]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : glo_val<VALUE_STOP1||glo_val>=VALUE_STOP2
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<=||
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+24정규화 전
+학생 : [pthread_cond_signal(&cond);]
+정답 : [pthread_cond_signal(&cond)]
+정규화 후
+원본 학생 : pthread_cond_signal(&cond);
+원본 정답 : pthread_cond_signal(&cond)
+변형 학생 : ;pthread_cond_signal&cond(
+변형 정답 : pthread_cond_signal&cond(
+27정규화 전
+학생 : [val|=flags;]
+정답 : [val|=flags]
+정규화 후
+원본 학생 : val|=flags;
+원본 정답 : val|=flags
+변형 학생 : valflags;|=
+변형 정답 : valflags|=
+29정규화 전
+학생 : [val&=~flags;]
+정답 : [val&=~flags]
+정규화 후
+원본 학생 : val&=~flags;
+원본 정답 : val&=~flags
+변형 학생 : val~flags;&=
+변형 정답 : val~flags&=
+31정규화 전
+학생 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)<0]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+35정규화 전
+학생 : [sigset]
+정답 : [sigset_t]
+정규화 후
+원본 학생 : sigset
+원본 정답 : sigset_t
+변형 학생 : sigset
+변형 정답 : sigset_t
+36정규화 전
+학생 : [sigemptyset(&sig_set);]
+정답 : [sigemptyset(&sig_set)]
+정규화 후
+원본 학생 : sigemptyset(&sig_set);
+원본 정답 : sigemptyset(&sig_set)
+변형 학생 : ;sigemptyset&sig_set(
+변형 정답 : sigemptyset&sig_set(
+37정규화 전
+학생 : [sigaddset(&sig_set,SIGINT);]
+정답 : [sigaddset(&sig_set,SIGINT)]
+정규화 후
+원본 학생 : sigaddset(&sig_set,SIGINT);
+원본 정답 : sigaddset(&sig_set,SIGINT)
+변형 학생 : ;&sig_setSIGINT,sigaddset
+변형 정답 : &sig_setSIGINT,sigaddset
+38정규화 전
+학생 : [sigprocmask(SIG_BLOCK,&sig_set,NULL);]
+정답 : [sigprocmask(SIG_BLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SIG_BLOCK,&sig_set,NULL);
+원본 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : ;SIG_BLOCK&sig_set,NULL,sigprocmask
+변형 정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
+39정규화 전
+학생 : [sigprocmask(SIG_UNBLOCK,&sig_set,NULL);]
+정답 : [sigprocmask(SIG_UNBLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL);
+원본 정답 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL)
+변형 학생 : ;SIG_UNBLOCK&sig_set,NULL,sigprocmask
+변형 정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
+40정규화 전
+학생 : [execvp("find",args)<0]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execvp("find",args)<0
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "find"args,execvp0<
+변형 정답 : "usr/bin/find"/args,execv0<
+41정규화 전
+학생 : [wait3(&status,0,rusage)>0]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,rusage)>0
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : 0&status0,rusage,wait3<
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+44정규화 전
+학생 : [&(rusage->ru_utime)]
+정답 : [&rusage->ru_utime]
+정규화 후
+원본 학생 : &(rusage->ru_utime)
+원본 정답 : &rusage->ru_utime
+변형 학생 : rusageru_utime->&
+변형 정답 : &rusageru_utime->
+20190011 is finished..
+5정규화 전
+학생 : [#include<wait.h>]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<wait.h>
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includewait.h<>
+변형 정답 : #includesyswait.h/<>
+6정규화 전
+학생 : [execlp("/usr/bin/who","who",(void*)0)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("/usr/bin/who","who",(void*)0)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : 0execlpvoid"usr/bin/who"/"who",*,
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp("/bin/date","date",(void*)0)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("/bin/date","date",(void*)0)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : 0execlpvoid"bin/date"/"date",*,
+변형 정답 : 0execlpchar"who""who",*,
+8정규화 전
+학생 : [(pid=wait(&status))>0]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : (pid=wait(&status))>0
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : 0pidwait&status(=<
+변형 정답 : !&(-1==aadiipsstttuw
+9정규화 전
+학생 : [structtimeval]
+정답 : [structtms]
+정규화 후
+원본 학생 : structtimeval
+원본 정답 : structtms
+변형 학생 : structtimeval
+변형 정답 : structtms
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+23정규화 전
+학생 : [glo_val<3||glo_val>6]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : glo_val<3||glo_val>6
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val3<6glo_val<||
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+27정규화 전
+학생 : [val|=O_NONBLOCK]
+정답 : [val|=flags]
+정규화 후
+원본 학생 : val|=O_NONBLOCK
+원본 정답 : val|=flags
+변형 학생 : valO_NONBLOCK|=
+변형 정답 : valflags|=
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val&=~flags]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val&=~flags
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val~flags&=
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR|O_APPEND))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR|O_APPEND))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameADDENOOPPRRW__|,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+31정규화 전
+학생 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)<0]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : fcntl(fd1,F_SETFD,FD_CLOEXEC)<0
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : fd1F_SETFD,FD_CLOEXEC,fcntl0<
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+40정규화 전
+학생 : [execv("/usr/bin/find",args)!=0]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execv("/usr/bin/find",args)!=0
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : !"",///0=abcdeefgiinnrrssuvx
+변형 정답 : "usr/bin/find"/args,execv0<
+20190012 is finished..
+7정규화 전
+학생 : [exec("who","who",(char*)0)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : exec("who","who",(char*)0)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : 0execchar"who""who",*,
+변형 정답 : 0execlpchar"who""who",*,
+11정규화 전
+학생 : [times(&tms_end)==-1]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : times(&tms_end)==-1
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : &(-1==_deeimmnsstt
+변형 정답 : &(-1===_ddeeeimmnnsstt
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread1,NULL)!=0]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread1,NULL)!=0
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : !&,,,012=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+22정규화 전
+학생 : [pthread_cond_wait(&cond,&mutex)]
+정답 : [pthread_cond_wait(&cond,&lock)]
+정규화 후
+원본 학생 : pthread_cond_wait(&cond,&mutex)
+원본 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : &cond&mutex,pthread_cond_wait
+변형 정답 : &cond&lock,pthread_cond_wait
+23정규화 전
+학생 : [glo_val<VALUE_STOP1||VALUE_STOP2<glo_val]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : glo_val<VALUE_STOP1||VALUE_STOP2<glo_val
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+26정규화 전
+학생 : [(val=fcntl(fd,F_GETFL,0))==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+28정규화 전
+학생 : [fcntl(fd,F_SETFL,val)==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(fd,F_SETFL,val)==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_acdffllntv
+변형 정답 : fdF_SETFL,val,fcntl0<
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+38정규화 전
+학생 : [sigprocmask(SIG_SETMASK,&sig_set,NULL)]
+정답 : [sigprocmask(SIG_BLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SIG_SETMASK,&sig_set,NULL)
+원본 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : SIG_SETMASK&sig_set,NULL,sigprocmask
+변형 정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
+40정규화 전
+학생 : [execv("/usr/bin/find",args)==-1]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execv("/usr/bin/find",args)==-1
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-///1==abcdeefgiinnrrssuvx
+변형 정답 : "usr/bin/find"/args,execv0<
+41정규화 전
+학생 : [wait3(&status,0,&rusage)<0]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,&rusage)<0
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &status0,&rusage,wait30<
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+20190013 is finished..
+2정규화 전
+학생 : [putenv("TZ=PST8P")]
+정답 : [putenv("TZ=PST8PDT")]
+정규화 후
+원본 학생 : putenv("TZ=PST8P")
+원본 정답 : putenv("TZ=PST8PDT")
+변형 학생 : "TZPST8P"=putenv
+변형 정답 : "TZPST8PDT"=putenv
+5정규화 전
+학생 : [#include<pthread.h>]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<pthread.h>
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includepthread.h<>
+변형 정답 : #includesyswait.h/<>
+7정규화 전
+학생 : [execlp("who",NULL)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("who",NULL)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who"NULL,execlp
+변형 정답 : 0execlpchar"who""who",*,
+8정규화 전
+학생 : [(pid=wait())!=-1]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : (pid=wait())!=-1
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : !(-1==adiiptw
+변형 정답 : !&(-1==aadiipsstttuw
+10정규화 전
+학생 : [(tms_start=times(&start))<0]
+정답 : [(start=times(&tms_start))==-1]
+정규화 후
+원본 학생 : (tms_start=times(&start))<0
+원본 정답 : (start=times(&tms_start))==-1
+변형 학생 : tms_starttimes&start(=0<
+변형 정답 : &(-1===_aaeimmrrsssstttttt
+11정규화 전
+학생 : [(tms_end=times(&end))<0]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : (tms_end=times(&end))<0
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : tms_endtimes&end(=0<
+변형 정답 : &(-1===_ddeeeimmnnsstt
+16정규화 전
+학생 : [#include<pthead.h>]
+정답 : [#include<pthread.h>]
+정규화 후
+원본 학생 : #include<pthead.h>
+원본 정답 : #include<pthread.h>
+변형 학생 : #includepthead.h<>
+변형 정답 : #includepthread.h<>
+19정규화 전
+학생 : [pthread_join(tid1,0)]
+정답 : [pthread_join(tid1,NULL)]
+정규화 후
+원본 학생 : pthread_join(tid1,0)
+원본 정답 : pthread_join(tid1,NULL)
+변형 학생 : tid10,pthread_join
+변형 정답 : tid1NULL,pthread_join
+23정규화 전
+학생 : [glo_val<2&&glo_val>7]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : glo_val<2&&glo_val>7
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_val2<7glo_val<&&
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+24정규화 전
+학생 : [pthread_cond_signal(&lock)]
+정답 : [pthread_cond_signal(&cond)]
+정규화 후
+원본 학생 : pthread_cond_signal(&lock)
+원본 정답 : pthread_cond_signal(&cond)
+변형 학생 : pthread_cond_signal&lock(
+변형 정답 : pthread_cond_signal&cond(
+25정규화 전
+학생 : [ntowrite,O_NONBLOCK]
+정답 : [STDOUT_FILENO,O_NONBLOCK]
+정규화 후
+원본 학생 : ntowrite,O_NONBLOCK
+원본 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : ntowriteO_NONBLOCK,
+변형 정답 : STDOUT_FILENOO_NONBLOCK,
+26정규화 전
+학생 : [(val=fcntl(fd,F_GETFL,flags))==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_GETFL,flags))==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-1===EFFGLT_aacdfffglllnstv
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+27정규화 전
+학생 : [flags|=flags;]
+정답 : [val|=flags]
+정규화 후
+원본 학생 : flags|=flags;
+원본 정답 : val|=flags
+변형 학생 : flagsflags;|=
+변형 정답 : valflags|=
+28정규화 전
+학생 : [(val=fcntl(fd,F_SETFL,flags))==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_SETFL,flags))==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1===EFFLST_aacdfffglllnstv
+변형 정답 : fdF_SETFL,val,fcntl0<
+29정규화 전
+학생 : [flags~=!flags]
+정답 : [val&=~flags]
+정규화 후
+원본 학생 : flags~=!flags
+원본 정답 : val&=~flags
+변형 학생 : flags~!flags=
+변형 정답 : val~flags&=
+30정규화 전
+학생 : [open(filename,O_RDWR)<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : open(filename,O_RDWR)<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : filenameO_RDWR,open0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+35정규화 전
+학생 : [structsigacion]
+정답 : [sigset_t]
+정규화 후
+원본 학생 : structsigacion
+원본 정답 : sigset_t
+변형 학생 : structsigacion
+변형 정답 : sigset_t
+40정규화 전
+학생 : [execv("usr/bin/find",args)<0]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execv("usr/bin/find",args)<0
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "usrbin/find"/args,execv0<
+변형 정답 : "usr/bin/find"/args,execv0<
+41정규화 전
+학생 : [wait3(&status,0,&rusage)<0]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,&rusage)<0
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : &status0,&rusage,wait30<
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+44정규화 전
+학생 : [rusage->ru_utime]
+정답 : [&rusage->ru_utime]
+정규화 후
+원본 학생 : rusage->ru_utime
+원본 정답 : &rusage->ru_utime
+변형 학생 : rusageru_utime->
+변형 정답 : &rusageru_utime->
+20190014 is finished..
+6정규화 전
+학생 : [execlp("date","dat",NULL)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("date","dat",NULL)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""dat",NULL,execlp
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp("who","who",NULL)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("who","who",NULL)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who""who",NULL,execlp
+변형 정답 : 0execlpchar"who""who",*,
+8정규화 전
+학생 : [(pid=wait(&status))]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : (pid=wait(&status))
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : pidwait&status(=
+변형 정답 : !&(-1==aadiipsstttuw
+14정규화 전
+학생 : [tid=pthread_self]
+정답 : [tid=pthread_self()]
+정규화 후
+원본 학생 : tid=pthread_self
+원본 정답 : tid=pthread_self()
+변형 학생 : tidpthread_self=
+변형 정답 : tidpthread_self(=
+26정규화 전
+학생 : [(val=fcntl(fd,F_GETFL,0))==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+28정규화 전
+학생 : [fcntl(fd,F_SETFL,val)==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(fd,F_SETFL,val)==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_acdffllntv
+변형 정답 : fdF_SETFL,val,fcntl0<
+40정규화 전
+학생 : [execv("/usr/bin/find",args)==-1]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execv("/usr/bin/find",args)==-1
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-///1==abcdeefgiinnrrssuvx
+변형 정답 : "usr/bin/find"/args,execv0<
+41정규화 전
+학생 : [wait3(&status,0,&rusage)!=-1]
+정답 : [wait3(&status,0,&rusage)==pid]
+정규화 후
+원본 학생 : wait3(&status,0,&rusage)!=-1
+원본 정답 : wait3(&status,0,&rusage)==pid
+변형 학생 : !&&,,-013=aaaegirssstttuuw
+변형 정답 : &&,,03==aaadegiiprssstttuuw
+44정규화 전
+학생 : [rusage->ru_utime]
+정답 : [&rusage->ru_utime]
+정규화 후
+원본 학생 : rusage->ru_utime
+원본 정답 : &rusage->ru_utime
+변형 학생 : rusageru_utime->
+변형 정답 : &rusageru_utime->
+20190015 is finished..
+0정규화 전
+학생 : [char*environ]
+정답 : [externchar**environ]
+정규화 후
+원본 학생 : char*environ
+원본 정답 : externchar**environ
+변형 학생 : *acehinnorrv
+변형 정답 : **aceeehinnnorrrtvx
+1정규화 전
+학생 : [int**envpp]
+정답 : [char*envp[]]
+정규화 후
+원본 학생 : int**envpp
+원본 정답 : char*envp[]
+변형 학생 : **einnpptv
+변형 정답 : *[]acehnprv
+2정규화 전
+학생 : [putenv(&envp);]
+정답 : [putenv("TZ=PST8PDT")]
+정규화 후
+원본 학생 : putenv(&envp);
+원본 정답 : putenv("TZ=PST8PDT")
+변형 학생 : ;putenv&envp(
+변형 정답 : "TZPST8PDT"=putenv
+4정규화 전
+학생 : [*environ]
+정답 : [getenv("WARNING")]
+정규화 후
+원본 학생 : *environ
+원본 정답 : getenv("WARNING")
+변형 학생 : *environ
+변형 정답 : getenv"WARNING"(
+5정규화 전
+학생 : [#include<sys/stat.h>]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<sys/stat.h>
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includesysstat.h/<>
+변형 정답 : #includesyswait.h/<>
+6정규화 전
+학생 : [execlp("./date","date",NULL)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("./date","date",NULL)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : ".date"/"date",NULL,execlp
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp("./who","who",NULL);]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("./who","who",NULL);
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : ;".who"/"who",NULL,execlp
+변형 정답 : 0execlpchar"who""who",*,
+10정규화 전
+학생 : [times(tms_start)==0]
+정답 : [(start=times(&tms_start))==-1]
+정규화 후
+원본 학생 : times(tms_start)==0
+원본 정답 : (start=times(&tms_start))==-1
+변형 학생 : (0==_aeimmrssstttt
+변형 정답 : &(-1===_aaeimmrrsssstttttt
+11정규화 전
+학생 : [times(tms_end)]
+정답 : [(end=times(&tms_end))==-1]
+정규화 후
+원본 학생 : times(tms_end)
+원본 정답 : (end=times(&tms_end))==-1
+변형 학생 : timestms_end(
+변형 정답 : &(-1===_ddeeeimmnnsstt
+12정규화 전
+학생 : [include<pthread.h>]
+정답 : [#include<pthread.h>]
+정규화 후
+원본 학생 : include<pthread.h>
+원본 정답 : #include<pthread.h>
+변형 학생 : includepthread.h<>
+변형 정답 : #includepthread.h<>
+13정규화 전
+학생 : [pthread_create(&tid,NULL,&ssu_thread,NULL)!=0]
+정답 : [pthread_create(&tid,NULL,ssu_thread,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid,NULL,&ssu_thread,NULL)!=0
+원본 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : !&&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+변형 정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+14정규화 전
+학생 : [tid=getppid();]
+정답 : [tid=pthread_self()]
+정규화 후
+원본 학생 : tid=getppid();
+원본 정답 : tid=pthread_self()
+변형 학생 : getppid(;=tid
+변형 정답 : tidpthread_self(=
+17정규화 전
+학생 : [pthread_create(&tid1,NULL,&ssu_thread1,NULL)!=0]
+정답 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid1,NULL,&ssu_thread1,NULL)!=0
+원본 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : !&&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+변형 정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,&ssu_thread2,NULL)!=0]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,&ssu_thread2,NULL)!=0
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : !&&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+25정규화 전
+학생 : [STDIN_FILENO,O_NONBLOCK]
+정답 : [STDOUT_FILENO,O_NONBLOCK]
+정규화 후
+원본 학생 : STDIN_FILENO,O_NONBLOCK
+원본 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : STDIN_FILENOO_NONBLOCK,
+변형 정답 : STDOUT_FILENOO_NONBLOCK,
+26정규화 전
+학생 : [(val=fcntl(fd,F_GETFl,0))==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_GETFl,0))==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGT_acdfflllntv
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+27정규화 전
+학생 : [flags|=O_NONBLOCK]
+정답 : [val|=flags]
+정규화 후
+원본 학생 : flags|=O_NONBLOCK
+원본 정답 : val|=flags
+변형 학생 : flagsO_NONBLOCK|=
+변형 정답 : valflags|=
+28정규화 전
+학생 : [fcntl(val,F_SETFL,flags)==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(val,F_SETFL,flags)==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_aacffglllnstv
+변형 정답 : fdF_SETFL,val,fcntl0<
+29정규화 전
+학생 : [val&=~O_NONBLOCK]
+정답 : [val&=~flags]
+정규화 후
+원본 학생 : val&=~O_NONBLOCK
+원본 정답 : val&=~flags
+변형 학생 : val~O_NONBLOCK&=
+변형 정답 : val~flags&=
+30정규화 전
+학생 : [(fd1=open(filename,"rw",O_APPEND))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,"rw",O_APPEND))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filename"rw",O_APPEND,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+31정규화 전
+학생 : [fnctl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : fnctl(fd1,F_SETFD,FD_CLOEXEC)==-1
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+32정규화 전
+학생 : [flag&=O_APPEND]
+정답 : [flag&O_APPEND]
+정규화 후
+원본 학생 : flag&=O_APPEND
+원본 정답 : flag&O_APPEND
+변형 학생 : flagO_APPEND&=
+변형 정답 : &ADENOPP_afgl
+33정규화 전
+학생 : [flag&=FD_CLOEXEC]
+정답 : [flag&FD_CLOEXEC]
+정규화 후
+원본 학생 : flag&=FD_CLOEXEC
+원본 정답 : flag&FD_CLOEXEC
+변형 학생 : flagFD_CLOEXEC&=
+변형 정답 : &CCDEEFLOX_afgl
+35정규화 전
+학생 : [sigset]
+정답 : [sigset_t]
+정규화 후
+원본 학생 : sigset
+원본 정답 : sigset_t
+변형 학생 : sigset
+변형 정답 : sigset_t
+40정규화 전
+학생 : [execv(]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execv(
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : execv(
+변형 정답 : "usr/bin/find"/args,execv0<
+20190016 is finished..
+6정규화 전
+학생 : [execlp("./date","date",(char*)0)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("./date","date",(char*)0)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : 0execlpchar".date"/"date",*,
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp("./who","where",(void*)0)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("./who","where",(void*)0)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : 0execlpvoid".who"/"where",*,
+변형 정답 : 0execlpchar"who""who",*,
+8정규화 전
+학생 : [wait(&status)!=-1]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : wait(&status)!=-1
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : !&(-1=aaisstttuw
+변형 정답 : !&(-1==aadiipsstttuw
+19정규화 전
+학생 : [pthread_join(pid1,NULL)]
+정답 : [pthread_join(tid1,NULL)]
+정규화 후
+원본 학생 : pthread_join(pid1,NULL)
+원본 정답 : pthread_join(tid1,NULL)
+변형 학생 : pid1NULL,pthread_join
+변형 정답 : tid1NULL,pthread_join
+20정규화 전
+학생 : [pthread_mutex_tlock|=PTHREAD_MUTEX_INITIALIZER]
+정답 : [pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER]
+정규화 후
+원본 학생 : pthread_mutex_tlock|=PTHREAD_MUTEX_INITIALIZER
+원본 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER|=
+변형 정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+32정규화 전
+학생 : [fd1&O_APPEND]
+정답 : [flag&O_APPEND]
+정규화 후
+원본 학생 : fd1&O_APPEND
+원본 정답 : flag&O_APPEND
+변형 학생 : &1ADENOPP_df
+변형 정답 : &ADENOPP_afgl
+33정규화 전
+학생 : [fd1&FD_CLOEXEC]
+정답 : [flag&FD_CLOEXEC]
+정규화 후
+원본 학생 : fd1&FD_CLOEXEC
+원본 정답 : flag&FD_CLOEXEC
+변형 학생 : &1CCDEEFLOX_df
+변형 정답 : &CCDEEFLOX_afgl
+40정규화 전
+학생 : [execv("/usr/bin/find",argv)==-1]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execv("/usr/bin/find",argv)==-1
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "",-///1==abcdeefgiinnrrsuvvx
+변형 정답 : "usr/bin/find"/args,execv0<
+20190017 is finished..
+0정규화 전
+학생 : [exturnchar**environ]
+정답 : [externchar**environ]
+정규화 후
+원본 학생 : exturnchar**environ
+원본 정답 : externchar**environ
+변형 학생 : **aceehinnnorrrtuvx
+변형 정답 : **aceeehinnnorrrtvx
+1정규화 전
+학생 : [char**envp]
+정답 : [char*envp[]]
+정규화 후
+원본 학생 : char**envp
+원본 정답 : char*envp[]
+변형 학생 : **acehnprv
+변형 정답 : *[]acehnprv
+3정규화 전
+학생 : [putenv("WARNING=Don`tuseenvpafterputenv()")]
+정답 : [putenv("WARNING=Don'tuseenvpafterputenv()")]
+정규화 후
+원본 학생 : putenv("WARNING=Don`tuseenvpafterputenv()")
+원본 정답 : putenv("WARNING=Don'tuseenvpafterputenv()")
+변형 학생 : Don`tuseenvpafterputenv"="WARNINGputenv
+변형 정답 : Don'tuseenvpafterputenv"="WARNINGputenv
+8정규화 전
+학생 : [(pid=wait(&status))<0]
+정답 : [(pid=wait(&status))!=-1]
+정규화 후
+원본 학생 : (pid=wait(&status))<0
+원본 정답 : (pid=wait(&status))!=-1
+변형 학생 : pidwait&status(=0<
+변형 정답 : !&(-1==aadiipsstttuw
+13정규화 전
+학생 : [(pid=fork())==0]
+정답 : [pthread_create(&tid,NULL,ssu_thread,NULL)!=0]
+정규화 후
+원본 학생 : (pid=fork())==0
+원본 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : (0===dfikopr
+변형 정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+17정규화 전
+학생 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)<0]
+정답 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)<0
+원본 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create0<
+변형 정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)<0]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)<0
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create0<
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+19정규화 전
+학생 : [pthread_join(tid1,0)]
+정답 : [pthread_join(tid1,NULL)]
+정규화 후
+원본 학생 : pthread_join(tid1,0)
+원본 정답 : pthread_join(tid1,NULL)
+변형 학생 : tid10,pthread_join
+변형 정답 : tid1NULL,pthread_join
+22정규화 전
+학생 : [pthread_cond_signal(&cond)]
+정답 : [pthread_cond_wait(&cond,&lock)]
+정규화 후
+원본 학생 : pthread_cond_signal(&cond)
+원본 정답 : pthread_cond_wait(&cond,&lock)
+변형 학생 : pthread_cond_signal&cond(
+변형 정답 : &cond&lock,pthread_cond_wait
+24정규화 전
+학생 : [pthread_cond_wait(&cond,&lock)]
+정답 : [pthread_cond_signal(&cond)]
+정규화 후
+원본 학생 : pthread_cond_wait(&cond,&lock)
+원본 정답 : pthread_cond_signal(&cond)
+변형 학생 : &cond&lock,pthread_cond_wait
+변형 정답 : pthread_cond_signal&cond(
+25정규화 전
+학생 : [STDOUT_FILENO,FD_CLOEXEC]
+정답 : [STDOUT_FILENO,O_NONBLOCK]
+정규화 후
+원본 학생 : STDOUT_FILENO,FD_CLOEXEC
+원본 정답 : STDOUT_FILENO,O_NONBLOCK
+변형 학생 : STDOUT_FILENOFD_CLOEXEC,
+변형 정답 : STDOUT_FILENOO_NONBLOCK,
+26정규화 전
+학생 : [(val=fcntl(fd,F_GETFL,0))==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_GETFL,0))==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01===EFFGLT_acdffllntv
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+27정규화 전
+학생 : [val|=FD_CLOEXEC]
+정답 : [val|=flags]
+정규화 후
+원본 학생 : val|=FD_CLOEXEC
+원본 정답 : val|=flags
+변형 학생 : valFD_CLOEXEC|=
+변형 정답 : valflags|=
+28정규화 전
+학생 : [fcntl(fd,F_SETFL,val)==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(fd,F_SETFL,val)==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-1==EFFLST_acdffllntv
+변형 정답 : fdF_SETFL,val,fcntl0<
+30정규화 전
+학생 : [(fd1=open(filename,O_APPEND,0644))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_APPEND,0644))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_APPEND,0644,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+36정규화 전
+학생 : [sigempytset(&sig_set)]
+정답 : [sigemptyset(&sig_set)]
+정규화 후
+원본 학생 : sigempytset(&sig_set)
+원본 정답 : sigemptyset(&sig_set)
+변형 학생 : sigempytset&sig_set(
+변형 정답 : sigemptyset&sig_set(
+39정규화 전
+학생 : [sigprocmask(SIG_NONBLOCK,&sig_set,NULL)]
+정답 : [sigprocmask(SIG_UNBLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SIG_NONBLOCK,&sig_set,NULL)
+원본 정답 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL)
+변형 학생 : SIG_NONBLOCK&sig_set,NULL,sigprocmask
+변형 정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
+40정규화 전
+학생 : [execv("find",args)<0]
+정답 : [execv("/usr/bin/find",args)<0]
+정규화 후
+원본 학생 : execv("find",args)<0
+원본 정답 : execv("/usr/bin/find",args)<0
+변형 학생 : "find"args,execv0<
+변형 정답 : "usr/bin/find"/args,execv0<
+42정규화 전
+학생 : [WIFEXITED(&stat)]
+정답 : [WIFEXITED(stat)]
+정규화 후
+원본 학생 : WIFEXITED(&stat)
+원본 정답 : WIFEXITED(stat)
+변형 학생 : WIFEXITED&stat(
+변형 정답 : WIFEXITEDstat(
+43정규화 전
+학생 : [WIFSIGNALED(&stat)]
+정답 : [WIFSIGNALED(stat)]
+정규화 후
+원본 학생 : WIFSIGNALED(&stat)
+원본 정답 : WIFSIGNALED(stat)
+변형 학생 : WIFSIGNALED&stat(
+변형 정답 : WIFSIGNALEDstat(
+20190018 is finished..
+0정규화 전
+학생 : []
+정답 : [externchar**environ]
+정규화 후
+원본 학생 : 
+원본 정답 : externchar**environ
+변형 학생 : (null)
+변형 정답 : **aceeehinnnorrrtvx
+1정규화 전
+학생 : [char**envpp[]]
+정답 : [char*envp[]]
+정규화 후
+원본 학생 : char**envpp[]
+원본 정답 : char*envp[]
+변형 학생 : **[]acehnpprv
+변형 정답 : *[]acehnprv
+5정규화 전
+학생 : [#include<sys/stat.h>]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<sys/stat.h>
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includesysstat.h/<>
+변형 정답 : #includesyswait.h/<>
+6정규화 전
+학생 : [execlp("date","date",NULL)]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp("date","date",NULL)
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : "date""date",NULL,execlp
+변형 정답 : 0execlpchar"date""date",*,
+7정규화 전
+학생 : [execlp("who","who",NULL)]
+정답 : [execlp("who","who",(char*)0)]
+정규화 후
+원본 학생 : execlp("who","who",NULL)
+원본 정답 : execlp("who","who",(char*)0)
+변형 학생 : "who""who",NULL,execlp
+변형 정답 : 0execlpchar"who""who",*,
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)==0]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)==0
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &,,,022==LLLLNNUU__aaacdddeeeehhiprrrssttttu
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+20정규화 전
+학생 : [ptrhead_mutex_tlock=PTHREAD_MUTEX_INITIALIZER]
+정답 : [pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER]
+정규화 후
+원본 학생 : ptrhead_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+원본 정답 : pthread_mutex_tlock=PTHREAD_MUTEX_INITIALIZER
+변형 학생 : ptrhead_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+변형 정답 : pthread_mutex_tlockPTHREAD_MUTEX_INITIALIZER=
+23정규화 전
+학생 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP]
+정답 : [glo_val<VALUE_STOP1||glo_val>VALUE_STOP2]
+정규화 후
+원본 학생 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP
+원본 정답 : glo_val<VALUE_STOP1||glo_val>VALUE_STOP2
+변형 학생 : glo_valVALUE_STOP1<VALUE_STOPglo_val<||
+변형 정답 : glo_valVALUE_STOP1<VALUE_STOP2glo_val<||
+26정규화 전
+학생 : [fcntl(fd,F_GETFL,0)==-1]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : fcntl(fd,F_GETFL,0)==-1
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : ,,-01==EFFGLT_cdfflnt
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+28정규화 전
+학생 : [fcntl(fd,F_SETFL,0)==-1]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(fd,F_SETFL,0)==-1
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : ,,-01==EFFLST_cdfflnt
+변형 정답 : fdF_SETFL,val,fcntl0<
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+31정규화 전
+학생 : [(fd2=fcntl(fd1,F_SETFD,0))==-1]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : (fd2=fcntl(fd1,F_SETFD,0))==-1
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-0112===DEFFST_cddffflnt
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+38정규화 전
+학생 : [sigprocmask(SIGINT,&sig_set,NULL)]
+정답 : [sigprocmask(SIG_BLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SIGINT,&sig_set,NULL)
+원본 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : SIGINT&sig_set,NULL,sigprocmask
+변형 정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
+42정규화 전
+학생 : [WEXITTERM(stat)]
+정답 : [WIFEXITED(stat)]
+정규화 후
+원본 학생 : WEXITTERM(stat)
+원본 정답 : WIFEXITED(stat)
+변형 학생 : WEXITTERMstat(
+변형 정답 : WIFEXITEDstat(
+43정규화 전
+학생 : [WSIGTERM]
+정답 : [WIFSIGNALED(stat)]
+정규화 후
+원본 학생 : WSIGTERM
+원본 정답 : WIFSIGNALED(stat)
+변형 학생 : WSIGTERM
+변형 정답 : WIFSIGNALEDstat(
+20190019 is finished..
+0정규화 전
+학생 : [extern**environ
+[]]
+정답 : [externchar**environ]
+정규화 후
+원본 학생 : extern**environ
+[]
+원본 정답 : externchar**environ
+변형 학생 : **[]eeeinnnorrtvx||
+변형 정답 : **aceeehinnnorrrtvx
+4정규화 전
+학생 : [putenv("WARNING")]
+정답 : [getenv("WARNING")]
+정규화 후
+원본 학생 : putenv("WARNING")
+원본 정답 : getenv("WARNING")
+변형 학생 : putenv"WARNING"(
+변형 정답 : getenv"WARNING"(
+5정규화 전
+학생 : [#include<sys/stat.h>]
+정답 : [#include<sys/wait.h>]
+정규화 후
+원본 학생 : #include<sys/stat.h>
+원본 정답 : #include<sys/wait.h>
+변형 학생 : #includesysstat.h/<>
+변형 정답 : #includesyswait.h/<>
+6정규화 전
+학생 : [execlp(]
+정답 : [execlp("date","date",(char*)0)]
+정규화 후
+원본 학생 : execlp(
+원본 정답 : execlp("date","date",(char*)0)
+변형 학생 : execlp(
+변형 정답 : 0execlpchar"date""date",*,
+13정규화 전
+학생 : [pthread_creat(&tid,NULL,ssu_thread,NULL)]
+정답 : [pthread_create(&tid,NULL,ssu_thread,NULL)!=0]
+정규화 후
+원본 학생 : pthread_creat(&tid,NULL,ssu_thread,NULL)
+원본 정답 : pthread_create(&tid,NULL,ssu_thread,NULL)!=0
+변형 학생 : &tidNULL,ssu_thread,NULL,pthread_creat
+변형 정답 : !&,,,0=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+17정규화 전
+학생 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)]
+정답 : [pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid1,NULL,ssu_thread1,NULL)
+원본 정답 : pthread_create(&tid1,NULL,ssu_thread1,NULL)!=0
+변형 학생 : &tid1NULL,ssu_thread1,NULL,pthread_create
+변형 정답 : !&,,,011=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+18정규화 전
+학생 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)]
+정답 : [pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0]
+정규화 후
+원본 학생 : pthread_create(&tid2,NULL,ssu_thread2,NULL)
+원본 정답 : pthread_create(&tid2,NULL,ssu_thread2,NULL)!=0
+변형 학생 : &tid2NULL,ssu_thread2,NULL,pthread_create
+변형 정답 : !&,,,022=LLLLNNUU__aaacdddeeeehhiprrrssttttu
+26정규화 전
+학생 : [(val=fcntl(fd,F_GETFD,0))<=0]
+정답 : [(val=fcntl(fd,F_GETFL,0))<0]
+정규화 후
+원본 학생 : (val=fcntl(fd,F_GETFD,0))<=0
+원본 정답 : (val=fcntl(fd,F_GETFL,0))<0
+변형 학생 : valfdF_GETFD,0,fcntl=0<=
+변형 정답 : valfdF_GETFL,0,fcntl=0<
+28정규화 전
+학생 : [fcntl(fd,F_SETFD,val)]
+정답 : [fcntl(fd,F_SETFL,val)<0]
+정규화 후
+원본 학생 : fcntl(fd,F_SETFD,val)
+원본 정답 : fcntl(fd,F_SETFL,val)<0
+변형 학생 : fdF_SETFD,val,fcntl
+변형 정답 : fdF_SETFL,val,fcntl0<
+30정규화 전
+학생 : [(fd1=open(filename,O_RDWR))<0]
+정답 : [(fd1=open(filename,O_RDWR|O_APPEND,0644))<0]
+정규화 후
+원본 학생 : (fd1=open(filename,O_RDWR))<0
+원본 정답 : (fd1=open(filename,O_RDWR|O_APPEND,0644))<0
+변형 학생 : fd1filenameO_RDWR,open=0<
+변형 정답 : fd1filenameADDENOOPPRRW__|,0644,open=0<
+31정규화 전
+학생 : [(flag=fcntl(fd1,F_GETFL,0))==-1]
+정답 : [fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1]
+정규화 후
+원본 학생 : (flag=fcntl(fd1,F_GETFL,0))==-1
+원본 정답 : fcntl(fd1,F_SETFD,FD_CLOEXEC)==-1
+변형 학생 : ,,-011===EFFGLT_acdfffgllnt
+변형 정답 : ,,-11==CCDDEEEFFFLOSTX__cdfflnt
+37정규화 전
+학생 : [sigaddset(&sig_set,SIG)]
+정답 : [sigaddset(&sig_set,SIGINT)]
+정규화 후
+원본 학생 : sigaddset(&sig_set,SIG)
+원본 정답 : sigaddset(&sig_set,SIGINT)
+변형 학생 : &sig_setSIG,sigaddset
+변형 정답 : &sig_setSIGINT,sigaddset
+38정규화 전
+학생 : [sigprocmask(SIG_SETMASK,sig_set,NULL)]
+정답 : [sigprocmask(SIG_BLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SIG_SETMASK,sig_set,NULL)
+원본 정답 : sigprocmask(SIG_BLOCK,&sig_set,NULL)
+변형 학생 : SIG_SETMASKsig_set,NULL,sigprocmask
+변형 정답 : SIG_BLOCK&sig_set,NULL,sigprocmask
+39정규화 전
+학생 : [sigprocmask(SIG_UNBLOCK,sig_set,NULL)]
+정답 : [sigprocmask(SIG_UNBLOCK,&sig_set,NULL)]
+정규화 후
+원본 학생 : sigprocmask(SIG_UNBLOCK,sig_set,NULL)
+원본 정답 : sigprocmask(SIG_UNBLOCK,&sig_set,NULL)
+변형 학생 : SIG_UNBLOCKsig_set,NULL,sigprocmask
+변형 정답 : SIG_UNBLOCK&sig_set,NULL,sigprocmask
+20190020 is finished..
+Runtime : 106:617367(sec:usec)
