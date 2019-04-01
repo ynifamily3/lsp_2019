@@ -449,7 +449,6 @@ int mark_student(int student_index) {
 			if (access(pathname, F_OK) == 0)
 				stat(pathname, &statbuf);
 			if (statbuf.st_size > 0) {
-				 //printf("%s : ", pathname);
 				 scores[student_index][i] = codeCMP(i, answer_directory[i]);
 				//scores[student_index][i] = compile_and_return_result(student_index, i, answer_directory[i]);
 				if (scores[student_index][i] > 0.0) {
@@ -501,40 +500,44 @@ double codeCMP(int question_index, char *dirname)
 	normalize(stu_buf, 0);
 	length = strlen(stu_buf);
 
-	normalize(answers[question_index] , 0);
+	char answerTemp[4096] = "";
+	strcpy(answerTemp, answers[question_index]);
+
+	normalize(answerTemp , 0);
 	// 어차피 나중에 파스트리에서 노멀라이즈 한다.
 	
 	// 여러 정답을 추출해낸다.
-	answer_start_pointer[0] = answers[question_index];
-	int ansl = strlen(answers[question_index]);
+	answer_start_pointer[0] = answerTemp;
+	int ansl = strlen(answerTemp);
 	for (int i = 0; i < ansl; i++) {
-		// if (answers[question_index][i] == '\n') answers[question_index][i] = '\0';
-		if (answers[question_index][i] == ':') {
-			if(answers[question_index][i+1] == '\0') {
+		if (answerTemp[i] == ':') {
+			if(answerTemp[i+1] == '\0') {
 				// 스트링 끝에 :이 붙은 경우
-				break;
+				//break;
 			}
-			answer_start_pointer[answer_candidate_number] = &answers[question_index][i+1];
+			answer_start_pointer[answer_candidate_number] = &answerTemp[i+1];
 			++answer_candidate_number;
-			answers[question_index][i] = '\0'; // make null character
+			answerTemp[i] = '\0'; // make null character
 		}
 	}
 	bool isCorrect = false;
 	for (int i = 0; i < answer_candidate_number; i++) {
+		//printf("Attempt #%d / %d\n", i+1, answer_candidate_number);
 		if (strcmp(stu_buf, answer_start_pointer[i]) == 0) {
+			//printf("단순비교\n학생 : [%s]\n정답 : [%s]\n", stu_buf, answer_start_pointer[i]);
 			isCorrect = true;
 			break;
 		} else {
 			// take parse tree
-			//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-			printf("%d정규화 전\n학생 : [%s]\n정답 : [%s]\n",question_index, stu_buf, answer_start_pointer[i]);
+			//printf("정규화 전\n학생 : [%s]\n정답 : [%s]\n",stu_buf, answer_start_pointer[i]);
 			//getchar();
 			char *treeR = mpt(answer_start_pointer[i]);
 			char *treeL = mpt(stu_buf);
-			printf("정규화 후\n");
-			printf("원본 학생 : %s\n원본 정답 : %s\n", stu_buf, answer_start_pointer[i]);
-			printf("변형 학생 : %s\n변형 정답 : %s\n", treeL, treeR);
+			//printf("정규화 후\n");
+			//printf("원본 학생 : %s\n원본 정답 : %s\n", stu_buf, answer_start_pointer[i]);
+			//printf("변형 학생 : %s\n변형 정답 : %s\n", treeL, treeR);
 			if(!treeL) {
+				// printf("설마 여기서?\n");
 				free(treeR);
 				break;
 			}
@@ -801,7 +804,7 @@ int main(int argc, char *argv[])
 
 		printf("Grading Student's test papers..\n");
 		for (int i = 0; i < number_of_students; i++) {
-			// printf("Grading %s...\n", students[i]);
+			printf("Grading %s...\n", students[i]);
 			mark_student(i);
 			// printf("score : %.2lf\n", scores[i]);
 		}
