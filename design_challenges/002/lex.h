@@ -16,7 +16,6 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 #define DIGIT 1 // 숫자
 #define OPERATOR 2 // 연산자(조각)
 #define UNKNOWN 9999 // 모르는 것들
-#define JUMP 99999 // 스트링 리터럴일때 그냥 점프
 
 /* 문자열 종류 정의 */
 #define INT_LIT 10 // 숫자열

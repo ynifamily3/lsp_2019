@@ -25,18 +25,20 @@ void remove_blank() {
 	while (isspace(LEX_nextChar)) getChar();
 }
 
-void process_string_literals() {
+int process_string_literals() {
 	if (LEX_nextChar == '"') {
+		addChar(); // 시작하는 따옴표
 		getChar();
-		addChar();
-		while (LEX_nextChar != '"' || LEX_nextChar != '\0' || LEX_nextChar != '\n') {
-			printf("[%c]", LEX_nextChar);
+		while (LEX_nextChar != '"') {
+			addChar(); // 내용물
 			getChar();
-			addChar();
 		}
+		addChar(); // 끝나는 따옴표
+		getChar();
 		LEX_nextToken = STR_LIT;
-		LEX_charClass = JUMP;
+		return 1;
 	}
+	return 0;
 }
 
 int isoperator(char in)
@@ -97,7 +99,8 @@ void lex_analysis()
 {
 	LEX_lex_length = 0;
 	remove_blank();
-	process_string_literals(); // 문자열은 따로 분리해줌
+	int is_str_lit = process_string_literals(); // 문자열은 따로 분리해줌
+	if(!is_str_lit) // str_lit가 없었을 경우 switch문 실행
 	switch (LEX_charClass) {
 		case LETTER:
 		addChar();

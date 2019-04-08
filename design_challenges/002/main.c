@@ -5,7 +5,7 @@
 
 int main(void)
 {
-	char input[100] = "public static void main(String[] args){ 10  \"Lucky stars\" ";
+	char input[100] = "public static void main(String[] args){";
 	printf("Hello world!!\n");
 	lex(input);
 	exit(0);
