@@ -4,7 +4,7 @@
 #include "lex.h"
 
 #define NUMBER_OF_KEYWORDS 21
-#define NUMBER_OF_OPERATORS 19
+#define NUMBER_OF_OPERATORS 20
 
 /*
 LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Robert W. Sebesta
@@ -18,7 +18,7 @@ const char *LEX_keywords[NUMBER_OF_KEYWORDS] = {
 };
 const char *LEX_operators[NUMBER_OF_OPERATORS] = {
 	".", "[", "]", "(" ,")", "{", "}", "%", "\"", ";",
-	"==", "<=", ">=", "+=", "++", "--", "!=", "=", "[]"
+	"==", "<=", ">=", "+=", "++", "--", "!=", "=", "[]", ","
 };
 
 void remove_blank() {
@@ -48,7 +48,7 @@ int isoperator(char in)
 		case '.': case '[': case ']': case '{' : case '}' :
 		case '%' : case '\"': case ';': case '=': case '<' :
 		case '>' : case '+' : case '-' : case '!' :
-		case '(' : case ')' :
+		case '(' : case ')' : case ',' :
 		return 1;
 		break;
 	}
@@ -134,6 +134,11 @@ void lex_analysis()
 		while (LEX_charClass == OPERATOR && keepGoing == 1) {
 			addChar();
 			getChar();
+			keepGoing = 0;
+			switch (LEX_nextChar) {
+				case '=': case '+' : case '-' : case ']' :
+				keepGoing = 1;
+			}
 		}
 		LEX_nextToken = OPERATOR;
 		break;

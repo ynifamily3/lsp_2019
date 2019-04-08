@@ -5,7 +5,7 @@
 
 int main(void)
 {
-	char input[100] = "public static void main(String[] args){";
+	char input[100] = "Scanner scn = new Scanner(System.in);";
 	printf("Hello world!!\n");
 	lex(input);
 	exit(0);

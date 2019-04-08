@@ -65,6 +65,7 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 #define NOT_EQUAL_OP 116
 #define ASSIGN_OP 117
 #define SQUARE_BRACKET_LR_OP 118
+#define COMMA_OP 119
 
 const char *inText;
 
