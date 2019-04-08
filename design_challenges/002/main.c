@@ -6,7 +6,7 @@
 int main(void)
 {
 	_lexPattern pattern;
-	char input[100] = "num = scn.nextInt();";
+	char input[100] = "strcmp(opstring, operator[i]) == 0)";
 	lex(&pattern, input);
 	printf("패턴 : ");
 	for (int i = 0; i < pattern.pattern_length; i++) {

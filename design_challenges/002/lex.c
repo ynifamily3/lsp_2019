@@ -154,12 +154,6 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
 		break;
 
 		case EOF:
-		lV->LEX_lexeme[0] = '<';
-		lV->LEX_lexeme[1] = 'E';
-		lV->LEX_lexeme[2] = 'O';
-		lV->LEX_lexeme[3] = 'F';
-		lV->LEX_lexeme[4] = '>';
-		lV->LEX_lexeme[5] = '\0';
 		lV->LEX_nextToken = EOF;
 		break;
 	}
