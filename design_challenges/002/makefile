@@ -1,4 +1,4 @@
-OBJECTS	= main.o lex.o
+OBJECTS	= main.o lex.o pattern.o
 TARGET	= ./javatoC
 CC		= gcc
 CFLAGS	= -std=c99 -W -Wall
@@ -11,3 +11,6 @@ main.o : main.c
 
 lex.o : lex.c
 	$(CC) $(CFLAGS) -c lex.c
+
+pattern.o : pattern.c
+	$(CC) $(CFLAGS) -c pattern.c

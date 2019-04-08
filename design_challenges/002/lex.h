@@ -11,6 +11,11 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 193 page 소스코드를 고쳐서 썼습니다.
 */
 
+#define NUMBER_OF_KEYWORDS 21
+#define NUMBER_OF_OPERATORS 20
+#define LEX_SIZE 50
+#define PATTERN_SIZE 30
+
 /* 문자 종류 정의 */
 #define LETTER 0 // 문자
 #define DIGIT 1 // 숫자
@@ -67,27 +72,31 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 #define SQUARE_BRACKET_LR_OP 118
 #define COMMA_OP 119
 
-const char *inText;
+typedef struct {
+    const char *inText;
+    int LEX_charClass; // 글자 한 개의 class
+    int LEX_nextToken; // 렉심 타입
+    char LEX_nextChar; // 다음 글자 한 개
+    int LEX_inText_pointer;
+    int LEX_lex_length;
+    char LEX_lexeme[LEX_SIZE + 1]; // 한 단위 렉심
+} _lexV;
 
-int LEX_token_length;
-char LEX_buffer[31][31];
+typedef struct {
+    int pattern_length; // 패턴 개수
+    int pattern[PATTERN_SIZE]; // 패턴 번호들
+    char buffer[PATTERN_SIZE][LEX_SIZE + 1]; // 패턴 실제 내용
+} _lexPattern;
 
-int LEX_charClass;
-int LEX_nextToken;
-int LEX_nextChar;
-int LEX_inText_pointer;
-int LEX_lex_length;
-
-int LEX_in_double_quotes;
-
-char LEX_lexeme[31]; // 한 단위 렉심
-
-void lex_analysis();
-void addChar();
-void getChar();
-void lookup_operator();
-void lookup_keyword();
-void lex(const char *inText);
+void remove_blank(_lexV *lV);
+int process_string_literals(_lexV *lV);
+int isoperator(char in);
+void getChar(_lexV *lV);
+void addChar(_lexV *lV);
+void lex_analysis(_lexPattern *pattern, _lexV *lV);
+void lookup_operator(_lexV *lV);
+void lookup_keyword(_lexV *lV);
+void lex(_lexPattern *resultpattern, const char *inText);
 
 
 #endif

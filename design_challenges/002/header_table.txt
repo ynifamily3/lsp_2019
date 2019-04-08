@@ -1,0 +1,13 @@
+6
+sys/types.h
+sys/stat.h
+fcntl.h
+unistd.h
+stdlib.h
+stdio.h
+5
+open 3 0 1 2
+read 1 3
+exit 1 4
+scanf 1 5
+printf 1 5
