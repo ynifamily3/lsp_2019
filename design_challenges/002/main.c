@@ -55,6 +55,7 @@ int main(void)
 
 	// 여기서부터 패턴정의2
 	// stack = new int[STACK_SIZE]; ==> stack = (int *)calloc(STACK_SIZE, sizeof(int));
+	// 패턴 구조체 변환 필요 : 1) 스트릿하게 일치, 2) 자료형 등의 변환 가능 3) ~로 시작하는 문장 이렇게 세 개의 매칭 가능성을 시사해야 됨
     patt2.java_pattern_length = 8;
     patt2.c_pattern_length = 17;
     patt2.java_pattern[0] = IDENTFIER;
