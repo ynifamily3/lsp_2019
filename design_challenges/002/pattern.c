@@ -46,21 +46,21 @@ void PATT_init()
     pt1->java_pattern[7] = SEMICOLON_OP;
     pt1->c_pattern[0] = 0; // stack
     pt1->c_pattern[1] = 1; // =
-	pt1->c_pattern[2] = 1006; // (
-	pt1->c_pattern[3] = 3; // int
-	pt1->c_pattern[4] = 1009; // " "
+    pt1->c_pattern[2] = 1006; // (
+    pt1->c_pattern[3] = 3; // int
+    pt1->c_pattern[4] = 1009; // " "
     pt1->c_pattern[5] = 1004; // *
-	pt1->c_pattern[6] = 1007; // )
+    pt1->c_pattern[6] = 1007; // )
     pt1->c_pattern[7] = 1005; // calloc
     pt1->c_pattern[8] = 1006; // (
     pt1->c_pattern[9] = 5; // STACK_SIZE
     pt1->c_pattern[10] = 1002; // ,
     pt1->c_pattern[11] = 1008; // sizeof
-	pt1->c_pattern[12] = 1006; // (
-	pt1->c_pattern[13] = 3; // int
-	pt1->c_pattern[14] = 1007; // )
-	pt1->c_pattern[15] = 1007; // )
-	pt1->c_pattern[16] = 7; // ;
+    pt1->c_pattern[12] = 1006; // (
+    pt1->c_pattern[13] = 3; // int
+    pt1->c_pattern[14] = 1007; // )
+    pt1->c_pattern[15] = 1007; // )
+    pt1->c_pattern[16] = 7; // ;
 }
 
 int PATT_is_match(const _lexPattern *pattern)
