@@ -32,3 +32,6 @@ relative/path/to/dir/anotherfile
 
 # Vscode directory
 *.vscode*
+
+# unignore makefile
+!makefile
