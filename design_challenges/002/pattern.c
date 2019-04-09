@@ -79,7 +79,7 @@ int PATT_is_match(const _lexPattern *pattern)
     return -1;
 }
 
-void convertJavatoC(const _lexPattern *pattern, char *resultbuf)
+void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
 {
     if (PATT_is_initalized == 0) {
         PATT_is_initalized = 1;

@@ -98,5 +98,4 @@ void lookup_operator(_lexV *lV);
 void lookup_keyword(_lexV *lV);
 void lex(_lexPattern *resultpattern, const char *inText);
 
-
 #endif

@@ -14,7 +14,7 @@ typedef struct {
     int c_pattern[PATTERN_SIZE];
 } _patternChanger;
 
-void convertJavatoC(const _lexPattern *pattern, char *resultbuf);
+void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf);
 
 
 #endif
