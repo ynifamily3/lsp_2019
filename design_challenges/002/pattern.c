@@ -41,7 +41,7 @@ void PATT_init()
     pt1->java_pattern[2] = NEW_CODE;
     pt1->java_pattern[3] = INT_CODE;
     pt1->java_pattern[4] = SQUARE_BRACKET_LEFT_OP;
-    pt1->java_pattern[5] = IDENTFIER;
+    pt1->java_pattern[5] = IDENTFIER; // 혹은 수치 리터럴이 와도 좋다. 어떻게 처리할까.
     pt1->java_pattern[6] = SQUARE_BRACKET_RIGHT_OP;
     pt1->java_pattern[7] = SEMICOLON_OP;
     pt1->c_pattern[0] = 0; // stack
@@ -103,9 +103,32 @@ void convertJavatoC(const _lexPattern *pattern, char *resultbuf)
         // 그대로 붙여 출력
         for (int i = 0; i < pattern->pattern_length; ++i) {
             strcat(resultbuf, pattern->buffer[i]);
-            // 다음 토큰이 수치리터럴, 아이덴티파이어, 연산자면 뛴다. 전위 후위, ; 연산자면 안뛴다. () 가 뒤에 와도 안 뛴다.
-            if (i+1 < pattern->pattern_length && (pattern->pattern[i+1] == 10 || pattern->pattern[i+1] == 11 || (pattern->pattern[i+1] >= 100 && pattern->pattern[i+1] != 114 && pattern->pattern[i+1] != 115 && pattern->pattern[i+1] != 109 && pattern->pattern[i+1] != 103 && pattern->pattern[i+1] != 104)  ))
+            // 다음 토큰이 수치리터럴, 아이덴티파이어, 연산자면 뛴다. 전위 후위, ; 연산자면 안뛴다. ) 가 뒤에 와도 안 뛴다. ','도 안 뛴다. '.'도 안 뛴다.
+            if (
+                pattern->pattern[i] != 103 && // 순서 괜찮? i+1 len체크 뒤쪽으로 가야되는거 아닌가
+                i+1 < pattern->pattern_length &&
+                (
+                    pattern->pattern[i+1] == 10 ||
+                    pattern->pattern[i+1] == 11 ||
+                    pattern->pattern[i+1] == 2  || // 단순연산자
+                    (
+                        pattern->pattern[i+1] >= 100 &&
+                        pattern->pattern[i+1] != 114 &&
+                        pattern->pattern[i+1] != 115 &&
+                        pattern->pattern[i+1] != 109 &&
+                        pattern->pattern[i+1] != 103 &&
+                        pattern->pattern[i+1] != 104 &&
+                        pattern->pattern[i+1] != 119 &&
+                        pattern->pattern[i+1] != 100
+                    ) ||
+                    (
+                        pattern->pattern[i+1] >= 20 &&
+                        pattern->pattern[i+1] <= 40
+                    )
+                )
+            ) {
                 strcat(resultbuf, " ");
+            }
         }
     }
 }

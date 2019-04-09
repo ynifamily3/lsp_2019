@@ -7,9 +7,9 @@
 int main(void)
 {
 	_lexPattern pattern, pattern2, pattern3;
-	char input[100] = "stack = new int[STACK_SIZE];";
-    char input2[100] = "test = scan.nextInt();";
-    char input3[100] = "for(int i = 0; i <= 20; i++){";
+	char input[100] = "stk99 = new int[STK_SIZE];";
+    char input2[100] = "while(abc > 300) {";
+    char input3[100] = "num = scn.nextInt();";
     char result[MAX_RESULT_CODE_LENGTH];
     char result2[MAX_RESULT_CODE_LENGTH];
     char result3[MAX_RESULT_CODE_LENGTH];
