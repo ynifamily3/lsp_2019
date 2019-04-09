@@ -57,7 +57,7 @@ void getChar(_lexV *lV)
 {
 	lV->LEX_nextChar = lV->inText[lV->LEX_inText_pointer++];
 	if (lV->LEX_nextChar != '\0' && lV->LEX_nextChar != '\n') {
-		if (isalpha(lV->LEX_nextChar))
+		if (isalpha(lV->LEX_nextChar) || lV->LEX_nextChar == '_')
 			lV->LEX_charClass = LETTER;
 		else if (isdigit(lV->LEX_nextChar))
 			lV->LEX_charClass = DIGIT;
