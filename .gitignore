@@ -35,3 +35,7 @@ relative/path/to/dir/anotherfile
 
 # unignore makefile
 !makefile
+
+# ignore .out .o
+*.out
+*.o
