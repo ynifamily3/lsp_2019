@@ -31,6 +31,10 @@ int main(int argc, char *argv[])
             printf("원본 : %s\n바꿈 : %s\n-------------------------------------------\n", input, output); // 주석 처리를 못함
         }
     }
+    char input2[100] = "scn = scc.nextInt(); 내맘대로 코딩할래";
+    char output2[100];
+    convert_java_to_c(output2, input2);
+    printf("%s\n", output2);
 
 
     fclose(fp);

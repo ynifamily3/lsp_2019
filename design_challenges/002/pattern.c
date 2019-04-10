@@ -94,7 +94,7 @@ int PATT_is_match(const _lexPattern *pattern)
     for (int i = 0; i < NUMBER_OF_PATTERNS; ++i) {
         _patternChanger *patt = &patternIndex[i];
         int matched = 1;
-        for (int j = 0; j < pattern->pattern_length; ++j) {
+        for (int j = 0; j < patt->java_pattern_length; ++j) { // startsWith 같은 효과를 위해 j < pattern->pattern_length; 대신에
             if (pattern->pattern[j] != patt->java_pattern[j]) {matched = 0; break;}
         }
         if (matched) return i;
@@ -122,6 +122,8 @@ void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
                 strcat(resultbuf, pattern->buffer[patt->c_pattern[i]]);
             }
         }
+        for (int i = patt->c_pattern_length; i < pattern->pattern_length; ++i)
+            strcat(resultbuf, pattern->buffer[i]); // startsWith 를 고려한 나머지는 쭉 출력해준다.
     } else {
         // 그대로 붙여 출력
         for (int i = 0; i < pattern->pattern_length; ++i) {
