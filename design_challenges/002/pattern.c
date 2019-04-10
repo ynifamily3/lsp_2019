@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "pattern.h"
+#include "debug.h"
 
 int PATT_is_initalized = 0;
 
@@ -13,7 +14,9 @@ _patternChanger patternIndex[NUMBER_OF_PATTERNS];
 // 패턴 구조체 변환 필요 : 1) 스트릿하게 일치, 2) 자료형 등의 변환 가능 3) ~로 시작하는 문장 이렇게 세 개의 매칭 가능성을 시사해야 됨
 void PATT_init()
 {
+    // stack = new int[stack_size]; 유형
     _patternChanger *pt0 = &patternIndex[0];
+    pt0->pattern_type = EXACT;
     pt0->java_pattern_length = 8;
     pt0->c_pattern_length = 8;
     pt0->java_pattern[0] = IDENTFIER;
@@ -34,6 +37,7 @@ void PATT_init()
     pt0->c_pattern[7] = 7;
 
     _patternChanger *pt1 = &patternIndex[1];
+    pt1->pattern_type = EXACT;
     pt1->java_pattern_length = 8;
     pt1->c_pattern_length = 17;
     pt1->java_pattern[0] = IDENTFIER;
@@ -61,6 +65,14 @@ void PATT_init()
     pt1->c_pattern[14] = 1007; // )
     pt1->c_pattern[15] = 1007; // )
     pt1->c_pattern[16] = 7; // ;
+
+    _patternChanger *pt2 = &patternIndex[2];
+    pt2->pattern_type = EXACT;
+    pt2->java_pattern_length = 1;
+    pt2->c_pattern_length = 1;
+    pt2->java_pattern[0] = IDENTFIER;
+    pt2->c_pattern[0] = 0; // stack
+ 
 }
 
 int PATT_is_match(const _lexPattern *pattern)
@@ -104,8 +116,11 @@ void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
         for (int i = 0; i < pattern->pattern_length; ++i) {
             strcat(resultbuf, pattern->buffer[i]);
             // 다음 토큰이 수치리터럴, 아이덴티파이어, 연산자면 뛴다. 전위 후위, ; 연산자면 안뛴다. ) 가 뒤에 와도 안 뛴다. ','도 안 뛴다. '.'도 안 뛴다.
+            // 특정 연산자 (.등) 뒤에는 안 뛴다.
+            DBGMSG("패턴번호 %d", pattern->pattern[i]);
             if (
-                pattern->pattern[i] != 103 && // 순서 괜찮? i+1 len체크 뒤쪽으로 가야되는거 아닌가
+                pattern->pattern[i] != 100 &&
+                pattern->pattern[i] != 103 &&
                 i+1 < pattern->pattern_length &&
                 (
                     pattern->pattern[i+1] == 10 ||
