@@ -19,7 +19,16 @@ int main(int argc, char *argv[])
     }
 
     parse_args(argc-1, argv+1); // argv[1] (pathname) 제외
-    /*
+
+    char input[100] = "for(int i = 0; i < 88; i+=99*abc);"; // 버그 찾음 * operation 인식을 안함
+    char output[100];
+    convert_java_to_c(output, input);
+    printf("%s\n", output);
+    exit(0);
+}
+
+
+/*
     FILE *fp = fopen(argv[1], "r");
     char input[MAX_RESULT_CODE_LENGTH];
     while(fgets(input, sizeof(input), fp)) {
@@ -30,11 +39,4 @@ int main(int argc, char *argv[])
 
     fclose(fp);
 
-*/
-
-    char input[100] = "System.out.printf(\"Miki_Nano\");";
-    char output[100];
-    convert_java_to_c(output, input);
-    printf("%s\n", output);
-    exit(0);
-}
+    */
