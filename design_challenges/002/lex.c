@@ -3,6 +3,8 @@
 #include <ctype.h>
 #include "lex.h"
 
+int LEX_is_in_comment = 0; // multi line comment
+
 /*
 LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Robert W. Sebesta
 193 page 소스코드를 고쳐서 썼습니다.
@@ -15,7 +17,8 @@ const char *LEX_keywords[NUMBER_OF_KEYWORDS] = {
 };
 const char *LEX_operators[NUMBER_OF_OPERATORS] = {
     ".", "[", "]", "(" ,")", "{", "}", "%", "\"", ";",
-    "==", "<=", ">=", "+=", "++", "--", "!=", "=", "[]", ","
+    "==", "<=", ">=", "+=", "++", "--", "!=", "=", "[]",
+    ",", "//", "/*", "*/"
 };
 
 void remove_blank(_lexV *lV) {
@@ -45,7 +48,7 @@ int isoperator(char in)
         case '.': case '[': case ']': case '{' : case '}' :
         case '%' : case '\"': case ';': case '=': case '<' :
         case '>' : case '+' : case '-' : case '!' :
-        case '(' : case ')' : case ',' :
+        case '(' : case ')' : case ',' : case '/': case '*':
         return 1;
         break;
     }
@@ -63,7 +66,7 @@ void getChar(_lexV *lV)
             lV->LEX_charClass = DIGIT;
         else if (isoperator(lV->LEX_nextChar))
             lV->LEX_charClass = OPERATOR;
-        else lV->LEX_charClass = UNKNOWN;
+        else lV->LEX_charClass = LETTER; // UNKNOWN 보단 나을 것이다.
     }
     else
         lV->LEX_charClass = EOF;
@@ -85,6 +88,7 @@ void lex(_lexPattern *pattern, const char *_inText)
 {
     _lexV lexMemory; // 전역 변수 대신 다음 구조체 사용
     _lexV *lV = &lexMemory;
+    lexMemory.is_oneline_comment = 0; // 일단 추가해 줌
     lV->inText = _inText;
     pattern->pattern_length = 0;
     lV->LEX_inText_pointer = 0;
@@ -92,18 +96,17 @@ void lex(_lexPattern *pattern, const char *_inText)
     do {
         lex_analysis(pattern, lV);
     } while(lV->LEX_nextToken != EOF);
-    
-    /*
-    for (int i = 0; i < pattern->pattern_length; i++) {
-        printf("%d => %s\n", pattern->pattern[i], pattern->buffer[i]);
-    }
-    */
-
 }
 
 void lex_analysis(_lexPattern *pattern, _lexV *lV)
 {
     lV->LEX_lex_length = 0;
+    if (lV->is_oneline_comment == 1) {
+        // 뒤에 있는 모든 코멘트 끝까지 복사 후 EOF종결
+        fprintf(stderr, "뒤에 있는 것 :%s\n", lV->inText + lV->LEX_inText_pointer);
+        ///pattern->pattern[pattern->pattern_length] = lV->LEX_nextToken;
+        ///strncpy(pattern->buffer[pattern->pattern_length++], lV->LEX_lexeme, LEX_SIZE);
+    }
     remove_blank(lV);
     int is_str_lit = process_string_literals(lV); // 문자열은 따로 분리해줌
     if(!is_str_lit) // str_lit가 없었을 경우 switch문 실행
@@ -133,7 +136,8 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         getChar(lV);
         int keepGoing = 0;
         switch (lV->LEX_nextChar) {
-            case '=': case '+' : case '-' : case ']' :
+            // 마지막 '/'은 주석의 시작을 알릴 수도 있으므로 살펴본다.
+            case '=': case '+' : case '-' : case ']' : case '/':
             keepGoing = 1;
         }
         // 아닌 이상 while 문을 수행하지 않아도 된다.
@@ -174,6 +178,12 @@ void lookup_operator(_lexV *lV)
     for (int i = 0; i < NUMBER_OF_OPERATORS; i++) {
         if (strcmp(lV->LEX_lexeme, LEX_operators[i]) == 0) {
             lV->LEX_nextToken = i + 100;
+            // 주석인지 아닌지 추가...
+            if (lV->LEX_nextToken == ONE_LINE_COMMENT) {
+                // '//' 주석이다.
+                fprintf(stderr, "한 줄 주석 출연합니다..\n");
+                lV->is_oneline_comment = 1;
+            }
             return;
         }
     }

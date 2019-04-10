@@ -12,7 +12,7 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 */
 
 #define NUMBER_OF_KEYWORDS 22
-#define NUMBER_OF_OPERATORS 20
+#define NUMBER_OF_OPERATORS 23
 #define LEX_SIZE 50
 #define PATTERN_SIZE 30
 
@@ -26,6 +26,7 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 #define INT_LIT 10 // 숫자열
 #define IDENTFIER 11 // (키워드, 연산자, 코드) 아닌 것 => 밑에 세부적으로 정의함
 #define STR_LIT 12 // " " 안에 있는 문장
+#define COMMENT 13
 
 /* 키워드, 자바 내부 메서드 정의 */
 #define IMPORT_CODE 20
@@ -72,8 +73,12 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 #define ASSIGN_OP 117
 #define SQUARE_BRACKET_LR_OP 118
 #define COMMA_OP 119
+#define ONE_LINE_COMMENT 120
+#define MULTI_LINE_COMMENT_OPEN 121
+#define MULTI_LINE_COMMENT_CLOSE 122
 
 typedef struct {
+    int is_oneline_comment;
     const char *inText;
     int LEX_charClass; // 글자 한 개의 class
     int LEX_nextToken; // 렉심 타입
