@@ -1,1 +1,0 @@
-pthread_cond_t cond=PTHREAD_COND_INITIALIZER : pthread_cond_t cond=PTHREAD_COND_INITIALIZER;

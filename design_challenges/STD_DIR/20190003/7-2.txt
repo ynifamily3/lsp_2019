@@ -1,1 +1,0 @@
-(val = fcntl(STDIN_FILENO, F_GETFL, 0)) == -1

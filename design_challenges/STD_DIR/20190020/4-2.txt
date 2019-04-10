@@ -1,1 +1,0 @@
-pthread_creat(&tid,NULL,ssu_thread,NULL)

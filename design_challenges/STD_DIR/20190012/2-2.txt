@@ -1,1 +1,0 @@
-execlp("/usr/bin/who", "who", (void *)0)

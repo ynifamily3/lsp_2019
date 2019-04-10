@@ -1,1 +1,0 @@
-fcntl(STDIN_FILENO, F_SETFL, val) == -1

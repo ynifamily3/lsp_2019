@@ -1,1 +1,0 @@
-(val = fcntl(fd, F_GETFl, 0)) == -1

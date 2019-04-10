@@ -1,1 +1,0 @@
-execv("/usr/bin/find", argv) == -1

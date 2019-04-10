@@ -1,1 +1,0 @@
-flag &O_APPEND : flag &O_APPEND ==O_APPEND

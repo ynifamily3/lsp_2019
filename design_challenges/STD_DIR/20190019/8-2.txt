@@ -1,1 +1,0 @@
-(fd2 = fcntl(fd1,F_SETFD,0)) ==-1

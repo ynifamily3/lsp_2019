@@ -1,1 +1,0 @@
-ntowrite, O_NONBLOCK

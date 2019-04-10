@@ -1,1 +1,0 @@
-flags |= O_NONBLOCK

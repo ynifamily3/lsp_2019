@@ -1,1 +1,0 @@
-execlp("date","date",(void*)0);

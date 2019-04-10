@@ -1,1 +1,0 @@
-execlp("who","who",(char*)0) : execlp("who","who",0) : execlp("who","who") : execlp("who", "who", NULL) : execlp("who","who",(char*)0); : execlp("who","who",0); : execlp("who","who"); : execlp("who", "who", NULL);

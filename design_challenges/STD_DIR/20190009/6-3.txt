@@ -1,3 +1,0 @@
-if(glo_val  > VALUE_STOP1)
-	pthread_cond_signal(&cond);
-

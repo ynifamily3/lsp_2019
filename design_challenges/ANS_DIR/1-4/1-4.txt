@@ -1,1 +1,0 @@
-putenv("WARNING=Don't use envp after putenv()") : putenv("WARNING=Don't use envp after putenv()");
