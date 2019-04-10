@@ -6,7 +6,6 @@
 
 int main(void)
 {
-    /*
     _lexPattern pattern, pattern2, pattern3;
     char input[MAX_RESULT_CODE_LENGTH] = "stk99 = new int[STK_SIZE];";
     char input2[MAX_RESULT_CODE_LENGTH] = "while(abc > 300) {";
@@ -26,6 +25,6 @@ int main(void)
     printf("%s ==> %s\n", input, result);
     printf("%s ==> %s\n", input2, result2);
     printf("%s ==> %s\n", input3, result3);
-*/
+
     exit(0);
 }

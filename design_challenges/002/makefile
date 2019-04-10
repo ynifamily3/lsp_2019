@@ -1,4 +1,4 @@
-OBJECTS	= main.o lex.o pattern.o
+OBJECTS	= main.o lex.o pattern.o arg_read.o
 TARGET	= ./javatoC
 CC		= gcc
 CFLAGS	= -std=c99 -W -Wall
@@ -6,11 +6,8 @@ CFLAGS	= -std=c99 -W -Wall
 $(TARGET) : $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJECTS)
 
-main.o : main.c
-	$(CC) $(CFLAGS) -c main.c
+%.o : %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-lex.o : lex.c
-	$(CC) $(CFLAGS) -c lex.c
-
-pattern.o : pattern.c
-	$(CC) $(CFLAGS) -c pattern.c
+clean :
+	-rm $(OBJECTS)
