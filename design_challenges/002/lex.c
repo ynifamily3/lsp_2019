@@ -103,10 +103,13 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
     lV->LEX_lex_length = 0;
     if (lV->is_oneline_comment == 1) {
         // 뒤에 있는 모든 코멘트 끝까지 복사 후 EOF종결
-        fprintf(stderr, "뒤에 있는 것 :%s\n", lV->inText + lV->LEX_inText_pointer);
-        ///pattern->pattern[pattern->pattern_length] = lV->LEX_nextToken;
-        ///strncpy(pattern->buffer[pattern->pattern_length++], lV->LEX_lexeme, LEX_SIZE);
+        fprintf(stderr, "//%s\n", lV->inText + lV->LEX_inText_pointer - 1);
+        pattern->pattern[pattern->pattern_length] = lV->LEX_nextToken;
+        strncpy(pattern->buffer[pattern->pattern_length++], lV->inText + lV->LEX_inText_pointer -1, LEX_SIZE);
+        lV->LEX_nextToken = EOF;
+        return;
     }
+    // 멀티라인 주석은 생략해본다.
     remove_blank(lV);
     int is_str_lit = process_string_literals(lV); // 문자열은 따로 분리해줌
     if(!is_str_lit) // str_lit가 없었을 경우 switch문 실행
@@ -137,7 +140,8 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         int keepGoing = 0;
         switch (lV->LEX_nextChar) {
             // 마지막 '/'은 주석의 시작을 알릴 수도 있으므로 살펴본다.
-            case '=': case '+' : case '-' : case ']' : case '/':
+            // case */
+            case '=': case '+' : case '-' : case ']' : case '/': case '*':
             keepGoing = 1;
         }
         // 아닌 이상 while 문을 수행하지 않아도 된다.
@@ -146,7 +150,7 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
             getChar(lV);
             keepGoing = 0;
             switch (lV->LEX_nextChar) {
-                case '=': case '+' : case '-' : case ']' :
+                case '=': case '+' : case '-' : case ']' : case '/': case '*':
                 keepGoing = 1;
             }
         }
@@ -179,9 +183,9 @@ void lookup_operator(_lexV *lV)
         if (strcmp(lV->LEX_lexeme, LEX_operators[i]) == 0) {
             lV->LEX_nextToken = i + 100;
             // 주석인지 아닌지 추가...
-            if (lV->LEX_nextToken == ONE_LINE_COMMENT) {
+            if (lV->LEX_nextToken == ONE_LINE_COMMENT && lV->LEX_nextToken == MULTI_LINE_COMMENT_OPEN) {
                 // '//' 주석이다.
-                fprintf(stderr, "한 줄 주석 출연합니다..\n");
+                // fprintf(stderr, "한 줄 주석 출연합니다..\n");
                 lV->is_oneline_comment = 1;
             }
             return;
