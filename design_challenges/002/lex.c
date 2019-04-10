@@ -9,9 +9,9 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 */
 const char *LEX_keywords[NUMBER_OF_KEYWORDS] = {
     "import", "public", "class", "static", "void",
-    "String", "Scanner", "new", "System.in", "System.out.printf",
+    "String", "Scanner", "new", "System", "out",
     "int", "nextInt", "for", "if", "else", "return", "final", "File",
-     "throws", "IOException", "FileWriter"
+     "throws", "IOException", "FileWriter", "printf"
 };
 const char *LEX_operators[NUMBER_OF_OPERATORS] = {
     ".", "[", "]", "(" ,")", "{", "}", "%", "\"", ";",

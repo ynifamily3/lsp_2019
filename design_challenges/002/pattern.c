@@ -67,12 +67,23 @@ void PATT_init()
     pt1->c_pattern[16] = 7; // ;
 
     _patternChanger *pt2 = &patternIndex[2];
-    pt2->pattern_type = EXACT;
-    pt2->java_pattern_length = 1;
-    pt2->c_pattern_length = 1;
-    pt2->java_pattern[0] = IDENTFIER;
-    pt2->c_pattern[0] = 0; // stack
- 
+    pt2->pattern_type = EXACT; // ** 사실 가변인자가 들어가므로 starts with + ends with 패턴으로 조합되어야 한다.
+    pt2->java_pattern_length = 9;
+    pt2->c_pattern_length = 5;
+    pt2->java_pattern[0] = SYSTEM_CODE;
+    pt2->java_pattern[1] = DOT_OP;
+    pt2->java_pattern[2] = OUT_CODE;
+    pt2->java_pattern[3] = DOT_OP;
+    pt2->java_pattern[4] = PRINTF_CODE;
+    pt2->java_pattern[5] = PARENTHESES_LEFT_OP;
+    pt2->java_pattern[6] = STR_LIT;
+    pt2->java_pattern[7] = PARENTHESES_RIGHT_OP;
+    pt2->java_pattern[8] = SEMICOLON_OP;
+    pt2->c_pattern[0] = 4; // printf
+    pt2->c_pattern[1] = 5; // (
+    pt2->c_pattern[2] = 6; // "--"
+    pt2->c_pattern[3] = 7; // )
+    pt2->c_pattern[4] = 8; // ;
 }
 
 int PATT_is_match(const _lexPattern *pattern)
@@ -117,7 +128,7 @@ void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
             strcat(resultbuf, pattern->buffer[i]);
             // 다음 토큰이 수치리터럴, 아이덴티파이어, 연산자면 뛴다. 전위 후위, ; 연산자면 안뛴다. ) 가 뒤에 와도 안 뛴다. ','도 안 뛴다. '.'도 안 뛴다.
             // 특정 연산자 (.등) 뒤에는 안 뛴다.
-            DBGMSG("패턴번호 %d", pattern->pattern[i]);
+            DBGMSG("패턴 : %s 패턴번호 %d",pattern->buffer[i], pattern->pattern[i]);
             if (
                 pattern->pattern[i] != 100 &&
                 pattern->pattern[i] != 103 &&
