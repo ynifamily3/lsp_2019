@@ -4,87 +4,51 @@
 #include <unistd.h>
 #include <getopt.h>
 
+#include "debug.h"
 #include "arg_read.h"
 
 void parse_args(int argc, char *argv[])
 {
-	student_dir = argv[1];
-	answer_dir = argv[2];
-	arg_option_c = false;
- 	arg_option_e = false;
- 	arg_option_t = false;
- 	arg_option_p = false;
- 	arg_option_h = false;
-	
-	arg_option_c_argc = 0;
-	arg_option_e_argc = 0;
-	arg_option_t_argc = 0;
-
-	arg_option_c_argv = (char **)malloc(sizeof(char *) * 100);
-	arg_option_e_argv = (char **)malloc(sizeof(char *) * 100);
-	arg_option_t_argv = (char **)malloc(sizeof(char *) * 100);
-	
-	// arguments judge
-	extern int optind;
-	extern char *optarg;
 	int c;
-	while( (c = getopt(argc, argv, "c:e:t:ph")) != -1) {
+	arg_option_j = false;
+ 	arg_option_c = false;
+ 	arg_option_p = false;
+ 	arg_option_f = false;
+ 	arg_option_l = false;
+	arg_option_r = false;
+
+	while( (c = getopt(argc, argv, "jcpflr")) != -1) {
 		switch (c) {
-				case 'c':
+			case 'j':
+				arg_option_j = true;
+				DBGMSG("j option enbled");
+			break;
+			case 'c':
 				arg_option_c = true;
-				break;
-				case 'e':
-				arg_option_e = true;
-				break;
-				case 'p':
+				DBGMSG("c option enbled");
+			break;
+			case 'p':
 				arg_option_p = true;
-				break;
-				case 't':
-				arg_option_t = true;
-				break;
-				case 'h':
-				arg_option_h = true;
-				break;
-				case '?':
-				fprintf(stderr, "Option Error..\n");
+				DBGMSG("p option enbled");
+			break;
+			case 'f':
+				arg_option_f = true;
+				DBGMSG("f option enbled");
+			break;
+			case 'l':
+				arg_option_l = true;
+				DBGMSG("l option enbled");
+			break;
+			case 'r':
+				arg_option_r = true;
+				DBGMSG("r option enbled");
+			break;
+			default:
+				// 보통 '?' 가 오게 됨.
+				DBGMSG("지원하지 않는 옵션 사용");
 				exit(1);
-				break;
-				default:
-				fprintf(stderr, "Option parsing Error\n");
-				exit(1);
-				break;
+			break;
 		}
-		if (c == 'c' || c == 'e' || c == 't') {
-			int i = optind - 1;
-			for (; i < argc && argv[i][0] != '-'; i++) {
-				switch(c) {
-					case 'c':
-                    if(arg_option_c_argc >= 5) {
-                        printf("Maximum Number of Argument Exceeded.\t:: %s\n", argv[i]);
-                        break;
-                    }
-					arg_option_c_argv[arg_option_c_argc++] = argv[i];
-					break;
-					case 'e':
-                    if(arg_option_e_argc >= 5) {
-                        printf("Maximum Number of Argument Exceeded.\t:: %s\n", argv[i]);
-                        break;
-                    }
-					arg_option_e_argv[arg_option_e_argc++] = argv[i];
-					break;
-					case 't':
-                    if(arg_option_t_argc >= 5) {
-                        printf("Maximum Number of Argument Exceeded.\t:: %s\n", argv[i]);
-                        break;
-                    }
-					arg_option_t_argv[arg_option_t_argc++] = argv[i];
-					break;
-				}
-			}
-		}
-	}
-	if ((arg_option_c&&arg_option_c_argc == 0) || (arg_option_e&&arg_option_e_argc == 0) || (arg_option_t&&arg_option_t_argc == 0)) {
-		fprintf(stderr, "Option Error\n");
-		exit(1);
 	}
 }
+
