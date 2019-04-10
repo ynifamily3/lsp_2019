@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include "debug.h"
 #include "lex.h"
 
 int LEX_is_in_comment = 0; // multi line comment
@@ -66,7 +67,7 @@ void getChar(_lexV *lV)
             lV->LEX_charClass = DIGIT;
         else if (isoperator(lV->LEX_nextChar))
             lV->LEX_charClass = OPERATOR;
-        else lV->LEX_charClass = LETTER; // UNKNOWN 보단 나을 것이다.
+        else lV->LEX_charClass = UNKNOWN; // LETTER로 바꿨는데 import java 를 하나로 인식(버그) 그냥 언노운 할래..
     }
     else
         lV->LEX_charClass = EOF;
@@ -118,6 +119,8 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         addChar(lV);
         getChar(lV);
         while (lV->LEX_charClass == LETTER || lV->LEX_charClass == DIGIT) {
+            //DBGMSG("... %c", lV->LEX_nextChar); // import java 가 한 번 에 읽 혀 !
+            //getchar();
             addChar(lV);
             getChar(lV);
         }
@@ -158,6 +161,7 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         break;
 
         case UNKNOWN:
+        // 설 마 ㅠㅠ 
         getChar(lV);
         break;
 
@@ -183,9 +187,9 @@ void lookup_operator(_lexV *lV)
         if (strcmp(lV->LEX_lexeme, LEX_operators[i]) == 0) {
             lV->LEX_nextToken = i + 100;
             // 주석인지 아닌지 추가...
-            if (lV->LEX_nextToken == ONE_LINE_COMMENT && lV->LEX_nextToken == MULTI_LINE_COMMENT_OPEN) {
+            if (lV->LEX_nextToken == ONE_LINE_COMMENT || lV->LEX_nextToken == MULTI_LINE_COMMENT_OPEN) {
                 // '//' 주석이다.
-                // fprintf(stderr, "한 줄 주석 출연합니다..\n");
+                fprintf(stderr, "한 줄 주석 출연합니다..\n");
                 lV->is_oneline_comment = 1;
             }
             return;
@@ -197,6 +201,7 @@ void lookup_keyword(_lexV *lV)
 {
     for (int i = 0; i < NUMBER_OF_KEYWORDS; i++) {
         if (strcmp(lV->LEX_lexeme, LEX_keywords[i]) == 0) {
+            // DBGMSG("찾는키워드 : %s 입력된 : %s", LEX_keywords[i], lV->LEX_lexeme);
             lV->LEX_nextToken = i + 20;
             return;
         }

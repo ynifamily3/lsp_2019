@@ -13,7 +13,7 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 
 #define NUMBER_OF_KEYWORDS 22
 #define NUMBER_OF_OPERATORS 23
-#define LEX_SIZE 50
+#define LEX_SIZE 256
 #define PATTERN_SIZE 30
 
 /* 문자 종류 정의 */

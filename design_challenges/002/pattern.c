@@ -68,36 +68,50 @@ void PATT_init()
 
     _patternChanger *pt2 = &patternIndex[2];
     pt2->pattern_type = EXACT; // ** 사실 가변인자가 들어가므로 starts with + ends with 패턴으로 조합되어야 한다.
-    pt2->java_pattern_length = 9;
-    pt2->c_pattern_length = 5;
+    pt2->java_pattern_length = 9; // 9
+    pt2->c_pattern_length = 5; // 원래 :5  ==> 2 + 4칸 뛰어보기로 함(skip patt)
     pt2->java_pattern[0] = SYSTEM_CODE;
     pt2->java_pattern[1] = DOT_OP;
     pt2->java_pattern[2] = OUT_CODE;
     pt2->java_pattern[3] = DOT_OP;
     pt2->java_pattern[4] = PRINTF_CODE;
-    pt2->java_pattern[5] = PARENTHESES_LEFT_OP;
+    pt2->java_pattern[5] = PARENTHESES_LEFT_OP; 
     pt2->java_pattern[6] = STR_LIT;
     pt2->java_pattern[7] = PARENTHESES_RIGHT_OP;
     pt2->java_pattern[8] = SEMICOLON_OP;
+
     pt2->c_pattern[0] = 4; // printf
     pt2->c_pattern[1] = 5; // (
     pt2->c_pattern[2] = 6; // "--"
     pt2->c_pattern[3] = 7; // )
     pt2->c_pattern[4] = 8; // ;
+
+    _patternChanger *pt3 = &patternIndex[3];
+    pt3->pattern_type = STARTSWITH;
+    pt3->java_pattern_length = 0;
+    pt3->c_pattern_length = 0;
+    pt3->java_pattern[pt3->java_pattern_length++] = IMPORT_CODE;
+    // 즉 C에선 거르는 패턴임.
+
 }
 
 int PATT_is_match(const _lexPattern *pattern)
 {
     // 매칭시 해당 패턴 인덱스, 미 매칭시 -1
-    // _patternChanger 는 내부 변수로 관리할 필요가 있음.
-    // 추후에 세 번째 인자에 match type 결정하도록 수정
     for (int i = 0; i < NUMBER_OF_PATTERNS; ++i) {
         _patternChanger *patt = &patternIndex[i];
         int matched = 1;
-        for (int j = 0; j < patt->java_pattern_length; ++j) { // startsWith 같은 효과를 위해 j < pattern->pattern_length; 대신에
-            if (pattern->pattern[j] != patt->java_pattern[j]) {matched = 0; break;}
-        }
-        if (matched) return i;
+        if (patt->pattern_type == STARTSWITH) {
+            for (int j = 0; j < patt->java_pattern_length; ++j) {
+                 if (pattern->pattern[j] != patt->java_pattern[j]) {matched = 0; break;}
+            }
+            if (matched) return i;
+        } else {
+            for (int j = 0; j < pattern->pattern_length; ++j) { 
+                if (pattern->pattern[j] != patt->java_pattern[j]) {matched = 0; break;}
+            }
+            if (matched) return i;
+            }
     }
     return -1;
 }
@@ -112,7 +126,6 @@ void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
     memset(resultbuf, 0x00, MAX_RESULT_CODE_LENGTH); // 문자열 배열 비움
 
     int matchedIndex = PATT_is_match(pattern);
-
     if(matchedIndex >= 0) {
         _patternChanger *patt = &patternIndex[matchedIndex];
         for (int i = 0; i < patt->c_pattern_length; ++i) {
@@ -122,15 +135,15 @@ void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
                 strcat(resultbuf, pattern->buffer[patt->c_pattern[i]]);
             }
         }
-        for (int i = patt->c_pattern_length; i < pattern->pattern_length; ++i)
-            strcat(resultbuf, pattern->buffer[i]); // startsWith 를 고려한 나머지는 쭉 출력해준다.
+        //for (int i = patt->c_pattern_length; i < pattern->pattern_length; ++i)
+            //strcat(resultbuf, pattern->buffer[i]); // startsWith 를 고려한 나머지는 쭉 출력해준다.
     } else {
         // 그대로 붙여 출력
         for (int i = 0; i < pattern->pattern_length; ++i) {
             strcat(resultbuf, pattern->buffer[i]);
             // 다음 토큰이 수치리터럴, 아이덴티파이어, 연산자면 뛴다. 전위 후위, ; 연산자면 안뛴다. ) 가 뒤에 와도 안 뛴다. ','도 안 뛴다. '.'도 안 뛴다.
             // 특정 연산자 (.등) 뒤에는 안 뛴다.
-            DBGMSG("패턴 : %s 패턴번호 %d",pattern->buffer[i], pattern->pattern[i]);
+            // DBGMSG("패턴 : %s 패턴번호 %d",pattern->buffer[i], pattern->pattern[i]);
             if (
                 pattern->pattern[i] != 100 &&
                 pattern->pattern[i] != 103 &&

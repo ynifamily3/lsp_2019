@@ -28,14 +28,19 @@ int main(int argc, char *argv[])
         input[strcspn(input, "\r\n")] = '\0';
         if(strlen(input)) {
             convert_java_to_c(output, input);
-            printf("원본 : %s\n바꿈 : %s\n-------------------------------------------\n", input, output); // 주석 처리를 못함
+            if(strlen(output))
+                printf("원본 : %s\n바꿈 : %s\n-------------------------------------------\n", input, output);
+            else
+                printf("원본 : %s\n바꿈 : (사라짐)\n-------------------------------------------\n", input);
         }
+        getchar();
     }
-    char input2[100] = "scn = scc.nextInt(); 내맘대로 코딩할래";
+    /*
+    char input2[100] = "g";
     char output2[100];
     convert_java_to_c(output2, input2);
     printf("%s\n", output2);
-
+    */
 
     fclose(fp);
     exit(0);
