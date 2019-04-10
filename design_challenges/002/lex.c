@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "lex.h"
 
+extern int brace_stack;
 int LEX_is_in_comment = 0; // multi line comment
 
 /*
@@ -104,7 +105,6 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
     lV->LEX_lex_length = 0;
     if (lV->is_oneline_comment == 1) {
         // 뒤에 있는 모든 코멘트 끝까지 복사 후 EOF종결
-        fprintf(stderr, "//%s\n", lV->inText + lV->LEX_inText_pointer - 1);
         pattern->pattern[pattern->pattern_length] = lV->LEX_nextToken;
         strncpy(pattern->buffer[pattern->pattern_length++], lV->inText + lV->LEX_inText_pointer -1, LEX_SIZE);
         lV->LEX_nextToken = EOF;
@@ -119,8 +119,6 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         addChar(lV);
         getChar(lV);
         while (lV->LEX_charClass == LETTER || lV->LEX_charClass == DIGIT) {
-            //DBGMSG("... %c", lV->LEX_nextChar); // import java 가 한 번 에 읽 혀 !
-            //getchar();
             addChar(lV);
             getChar(lV);
         }
@@ -138,6 +136,12 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         break;
 
         case OPERATOR:
+        // 여닫는 중괄호 계층 스택 조작
+        if (lV->LEX_nextChar == '{') {
+            ++brace_stack;
+        } else if (lV->LEX_nextChar == '}') {
+            --brace_stack;
+        }
         addChar(lV);
         getChar(lV);
         int keepGoing = 0;
@@ -189,7 +193,6 @@ void lookup_operator(_lexV *lV)
             // 주석인지 아닌지 추가...
             if (lV->LEX_nextToken == ONE_LINE_COMMENT || lV->LEX_nextToken == MULTI_LINE_COMMENT_OPEN) {
                 // '//' 주석이다.
-                fprintf(stderr, "한 줄 주석 출연합니다..\n");
                 lV->is_oneline_comment = 1;
             }
             return;
@@ -201,7 +204,6 @@ void lookup_keyword(_lexV *lV)
 {
     for (int i = 0; i < NUMBER_OF_KEYWORDS; i++) {
         if (strcmp(lV->LEX_lexeme, LEX_keywords[i]) == 0) {
-            // DBGMSG("찾는키워드 : %s 입력된 : %s", LEX_keywords[i], lV->LEX_lexeme);
             lV->LEX_nextToken = i + 20;
             return;
         }

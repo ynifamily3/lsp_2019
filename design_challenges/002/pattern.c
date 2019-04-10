@@ -2,10 +2,14 @@
 #include "pattern.h"
 #include "debug.h"
 
+extern int brace_stack;
+
 int PATT_is_initalized = 0;
 
 const char *C_codes[] = {
-    "scanf", "\"%d\"", ",", "&", "*", "calloc", "(", ")", "sizeof", " "
+    "scanf", "\"%d\"", ",", "&", "*",
+    "calloc", "(", ")", "sizeof", " ",
+    "int", "void"
 };
 
 _patternChanger patternIndex[NUMBER_OF_PATTERNS];
@@ -91,8 +95,48 @@ void PATT_init()
     pt3->java_pattern_length = 0;
     pt3->c_pattern_length = 0;
     pt3->java_pattern[pt3->java_pattern_length++] = IMPORT_CODE;
-    // 즉 C에선 거르는 패턴임.
+    // 즉 C에선 거르는 패턴임. (패턴 없음)
 
+    _patternChanger *pt4 = &patternIndex[4];
+    pt4->pattern_type = EXACT;
+    pt4->java_pattern_length = 0;
+    pt4->c_pattern_length = 0;
+    pt4->java_pattern[pt4->java_pattern_length++] = PUBLIC_CODE;
+    pt4->java_pattern[pt4->java_pattern_length++] = CLASS_CODE;
+    pt4->java_pattern[pt4->java_pattern_length++] = IDENTFIER;
+    pt4->java_pattern[pt4->java_pattern_length++] = BRACE_LEFT_OP;
+    
+    // pattern : public static void main(String[] args){
+    // to : int main(void){
+    _patternChanger *pt5 = &patternIndex[5];
+    pt5->pattern_type = EXACT;
+    pt5->java_pattern_length = 0;
+    pt5->c_pattern_length = 0;
+    pt5->java_pattern[pt5->java_pattern_length++] = PUBLIC_CODE;
+    pt5->java_pattern[pt5->java_pattern_length++] = STATIC_CODE;
+    pt5->java_pattern[pt5->java_pattern_length++] = VOID_CODE;
+    pt5->java_pattern[pt5->java_pattern_length++] = IDENTFIER; // exactly main
+    pt5->java_pattern[pt5->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt5->java_pattern[pt5->java_pattern_length++] = STRING_CODE;
+    pt5->java_pattern[pt5->java_pattern_length++] = SQUARE_BRACKET_LR_OP;
+    pt5->java_pattern[pt5->java_pattern_length++] = IDENTFIER;
+    pt5->java_pattern[pt5->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt5->java_pattern[pt5->java_pattern_length++] = BRACE_LEFT_OP;
+    pt5->c_pattern[pt5->c_pattern_length++] = 1010; // int
+    pt5->c_pattern[pt5->c_pattern_length++] = 1009; // " "
+    pt5->c_pattern[pt5->c_pattern_length++] = 3; // main
+    pt5->c_pattern[pt5->c_pattern_length++] = 4; // (
+    pt5->c_pattern[pt5->c_pattern_length++] = 1011; // void
+    pt5->c_pattern[pt5->c_pattern_length++] = 8; // )
+    pt5->c_pattern[pt5->c_pattern_length++] = 1009; // " "
+    pt5->c_pattern[pt5->c_pattern_length++] = 9; // {
+    
+    _patternChanger *pt6 = &patternIndex[6];
+    pt6->pattern_type = STARTSWITH;
+    pt6->java_pattern_length = 0;
+    pt6->c_pattern_length = 0;
+    pt6->java_pattern[pt6->java_pattern_length++] = SCANNER_CODE;
+    // 즉 C에선 거르는 패턴임. (패턴 없음)
 }
 
 int PATT_is_match(const _lexPattern *pattern)
@@ -111,7 +155,7 @@ int PATT_is_match(const _lexPattern *pattern)
                 if (pattern->pattern[j] != patt->java_pattern[j]) {matched = 0; break;}
             }
             if (matched) return i;
-            }
+        }
     }
     return -1;
 }

@@ -6,6 +6,9 @@
 #include "arg_read.h"
 #include "converter.h"
 
+int brace_stack = 0; // 여닫는 중괄호 계층 스택
+// 0->1 로 되면 파일 생성이고 1->0이 되면 파일 close 이다.
+
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
@@ -28,12 +31,11 @@ int main(int argc, char *argv[])
         input[strcspn(input, "\r\n")] = '\0';
         if(strlen(input)) {
             convert_java_to_c(output, input);
+            printf("브레이스스택 :%d\n", brace_stack);
             if(strlen(output))
-                printf("원본 : %s\n바꿈 : %s\n-------------------------------------------\n", input, output);
-            else
-                printf("원본 : %s\n바꿈 : (사라짐)\n-------------------------------------------\n", input);
+                printf("%s\n", output);
         }
-        getchar();
+        // getchar();
     }
     /*
     char input2[100] = "g";
