@@ -16,11 +16,11 @@ class Stack{
 
 	public void push(int value){
 		stack[++top] = value;
-		System.out.printf(stack[top] + " PUSH !\n");
+		System.out.printf("%d PUSH !\n", stack[top]);
 	}
 
 	public int pop(){
-		System.out.printf(stack[top] + " POP !\n");
+		System.out.printf("%d POP !\n", stack[top]);
 		return stack[top--];
 	}
 

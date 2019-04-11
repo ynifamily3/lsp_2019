@@ -1,13 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include <ctype.h>
+#include <string.h>
 #include "debug.h"
 #include "arg_read.h"
 #include "converter.h"
 
 int brace_stack = 0; // 여닫는 중괄호 계층 스택
 // 0->1 로 되면 파일 생성이고 1->0이 되면 파일 close 이다.
+
+void remove_str_in_str(char *dest, const char *anti_pattern)
+{
+    // char haha[100] = "System.out.printf(\"%d\", st.top());";
+    char *origin_dest = dest;
+    char temp[MAX_RESULT_CODE_LENGTH];
+    int anti_pattern_len = strlen(anti_pattern);
+    char *cp = strstr(dest, anti_pattern);
+    if (cp != NULL) {
+        while (cp != NULL) {
+            *cp = '\0'; // 해당 패턴 시작부분을 자른다.
+            strcat(temp, dest); // 그 전과 지금 - 1까지의 모든 것들을 넣는다.
+            // DBGMSG("조립된 문자 세그먼트 : %s\n", temp);
+            dest = cp + anti_pattern_len; // 그 다음 검사해야 할 부분
+            cp = strstr(dest, anti_pattern);
+            // DBGMSG("뒷부분 : %s\n", dest);
+            if (!cp) {
+                // DBGMSG("마지막");
+                // printf("템프 :%s 데스트 : %s\n", temp, dest);
+                strcat(temp, dest);
+                // printf("템프 :%s \n", temp);
+            }
+        }
+        strncpy(origin_dest, temp, MAX_RESULT_CODE_LENGTH);   
+    } else {
+        // 아무것도 없다.
+    }
+}
 
 void print_repeat(char p, int cnt) {
     while(cnt--) {
@@ -48,10 +77,19 @@ int main(int argc, char *argv[])
         // getchar();
     }
     fclose(fp);
+
+
+
+    // 문자열 내 특정 문자열을 제거하는 함수. (^^)
+    char haha[100] = "printf(d, st.top)";
+    remove_str_in_str(haha, "st.");
+    printf("[%s]\n", haha);
+    /*
     char input2[100] = "inta=3023;";
     char output2[100];
     convert_java_to_c(output2, input2);
     printf("%s\n", output2);
+    */
     exit(0);
 }
 
