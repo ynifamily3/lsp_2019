@@ -21,20 +21,13 @@ void remove_str_in_str(char *dest, const char *anti_pattern)
         while (cp != NULL) {
             *cp = '\0'; // 해당 패턴 시작부분을 자른다.
             strcat(temp, dest); // 그 전과 지금 - 1까지의 모든 것들을 넣는다.
-            // DBGMSG("조립된 문자 세그먼트 : %s\n", temp);
             dest = cp + anti_pattern_len; // 그 다음 검사해야 할 부분
             cp = strstr(dest, anti_pattern);
-            // DBGMSG("뒷부분 : %s\n", dest);
             if (!cp) {
-                // DBGMSG("마지막");
-                // printf("템프 :%s 데스트 : %s\n", temp, dest);
                 strcat(temp, dest);
-                // printf("템프 :%s \n", temp);
             }
         }
         strncpy(origin_dest, temp, MAX_RESULT_CODE_LENGTH);   
-    } else {
-        // 아무것도 없다.
     }
 }
 
@@ -81,7 +74,7 @@ int main(int argc, char *argv[])
 
 
     // 문자열 내 특정 문자열을 제거하는 함수. (^^)
-    char haha[100] = "printf(d, st.top)";
+    char haha[100] = "1234";
     remove_str_in_str(haha, "st.");
     printf("[%s]\n", haha);
     /*
