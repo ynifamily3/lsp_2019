@@ -17,6 +17,7 @@ void print_repeat(char p, int cnt) {
 
 int main(int argc, char *argv[])
 {
+
     if (argc < 2) {
         fprintf(stderr, "Usage : %s [java_source_file] [option]...\n", argv[0]);
         exit(1);
@@ -41,19 +42,16 @@ int main(int argc, char *argv[])
             if(strlen(output)) {
                 //print_repeat('\t', brace_stack);
                 printf("%s\n%s\n------------------------\n", input, output);
-                // *최신 :  탭이나 공백으로만 이루어진 line에 버그가 있다.
+                // *최신 :  탭이나 공백으로만 이루어진 line에 버그가 있다. 그 외에 한 글자 키워드에 버그 있음.
             }
         }
         // getchar();
     }
-    /*
-    char input2[100] = "g";
+    fclose(fp);
+    char input2[100] = "inta=3023;";
     char output2[100];
     convert_java_to_c(output2, input2);
     printf("%s\n", output2);
-    */
-
-    fclose(fp);
     exit(0);
 }
 

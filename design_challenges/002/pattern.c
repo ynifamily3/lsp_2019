@@ -71,9 +71,10 @@ void PATT_init()
     pt1->c_pattern[16] = 7; // ;
 
     _patternChanger *pt2 = &patternIndex[2];
-    pt2->pattern_type = EXACT; // ** 사실 가변인자가 들어가므로 starts with + ends with 패턴으로 조합되어야 한다.
-    pt2->java_pattern_length = 9; // 9
-    pt2->c_pattern_length = 5; // 원래 :5  ==> 2 + 4칸 뛰어보기로 함(skip patt)
+    pt2->pattern_type = STARTSWITH; // ** 사실 가변인자가 들어가므로 starts with + ends with 패턴으로 조합되어야 한다.
+    pt2->java_pattern_length = 7; 
+    pt2->c_pattern_length = 3;
+    // 결론은 c 패턴부터 원본 패턴 길이까지 전부 복사해봄
     pt2->java_pattern[0] = SYSTEM_CODE;
     pt2->java_pattern[1] = DOT_OP;
     pt2->java_pattern[2] = OUT_CODE;
@@ -81,17 +82,17 @@ void PATT_init()
     pt2->java_pattern[4] = PRINTF_CODE;
     pt2->java_pattern[5] = PARENTHESES_LEFT_OP; 
     pt2->java_pattern[6] = STR_LIT;
-    pt2->java_pattern[7] = PARENTHESES_RIGHT_OP;
-    pt2->java_pattern[8] = SEMICOLON_OP;
+    //pt2->java_pattern[7] = PARENTHESES_RIGHT_OP;
+    //pt2->java_pattern[8] = SEMICOLON_OP;
 
     pt2->c_pattern[0] = 4; // printf
     pt2->c_pattern[1] = 5; // (
     pt2->c_pattern[2] = 6; // "--"
-    pt2->c_pattern[3] = 7; // )
-    pt2->c_pattern[4] = 8; // ;
+    //  pt2->c_pattern[3] = 7; // )
+    //  pt2->c_pattern[4] = 8; // ;
 
     _patternChanger *pt3 = &patternIndex[3];
-    pt3->pattern_type = STARTSWITH;
+    pt3->pattern_type = STARTSWITH_TRIM_ALL;
     pt3->java_pattern_length = 0;
     pt3->c_pattern_length = 0;
     pt3->java_pattern[pt3->java_pattern_length++] = IMPORT_CODE;
@@ -132,7 +133,7 @@ void PATT_init()
     pt5->c_pattern[pt5->c_pattern_length++] = 9; // {
     
     _patternChanger *pt6 = &patternIndex[6];
-    pt6->pattern_type = STARTSWITH;
+    pt6->pattern_type = STARTSWITH_TRIM_ALL;
     pt6->java_pattern_length = 0;
     pt6->c_pattern_length = 0;
     pt6->java_pattern[pt6->java_pattern_length++] = SCANNER_CODE;
@@ -145,16 +146,20 @@ int PATT_is_match(const _lexPattern *pattern)
     for (int i = 0; i < NUMBER_OF_PATTERNS; ++i) {
         _patternChanger *patt = &patternIndex[i];
         int matched = 1;
-        if (patt->pattern_type == STARTSWITH) {
-            for (int j = 0; j < patt->java_pattern_length; ++j) {
+        if (patt->pattern_type == STARTSWITH || patt->pattern_type == STARTSWITH_TRIM_ALL) {
+            for (int j = 0; j < patt->java_pattern_length; ++j) { 
                  if (pattern->pattern[j] != patt->java_pattern[j]) {matched = 0; break;}
             }
             if (matched) return i;
         } else {
-            for (int j = 0; j < pattern->pattern_length; ++j) { 
+            for (int j = 0; j < patt->java_pattern_length; ++j) { 
+                // DBGMSG("비교 패턴 : %d %d\n", pattern->pattern[j], patt->java_pattern[j]);
                 if (pattern->pattern[j] != patt->java_pattern[j]) {matched = 0; break;}
             }
-            if (matched) return i;
+            if (matched) {
+                // DBGMSG("이쪽에 제어가 걸림 %d\n", i);
+                return i;
+            }
         }
     }
     return -1;
@@ -179,8 +184,13 @@ void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
                 strcat(resultbuf, pattern->buffer[patt->c_pattern[i]]);
             }
         }
-        //for (int i = patt->c_pattern_length; i < pattern->pattern_length; ++i)
-            //strcat(resultbuf, pattern->buffer[i]); // startsWith 를 고려한 나머지는 쭉 출력해준다.
+        if (patt->pattern_type == STARTSWITH) {
+            DBGMSG("스타트 윗 패턴, 나머지는 쭉 채움 %d", patt->c_pattern_length);
+            // 결론은 c 패턴부터 원본 패턴 길이까지 전부 복사해봄
+            for (int i = patt->java_pattern_length; i < pattern->pattern_length; ++i) {
+                strcat(resultbuf, pattern->buffer[i]); // startsWith 를 고려한 나머지는 쭉 출력해준다.
+            }
+        }
     } else {
         // 그대로 붙여 출력
         for (int i = 0; i < pattern->pattern_length; ++i) {
