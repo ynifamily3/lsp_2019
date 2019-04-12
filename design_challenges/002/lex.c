@@ -228,7 +228,7 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
     }
     if (lV->LEX_nextToken != EOF) {
         pattern->pattern[pattern->pattern_length] = lV->LEX_nextToken;
-        fprintf(stderr, "[%s %d]", lV->LEX_lexeme, pattern->pattern[pattern->pattern_length]);
+        fprintf(stderr, "[%s]", lV->LEX_lexeme);
         int newline_test = pattern->pattern[pattern->pattern_length];
         
         if (newline_test == 103) {
