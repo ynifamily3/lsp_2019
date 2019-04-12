@@ -85,8 +85,8 @@ void getChar(_lexV *lV)
             //fprintf(stderr, "주석 유지..\n");
             lV->LEX_charClass = COMMENT;
         } 
-        else if (isalpha(lV->LEX_nextChar) || lV->LEX_nextChar == '_' || lV->LEX_nextChar == '\n')
-            lV->LEX_charClass = LETTER;
+        else if (isalpha(lV->LEX_nextChar) || lV->LEX_nextChar == '_' || lV->LEX_nextChar == '\n') // else \n if 처리하려 넣은 \n 구문이.. ㅠ => else를 제외한 나머지는 토큰내 \n을 무시하도록 한다.
+            lV->LEX_charClass = LETTER; 
         else if (isdigit(lV->LEX_nextChar))
             lV->LEX_charClass = DIGIT;
         else if (isoperator(lV->LEX_nextChar))

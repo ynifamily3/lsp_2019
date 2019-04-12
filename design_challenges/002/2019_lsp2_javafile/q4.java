@@ -1,2 +1,6 @@
-/**/
-int a bc=-21;) ; //aa
+System.out.printf
+(
+"hello world %d"
+,
+1
+);
