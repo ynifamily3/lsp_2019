@@ -115,7 +115,6 @@ void lex(_lexPattern *pattern, const char *_inText)
     pattern->pattern_length = 0;
     lV->LEX_inText_pointer = 0;
     getChar(lV);
-    fprintf(stderr, "렉스 분석 시작\n");
     do {
         lex_analysis(pattern, lV);
     } while(lV->LEX_nextToken != EOF);
@@ -156,10 +155,27 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         } else if (lV->LEX_nextChar == '}') {
             --brace_stack;
         }
+        int check_unary = 0;
+        if(lV->LEX_nextChar == '+' || lV->LEX_nextChar == '-')
+            check_unary = 1;
+        // 만약에 + -가 오면 단항일수도 있음. 다음에 숫자라면 오퍼레이터로써 처리를 안해 줘야하는 것이 있음
+        /////
+
         addChar(lV);
         getChar(lV);
+
+        if (check_unary == 1 && lV->LEX_charClass == DIGIT) {
+            addChar(lV);
+            getChar(lV);
+            while (lV->LEX_charClass == DIGIT) {
+                addChar(lV);
+                getChar(lV);
+            }
+            lV->LEX_nextToken = INT_LIT;
+            break;
+        }
+
         int keepGoing = 0;
-        int specialCase = 0; // //나 /* 같은 케이스
         switch (lV->LEX_nextChar) {
             // ; 다음에는 연산자 쓰지마.. ;/*
             // 마지막 '/'은 주석의 시작을 알릴 수도 있으므로 살펴본다.
@@ -167,8 +183,15 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
             case '=': case '+' : case '-' : case ']' :  case '*': case '/':
             //if (lV->LEX_nextChar == '/') specialCase = 1;
             keepGoing = 1;
+            if (lV->LEX_inText_pointer-2 >= 0 && (lV->inText[lV->LEX_inText_pointer-2] == '[' || lV->inText[lV->LEX_inText_pointer-2] == ';')) {
+                keepGoing = 0;
+            }
+            // =  뒤에 =가 아닌 다른 연산자 오면 끊음
+            if (lV->inText[lV->LEX_inText_pointer-2] == '=' && lV->LEX_nextChar != '=') {
+                keepGoing = 0;
+            }
         }
-        // 아닌 이상 while 문을 수행하지 않아도 된다.
+        
         while (lV->LEX_charClass == OPERATOR && keepGoing == 1) {
             addChar(lV);
             getChar(lV);
@@ -177,9 +200,6 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
                 case '=': case '+' : case '-' : case ']' : case '/': case '*':
                 keepGoing = 1;
                 if( lV->LEX_nextChar == '*' || lV->LEX_nextChar == '/') keepGoing = 0;
-                //if ((lV->LEX_nextChar == '/' || lV->LEX_nextChar == '*') && specialCase == 1) {
-                    //fprintf(stderr, "주석엶\n");
-                    //keepGoing = 0;}
             }
         }
         lV->LEX_nextToken = OPERATOR;
@@ -197,7 +217,6 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
     if (lV->LEX_nextToken == OPERATOR) {
         lookup_operator(lV);
         if (lV->LEX_lexeme[0] == '/') {
-            //DBGMSG("주석 의심 %s", lV->LEX_lexeme);
             lookup_keyword(lV);
         }
     } else if (lV->LEX_nextToken == IDENTFIER) {
@@ -205,7 +224,11 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
     }
     if (lV->LEX_nextToken != EOF) {
         pattern->pattern[pattern->pattern_length] = lV->LEX_nextToken;
-        fprintf(stderr, "[%s] %d\n", lV->LEX_lexeme, pattern->pattern[pattern->pattern_length]);
+        fprintf(stderr, "[%s] ", lV->LEX_lexeme);
+        int newline_test = pattern->pattern[pattern->pattern_length];
+        if (newline_test == 13 || newline_test == 109 || newline_test == 105 || newline_test == 106) fprintf(stderr, "\n");
+        // 나중에는 뉴라인 대신 line_count 증가시키고 나중에 line 별 패턴 분석하면 될 듯
+        //  pattern->pattern[pattern->pattern_length]
         strncpy(pattern->buffer[pattern->pattern_length++], lV->LEX_lexeme, LEX_SIZE);
     }
 }
@@ -229,14 +252,26 @@ void lookup_keyword(_lexV *lV)
         is_comment = 2;
     }
     if (is_comment == 1 || is_comment == 2) {
-        // 계속 getchar?
-        while ((is_comment == 1 && lV->LEX_nextChar != '\n')) {
-            addChar(lV);
-            getChar(lV);
+        while (is_comment == 1) {
+            if(lV->LEX_nextChar != '\n') {
+                addChar(lV);
+                getChar(lV);
+            } else {
+                // 비어있는 //주석이면 끝내줌
+                is_comment = 0;
+            }
         }
-        while ((is_comment == 2)) {
+        while (is_comment == 2 && lV->LEX_nextChar != 0) { // 두번째 조건은 주석을 열고 닫지 않을 경우 처리
+            char endComment1 = lV->LEX_nextChar;
             addChar(lV);
             getChar(lV);
+            char endComment2 = lV->LEX_nextChar;
+            if (endComment1 == '*' && endComment2 == '/') {
+                is_comment = 0; // 이거 빼먹어서 /**/ 다음 문장에 버그가 걸림
+                addChar(lV);
+                getChar(lV);
+                break;
+            }
         }
         lV->LEX_nextToken = COMMENT;
         return;

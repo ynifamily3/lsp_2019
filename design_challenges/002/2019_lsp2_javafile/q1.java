@@ -20,7 +20,7 @@ public class q1{
 		/*
 		multilime 2
 		*/
-		else if{
+		else if(){
 
 		}
 		else
