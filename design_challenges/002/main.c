@@ -12,7 +12,6 @@ int brace_stack = 0; // 여닫는 중괄호 계층 스택
 
 void remove_str_in_str(char *dest, const char *anti_pattern)
 {
-    // char haha[100] = "System.out.printf(\"%d\", st.top());";
     char *origin_dest = dest;
     char temp[MAX_RESULT_CODE_LENGTH];
     int anti_pattern_len = strlen(anti_pattern);
@@ -53,44 +52,11 @@ int main(int argc, char *argv[])
     parse_args(argc-1, argv+1); // argv[1] (pathname) 제외
 
     FILE *fp = fopen(argv[1], "r");
-    char input[MAX_RESULT_CODE_LENGTH];
+    char input[MAX_RESULT_CODE_LENGTH]; // 소스 코드의 길이 최대 4096 바이트
     char output[MAX_RESULT_CODE_LENGTH];
-    while(fgets(input, sizeof(input), fp)) {
-        // 마지막 개행 (lf, crlf, lfcr, cr) 제거
-        input[strcspn(input, "\r\n")] = '\0';
-        if(strlen(input)) {
-            convert_java_to_c(output, input);
-            // printf("브레이스스택 :%d\n", brace_stack);
-            if(strlen(output)) {
-                //print_repeat('\t', brace_stack);
-                printf("%s\n%s\n------------------------\n", input, output);
-                // *최신 :  탭이나 공백으로만 이루어진 line에 버그가 있다. 그 외에 한 글자 키워드에 버그 있음.
-            }
-        }
-        // getchar();
-    }
+    size_t f_size = fread(input, sizeof(char), MAX_RESULT_CODE_LENGTH, fp);
+    DBGMSG("파일 사이즈 : %ld", f_size);
+    if(f_size) convert_java_to_c(output, input);
     fclose(fp);
-
-
-
-    // 문자열 내 특정 문자열을 제거하는 함수. (^^)
-    char haha[100] = "1234";
-    remove_str_in_str(haha, "st.");
-    printf("[%s]\n", haha);
-    /*
-    char input2[100] = "inta=3023;";
-    char output2[100];
-    convert_java_to_c(output2, input2);
-    printf("%s\n", output2);
-    */
     exit(0);
 }
-
-/*
-    char input[100] = "for(int i = 0; i < 88; i+=99*abc);"; // 버그 찾음 * operation 인식을 안함
-    char output[100];
-    convert_java_to_c(output, input);
-    printf("%s\n", output);
-*/
-
-

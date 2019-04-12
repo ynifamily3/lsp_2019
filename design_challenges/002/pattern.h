@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "lex.h"
 
-#define MAX_RESULT_CODE_LENGTH 100 // 줄당 코드 길이 최댓값
+#define MAX_RESULT_CODE_LENGTH 4096 // 전체 코드 길이 최댓값
 #define NUMBER_OF_PATTERNS 7
 
 enum PATTERN_TYPE {EXACT, STARTSWITH, ENDSWITH, STARTS_ENDS_WITH, STARTSWITH_TRIM_ALL};

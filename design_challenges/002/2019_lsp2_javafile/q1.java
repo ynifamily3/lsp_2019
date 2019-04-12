@@ -4,9 +4,13 @@ public class q1{
 	public static void main(String[] args){
 		Scanner scn = new Scanner(System.in);
 
-		System.out.printf("Enter the number : ");
+		System.out.printf("Enter the number : ");/*
+		*/
 		System.out.printf("Enter the number : ", 1, 2, 3, 4, 5, "6", "77", "888");
-
+		/* multiline 1 */
+		/*
+		multilime 2
+		*/
 		int num;
 		num = scn.nextInt();
 		int even=0, odd=0;

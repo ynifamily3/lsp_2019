@@ -4,6 +4,8 @@
 
 extern int brace_stack;
 
+// 안티패턴의 정의 예를들어 st. 등 모두 제거되어야 할 것들
+
 int PATT_is_initalized = 0;
 
 const char *C_codes[] = {
