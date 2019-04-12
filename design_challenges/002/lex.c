@@ -6,6 +6,8 @@
 
 extern int brace_stack;
 int is_comment; // 0 코멘트 아님 1 한줄 코멘트 중 2 여러줄 코멘트 중
+int in_for_if_code; // for이나 if 내에선 ;가 있어도 어휘분석단위를 나누지 않는다.
+int parentheses_stack; // ( ) 스택을 조사한다. (in_for_if_code) 있을 시
 
 /*
 LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Robert W. Sebesta
@@ -109,6 +111,9 @@ void addChar(_lexV *lV)
 
 void lex(_lexPattern *pattern, const char *_inText)
 {
+    is_comment = 0;
+    in_for_if_code = 0; // for 32이나 if 33 내에선 ;가 있어도 어휘분석단위를 나누지 않는다.
+    parentheses_stack = 0; // (, ) 스택을 조사한다. (in_for_if_code) 있을 시
     _lexV lexMemory; // 전역 변수 대신 다음 구조체 사용
     _lexV *lV = &lexMemory;
     lV->inText = _inText;
@@ -123,7 +128,6 @@ void lex(_lexPattern *pattern, const char *_inText)
 void lex_analysis(_lexPattern *pattern, _lexV *lV)
 {
     lV->LEX_lex_length = 0;
-    // 멀티라인 주석은 생략해본다.
     remove_blank(lV);
     int is_str_lit = process_string_literals(lV); // 문자열은 따로 분리해줌
     if(!is_str_lit) // str_lit가 없었을 경우 switch문 실행
@@ -224,8 +228,30 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
     }
     if (lV->LEX_nextToken != EOF) {
         pattern->pattern[pattern->pattern_length] = lV->LEX_nextToken;
-        fprintf(stderr, "[%s] ", lV->LEX_lexeme);
+        fprintf(stderr, "[%s %d]", lV->LEX_lexeme, pattern->pattern[pattern->pattern_length]);
         int newline_test = pattern->pattern[pattern->pattern_length];
+        
+        if (newline_test == 103) {
+            ++parentheses_stack;
+        } else if (newline_test == 104) {
+            --parentheses_stack;
+        } 
+
+        if(in_for_if_code == 1 && parentheses_stack == 0) {
+            // 스택이 끝났으므로 뉴라인을 해줘도 된다.
+            in_for_if_code = 0; // 이건 없앤다.
+            newline_test = 13; // 임의로 if가 참이 되는 값으로 했다.
+        }
+        // 세미콜론이 왔으나 for, if문 안인 경우
+        if (newline_test == 109 && parentheses_stack != 0) {
+            newline_test = -1; // 임의로 if가 거짓이 되는 값으로 했다.
+        }
+
+        if (newline_test == 32 || newline_test == 33) {
+            in_for_if_code = 1;
+        }
+        // for code 32 if code 33 이다. 이 안쪽으로 들어오면 ;(109)는 자르지 않는다.
+        // 주석 (13) 세미콜론 (109) 중괄호 열기 (105) 중괄호 닫기 (106)
         if (newline_test == 13 || newline_test == 109 || newline_test == 105 || newline_test == 106) fprintf(stderr, "\n");
         // 나중에는 뉴라인 대신 line_count 증가시키고 나중에 line 별 패턴 분석하면 될 듯
         //  pattern->pattern[pattern->pattern_length]
