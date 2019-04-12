@@ -16,7 +16,8 @@ const char *LEX_keywords[NUMBER_OF_KEYWORDS] = {
     "String", "Scanner", "new", "System", "out",
     "int", "nextInt", "for", "if", "else",
     "return", "final", "File", "throws", "IOException",
-    "FileWriter", "printf","//", "/*", "*/"
+    "FileWriter", "printf","//", "/*", "*/",
+    "else\n" // else\nif 같은 문장을 처리하기 위함 (else if != else\nif)
 };
 const char *LEX_operators[NUMBER_OF_OPERATORS] = {
     ".", "[", "]", "(" ,")",
@@ -82,7 +83,7 @@ void getChar(_lexV *lV)
             //fprintf(stderr, "주석 유지..\n");
             lV->LEX_charClass = COMMENT;
         } 
-        else if (isalpha(lV->LEX_nextChar) || lV->LEX_nextChar == '_')
+        else if (isalpha(lV->LEX_nextChar) || lV->LEX_nextChar == '_' || lV->LEX_nextChar == '\n')
             lV->LEX_charClass = LETTER;
         else if (isdigit(lV->LEX_nextChar))
             lV->LEX_charClass = DIGIT;

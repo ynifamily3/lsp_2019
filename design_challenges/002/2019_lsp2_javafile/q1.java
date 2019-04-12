@@ -9,6 +9,7 @@ import java.util.Scanner;
 ////// 이상함
 //=하하 죽어라
 public class q1{
+	nini p;
 	public static void main(String[] args){
 		Scanner scn = new Scanner(System.in);
 
@@ -19,6 +20,12 @@ public class q1{
 		/*
 		multilime 2
 		*/
+		else if{
+
+		}
+		else
+		if (){}
+
 		int num;
 		num = scn.nextInt();
 		int even=0, odd=0;
