@@ -1,5 +1,13 @@
 import java.util.Scanner;
-
+/*** 이건 어떰 *************/
+/*==**/
+/*
+* 이런 경우
+*/
+// 정상
+//노멀
+////// 이상함
+//=하하 죽어라
 public class q1{
 	public static void main(String[] args){
 		Scanner scn = new Scanner(System.in);

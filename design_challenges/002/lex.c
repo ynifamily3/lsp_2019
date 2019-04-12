@@ -158,11 +158,13 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         addChar(lV);
         getChar(lV);
         int keepGoing = 0;
+        int specialCase = 0; // //나 /* 같은 케이스
         switch (lV->LEX_nextChar) {
             // ; 다음에는 연산자 쓰지마.. ;/*
             // 마지막 '/'은 주석의 시작을 알릴 수도 있으므로 살펴본다.
             // case */
-            case '=': case '+' : case '-' : case ']' :  case '*': //case '/':
+            case '=': case '+' : case '-' : case ']' :  case '*': case '/':
+            //if (lV->LEX_nextChar == '/') specialCase = 1;
             keepGoing = 1;
         }
         // 아닌 이상 while 문을 수행하지 않아도 된다.
@@ -173,6 +175,10 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
             switch (lV->LEX_nextChar) {
                 case '=': case '+' : case '-' : case ']' : case '/': case '*':
                 keepGoing = 1;
+                if( lV->LEX_nextChar == '*' || lV->LEX_nextChar == '/') keepGoing = 0;
+                //if ((lV->LEX_nextChar == '/' || lV->LEX_nextChar == '*') && specialCase == 1) {
+                    //fprintf(stderr, "주석엶\n");
+                    //keepGoing = 0;}
             }
         }
         lV->LEX_nextToken = OPERATOR;
@@ -215,23 +221,28 @@ void lookup_operator(_lexV *lV)
 
 void lookup_keyword(_lexV *lV)
 {
+    // 키워드가 //로 시작하면 한줄 주석 /*로 시작하면 여러줄 주석
+    if (lV->LEX_lex_length >= 2 && lV->LEX_lexeme[0] == '/' && lV->LEX_lexeme[1] == '/') {
+        is_comment = 1;
+    } else if (lV->LEX_lex_length >= 2 && lV->LEX_lexeme[0] == '/' && lV->LEX_lexeme[1] == '*') {
+        is_comment = 2;
+    }
+    if (is_comment == 1 || is_comment == 2) {
+        // 계속 getchar?
+        while ((is_comment == 1 && lV->LEX_nextChar != '\n')) {
+            addChar(lV);
+            getChar(lV);
+        }
+        while ((is_comment == 2)) {
+            addChar(lV);
+            getChar(lV);
+        }
+        lV->LEX_nextToken = COMMENT;
+        return;
+    }
     for (int i = 0; i < NUMBER_OF_KEYWORDS; i++) {
         if (strcmp(lV->LEX_lexeme, LEX_keywords[i]) == 0) {
             lV->LEX_nextToken = i + 20;
-            if (i >= 22 && i <= 24) {
-                if (i == 22) is_comment = 1;
-                if (i == 23) is_comment = 2;
-                // 계속 getchar?
-                while ((is_comment == 1 && lV->LEX_nextChar != '\n')) {
-                    addChar(lV);
-                    getChar(lV);
-                }
-                while ((is_comment == 2)) {
-                    addChar(lV);
-                    getChar(lV);
-                }
-                lV->LEX_nextToken = COMMENT;
-            }
             return;
         }
     }
