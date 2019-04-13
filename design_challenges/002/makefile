@@ -1,4 +1,4 @@
-OBJECTS	= main.o lex.o pattern.o arg_read.o converter.o
+OBJECTS	= main.o lex.o pattern.o arg_read.o converter.o header_table.o
 TARGET	= ./javatoC
 CC		= gcc
 CFLAGS	= -std=c99 -W -Wall -DDEBUG
