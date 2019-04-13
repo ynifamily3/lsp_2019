@@ -14,7 +14,9 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 #define NUMBER_OF_KEYWORDS 26
 #define NUMBER_OF_OPERATORS 20
 #define LEX_SIZE 256 // 패턴의 실제 내용
-#define PATTERN_SIZE 2048 // 패턴의 개수
+#define PATTERN_SIZE 2048 // 패턴의 개수 원본 : 2048
+
+#define MAX_LINE_PER_FILE 400 // 파일당 맥스라인
 
 /* 문자 종류 정의 */
 #define LETTER 0 // 문자
@@ -98,9 +100,9 @@ int process_string_literals(_lexV *lV);
 int isoperator(char in);
 void getChar(_lexV *lV);
 void addChar(_lexV *lV);
-void lex_analysis(_lexPattern *pattern, _lexV *lV);
+void lex_analysis(_lexPattern **pattern, _lexV *lV);
 void lookup_operator(_lexV *lV);
 void lookup_keyword(_lexV *lV);
-void lex(_lexPattern *resultpattern, const char *inText);
+void lex(_lexPattern **resultpattern, const char *inText);
 
 #endif

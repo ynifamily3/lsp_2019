@@ -5,6 +5,7 @@
 #include "lex.h"
 
 extern int brace_stack;
+extern int lexPattern_number_of_line;
 int is_comment; // 0 코멘트 아님 1 한줄 코멘트 중 2 여러줄 코멘트 중
 int in_for_if_code; // for이나 if 내에선 ;가 있어도 어휘분석단위를 나누지 않는다.
 int parentheses_stack; // ( ) 스택을 조사한다. (in_for_if_code) 있을 시
@@ -109,7 +110,7 @@ void addChar(_lexV *lV)
     }
 }
 
-void lex(_lexPattern *pattern, const char *_inText)
+void lex(_lexPattern **pattern, const char *_inText)
 {
     is_comment = 0;
     in_for_if_code = 0; // for 32이나 if 33 내에선 ;가 있어도 어휘분석단위를 나누지 않는다.
@@ -117,7 +118,9 @@ void lex(_lexPattern *pattern, const char *_inText)
     _lexV lexMemory; // 전역 변수 대신 다음 구조체 사용
     _lexV *lV = &lexMemory;
     lV->inText = _inText;
-    pattern->pattern_length = 0;
+    for (int i = 0; i < MAX_LINE_PER_FILE; i++) {
+        pattern[i]->pattern_length = 0; // 이게 필요할까?
+    }
     lV->LEX_inText_pointer = 0;
     getChar(lV);
     do {
@@ -125,7 +128,7 @@ void lex(_lexPattern *pattern, const char *_inText)
     } while(lV->LEX_nextToken != EOF);
 }
 
-void lex_analysis(_lexPattern *pattern, _lexV *lV)
+void lex_analysis(_lexPattern **pattern, _lexV *lV)
 {
     lV->LEX_lex_length = 0;
     remove_blank(lV);
@@ -227,9 +230,9 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         lookup_keyword(lV);
     }
     if (lV->LEX_nextToken != EOF) {
-        pattern->pattern[pattern->pattern_length] = lV->LEX_nextToken;
-        fprintf(stderr, "[%s]", lV->LEX_lexeme);
-        int newline_test = pattern->pattern[pattern->pattern_length];
+        pattern[lexPattern_number_of_line]->pattern[pattern[lexPattern_number_of_line]->pattern_length] = lV->LEX_nextToken;
+        // fprintf(stderr, "[%s]", lV->LEX_lexeme);
+        int newline_test = pattern[lexPattern_number_of_line]->pattern[pattern[lexPattern_number_of_line]->pattern_length];
         
         if (newline_test == 103) {
             ++parentheses_stack;
@@ -250,12 +253,18 @@ void lex_analysis(_lexPattern *pattern, _lexV *lV)
         if (newline_test == 32 || newline_test == 33) {
             in_for_if_code = 1;
         }
-        // for code 32 if code 33 이다. 이 안쪽으로 들어오면 ;(109)는 자르지 않는다.
-        // 주석 (13) 세미콜론 (109) 중괄호 열기 (105) 중괄호 닫기 (106)
-        if (newline_test == 13 || newline_test == 109 || newline_test == 105 || newline_test == 106) fprintf(stderr, "\n");
+        
         // 나중에는 뉴라인 대신 line_count 증가시키고 나중에 line 별 패턴 분석하면 될 듯
         //  pattern->pattern[pattern->pattern_length]
-        strncpy(pattern->buffer[pattern->pattern_length++], lV->LEX_lexeme, LEX_SIZE);
+        if(pattern[lexPattern_number_of_line]->pattern[pattern[lexPattern_number_of_line]->pattern_length] != COMMENT)
+            strncpy(pattern[lexPattern_number_of_line]->buffer[pattern[lexPattern_number_of_line]->pattern_length++], lV->LEX_lexeme, LEX_SIZE);
+
+        // for code 32 if code 33 이다. 이 안쪽으로 들어오면 ;(109)는 자르지 않는다.
+        // 주석 (13) 세미콜론 (109) 중괄호 열기 (105) 중괄호 닫기 (106)
+        if (newline_test == 13 || newline_test == 109 || newline_test == 105 || newline_test == 106) {
+            // fprintf(stderr, "\n");
+            ++lexPattern_number_of_line;
+        }
     }
 }
 

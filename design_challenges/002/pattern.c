@@ -2,7 +2,8 @@
 #include "pattern.h"
 #include "debug.h"
 
-extern int brace_stack;
+//extern int brace_stack;
+int patt_brace_stack = 0;
 
 // 안티패턴의 정의 예를들어 st. 등 모두 제거되어야 할 것들
 
@@ -121,7 +122,8 @@ void PATT_init()
     pt5->java_pattern[pt5->java_pattern_length++] = IDENTFIER; // exactly main
     pt5->java_pattern[pt5->java_pattern_length++] = PARENTHESES_LEFT_OP;
     pt5->java_pattern[pt5->java_pattern_length++] = STRING_CODE;
-    pt5->java_pattern[pt5->java_pattern_length++] = SQUARE_BRACKET_LR_OP;
+    pt5->java_pattern[pt5->java_pattern_length++] = SQUARE_BRACKET_LEFT_OP;
+    pt5->java_pattern[pt5->java_pattern_length++] = SQUARE_BRACKET_RIGHT_OP;
     pt5->java_pattern[pt5->java_pattern_length++] = IDENTFIER;
     pt5->java_pattern[pt5->java_pattern_length++] = PARENTHESES_RIGHT_OP;
     pt5->java_pattern[pt5->java_pattern_length++] = BRACE_LEFT_OP;
@@ -130,9 +132,9 @@ void PATT_init()
     pt5->c_pattern[pt5->c_pattern_length++] = 3; // main
     pt5->c_pattern[pt5->c_pattern_length++] = 4; // (
     pt5->c_pattern[pt5->c_pattern_length++] = 1011; // void
-    pt5->c_pattern[pt5->c_pattern_length++] = 8; // )
+    pt5->c_pattern[pt5->c_pattern_length++] = 9; // )
     pt5->c_pattern[pt5->c_pattern_length++] = 1009; // " "
-    pt5->c_pattern[pt5->c_pattern_length++] = 9; // {
+    pt5->c_pattern[pt5->c_pattern_length++] = 10; // {
     
     _patternChanger *pt6 = &patternIndex[6];
     pt6->pattern_type = STARTSWITH_TRIM_ALL;
@@ -167,11 +169,24 @@ int PATT_is_match(const _lexPattern *pattern)
     return -1;
 }
 
-void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
+int PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
 {
+    int ret = 0;
     if (PATT_is_initalized == 0) {
         PATT_is_initalized = 1;
         PATT_init();
+    }
+    // 여는 중괄호와 닫는 중괄호 스택을 감시함
+    for (int i = 0; i < pattern->pattern_length; i++) {
+        if(pattern->pattern[i] == BRACE_LEFT_OP) {
+            ++patt_brace_stack;
+            if(patt_brace_stack == 1) ret = 1;
+            break;
+        } else if (pattern->pattern[i] == BRACE_RIGHT_OP) {
+            --patt_brace_stack;
+            if(patt_brace_stack == 0) ret = 2;
+            break;
+        }
     }
 
     memset(resultbuf, 0x00, MAX_RESULT_CODE_LENGTH); // 문자열 배열 비움
@@ -187,7 +202,7 @@ void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
             }
         }
         if (patt->pattern_type == STARTSWITH) {
-            DBGMSG("스타트 윗 패턴, 나머지는 쭉 채움 %d", patt->c_pattern_length);
+            // DBGMSG("스타트 윗 패턴, 나머지는 쭉 채움 %d", patt->c_pattern_length);
             // 결론은 c 패턴부터 원본 패턴 길이까지 전부 복사해봄
             for (int i = patt->java_pattern_length; i < pattern->pattern_length; ++i) {
                 strcat(resultbuf, pattern->buffer[i]); // startsWith 를 고려한 나머지는 쭉 출력해준다.
@@ -228,4 +243,5 @@ void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
             }
         }
     }
+    return ret;
 }

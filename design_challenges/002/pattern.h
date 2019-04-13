@@ -18,7 +18,7 @@ typedef struct {
     int c_pattern[PATTERN_SIZE];
 } _patternChanger;
 
-void PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf);
+int PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf);
 
 
 #endif

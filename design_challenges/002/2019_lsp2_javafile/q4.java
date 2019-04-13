@@ -1,6 +1,1 @@
-System.out.printf
-(
-"hello world %d"
-,
-1
-);
+System.out.printf("hello world %d",1);
