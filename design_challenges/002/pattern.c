@@ -14,7 +14,7 @@ const char *C_codes[] = {
     "calloc", "(", ")", "sizeof", " ",
     "int", "void", "const", "{", "char *",
     "FILE *", "fopen", "\"", "w", "a",
-    "fprintf", "fflush", "fclose"
+    "fprintf", "fflush", "fclose", ";"
 };
 
 _patternChanger patternIndex[NUMBER_OF_PATTERNS];
@@ -352,17 +352,81 @@ void PATT_init()
     pt18->java_pattern[pt18->java_pattern_length++] = WRITE_CODE;
     pt18->java_pattern[pt18->java_pattern_length++] = PARENTHESES_LEFT_OP;
     pt18->java_pattern[pt18->java_pattern_length++] = STR_LIT;
-    //pt18->java_pattern[pt18->java_pattern_length++] = PARENTHESES_RIGHT_OP;
-    //pt18->java_pattern[pt18->java_pattern_length++] = SEMICOLON_OP;
     pt18->c_pattern[pt18->c_pattern_length++] = 1020; // fprintf
     pt18->c_pattern[pt18->c_pattern_length++] = 3; // (
     pt18->c_pattern[pt18->c_pattern_length++] = 0; // writer
     pt18->c_pattern[pt18->c_pattern_length++] = 1002; // ,
     pt18->c_pattern[pt18->c_pattern_length++] = 1009; // " "
     pt18->c_pattern[pt18->c_pattern_length++] = 4;
-    //pt18->c_pattern[pt18->c_pattern_length++] = 5;
-    //pt18->c_pattern[pt18->c_pattern_length++] = 6;
 
+    // writer.flush();
+    // fflush(writer);
+    _patternChanger *pt19 = &patternIndex[19];
+    pt19->pattern_type = EXACT;
+    pt19->java_pattern_length = 0;
+    pt19->c_pattern_length = 0;
+    pt19->java_pattern[pt19->java_pattern_length++] = IDENTFIER;
+    pt19->java_pattern[pt19->java_pattern_length++] = DOT_OP;
+    pt19->java_pattern[pt19->java_pattern_length++] = FLUSH_CODE;
+    pt19->java_pattern[pt19->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt19->java_pattern[pt19->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt19->java_pattern[pt19->java_pattern_length++] = SEMICOLON_OP;
+    pt19->c_pattern[pt19->c_pattern_length++] = 1021; // fflush
+    pt19->c_pattern[pt19->c_pattern_length++] = 3; // (
+    pt19->c_pattern[pt19->c_pattern_length++] = 0; // writer
+    pt19->c_pattern[pt19->c_pattern_length++] = 4; // )
+    pt19->c_pattern[pt19->c_pattern_length++] = 5; // ;
+
+    // pattern : FileWriter writer = new FileWriter(file, true);
+    // to : File *writer = fopen(file, "a");
+    _patternChanger *pt20 = &patternIndex[20];
+    pt20->pattern_type = EXACT;
+    pt20->java_pattern_length = 0;
+    pt20->c_pattern_length = 0;
+    pt20->java_pattern[pt20->java_pattern_length++] = FILEWRITER_CODE;
+    pt20->java_pattern[pt20->java_pattern_length++] = IDENTFIER;
+    pt20->java_pattern[pt20->java_pattern_length++] = ASSIGN_OP;
+    pt20->java_pattern[pt20->java_pattern_length++] = NEW_CODE;
+    pt20->java_pattern[pt20->java_pattern_length++] = FILEWRITER_CODE;
+    pt20->java_pattern[pt20->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt20->java_pattern[pt20->java_pattern_length++] = IDENTFIER;
+    pt20->java_pattern[pt20->java_pattern_length++] = COMMA_OP;
+    pt20->java_pattern[pt20->java_pattern_length++] = TRUE_CODE;
+    pt20->java_pattern[pt20->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt20->java_pattern[pt20->java_pattern_length++] = SEMICOLON_OP;
+    pt20->c_pattern[pt20->c_pattern_length++] = 1015; // FILE *
+    pt20->c_pattern[pt20->c_pattern_length++] = 1; // writer
+    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // writer
+    pt20->c_pattern[pt20->c_pattern_length++] = 2; // = 
+    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // writer
+    pt20->c_pattern[pt20->c_pattern_length++] = 1016; // fopen
+    pt20->c_pattern[pt20->c_pattern_length++] = 5; // (
+    pt20->c_pattern[pt20->c_pattern_length++] = 6; // file
+    pt20->c_pattern[pt20->c_pattern_length++] = 7; // ,
+    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // writer
+    pt20->c_pattern[pt20->c_pattern_length++] = 1017; // "
+    pt20->c_pattern[pt20->c_pattern_length++] = 1019; // a
+    pt20->c_pattern[pt20->c_pattern_length++] = 1017; // "
+    pt20->c_pattern[pt20->c_pattern_length++] = 9; // )
+    pt20->c_pattern[pt20->c_pattern_length++] = 10; // ;
+
+    // id.close();
+    // fclose(id);
+    _patternChanger *pt21 = &patternIndex[21];
+    pt21->pattern_type = EXACT;
+    pt21->java_pattern_length = 0;
+    pt21->c_pattern_length = 0;
+    pt21->java_pattern[pt21->java_pattern_length++] = IDENTFIER;
+    pt21->java_pattern[pt21->java_pattern_length++] = DOT_OP;
+    pt21->java_pattern[pt21->java_pattern_length++] = CLOSE_CODE;
+    pt21->java_pattern[pt21->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt21->java_pattern[pt21->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt21->java_pattern[pt21->java_pattern_length++] = SEMICOLON_OP;
+    pt21->c_pattern[pt21->c_pattern_length++] = 1022; // fclose
+    pt21->c_pattern[pt21->c_pattern_length++] = 3; // (
+    pt21->c_pattern[pt21->c_pattern_length++] = 0; // writer
+    pt21->c_pattern[pt21->c_pattern_length++] = 4; // )
+    pt21->c_pattern[pt21->c_pattern_length++] = 5; // ;
 
 }
 

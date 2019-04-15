@@ -8,6 +8,20 @@ int lexPattern_number_of_line = 0;
 int number_of_anti_pattern = 0;
 char anti_pattern[10][64]; //객체 등은 제거되어야 한다. 예를 들어 st.
 
+const int number_of_change_pattern = 1; // 상수임
+char change_pattern_before[4][10] = {"null"}; // 두개가 서로 같은 문자열 길이여야 함. 혹은 after작거나
+char change_pattern_after[4][10] = {"NULL"};
+
+void change_str_in_str(char *dest, const char *before, const char *after)
+{
+    size_t cplen = strlen(before);
+    char *pos = strstr(dest, before);
+    if (!pos) return;
+    for (int i = 0; i < (int)cplen; i++) {
+        pos[i] = after[i];
+    }
+}
+
 void remove_str_in_str(char *dest, const char *anti_pattern)
 {
     char *origin_dest = dest;
@@ -59,8 +73,12 @@ void convert_java_to_c(char *output, const char *input)
         } else {
             if(strlen(output)) {
                 // 안티패턴 제거하기 (객체 제거)
+                // 특정 패턴 치환 (null -> NULL)
                 for (int j = 0; j < number_of_anti_pattern; j++) {
                     remove_str_in_str(output, anti_pattern[j]);
+                }
+                for (int j = 0; j < number_of_change_pattern; j++) {
+                    change_str_in_str(output, change_pattern_before[j], change_pattern_after[j]);
                 }
                 printf("%s\n", output);
             }

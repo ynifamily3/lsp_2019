@@ -21,7 +21,8 @@ const char *LEX_keywords[NUMBER_OF_KEYWORDS] = {
     "int", "nextInt", "for", "if", "else",
     "return", "final", "File", "throws", "IOException",
     "FileWriter", "printf","//", "/*", "*/",
-    "else\n", "true", "false", "write"
+    "else\n", "true", "false", "write", "flush",
+    "close"
 }; // else\nif 같은 문장을 처리하기 위함 (else if != else\nif)
 
 const char *LEX_operators[NUMBER_OF_OPERATORS] = {
