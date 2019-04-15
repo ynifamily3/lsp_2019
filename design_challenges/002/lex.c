@@ -14,14 +14,16 @@ int parentheses_stack; // ( ) 스택을 조사한다. (in_for_if_code) 있을 �
 LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Robert W. Sebesta
 193 page 소스코드를 고쳐서 썼습니다.
 */
+// public static void main(String[] args) throws IOException
 const char *LEX_keywords[NUMBER_OF_KEYWORDS] = {
     "import", "public", "class", "static", "void",
     "String", "Scanner", "new", "System", "out",
     "int", "nextInt", "for", "if", "else",
     "return", "final", "File", "throws", "IOException",
     "FileWriter", "printf","//", "/*", "*/",
-    "else\n" // else\nif 같은 문장을 처리하기 위함 (else if != else\nif)
-};
+    "else\n", "true", "false", "write"
+}; // else\nif 같은 문장을 처리하기 위함 (else if != else\nif)
+
 const char *LEX_operators[NUMBER_OF_OPERATORS] = {
     ".", "[", "]", "(" ,")",
     "{", "}", "%", "\"", ";",
@@ -256,7 +258,7 @@ void lex_analysis(_lexPattern **pattern, _lexV *lV)
         
         // 나중에는 뉴라인 대신 line_count 증가시키고 나중에 line 별 패턴 분석하면 될 듯
         //  pattern->pattern[pattern->pattern_length]
-        if(pattern[lexPattern_number_of_line]->pattern[pattern[lexPattern_number_of_line]->pattern_length] != COMMENT)
+        // if(pattern[lexPattern_number_of_line]->pattern[pattern[lexPattern_number_of_line]->pattern_length] != COMMENT)
             strncpy(pattern[lexPattern_number_of_line]->buffer[pattern[lexPattern_number_of_line]->pattern_length++], lV->LEX_lexeme, LEX_SIZE);
 
         // for code 32 if code 33 이다. 이 안쪽으로 들어오면 ;(109)는 자르지 않는다.
@@ -288,7 +290,7 @@ void lookup_keyword(_lexV *lV)
     }
     if (is_comment == 1 || is_comment == 2) {
         while (is_comment == 1) {
-            if(lV->LEX_nextChar != '\n') {
+            if(lV->LEX_nextChar != '\n' && lV->LEX_nextChar != '\0') {
                 addChar(lV);
                 getChar(lV);
             } else {

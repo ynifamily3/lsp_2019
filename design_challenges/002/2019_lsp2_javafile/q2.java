@@ -7,7 +7,6 @@ class Stack{
 
 	public Stack(){
 		top = -1;
-		top=-1;
 		stack = new int[STACK_SIZE];
 	}
 

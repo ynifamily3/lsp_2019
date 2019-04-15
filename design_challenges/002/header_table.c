@@ -87,15 +87,19 @@ void read_header_table(const char *header_table_fname)
     }
     fclose(fp);
 
+    /*
     for (int i = 0; i < number_of_header_tables; ++i) {
         printf("%s\n", header_table[i]->func_name);
         for (int j = 0; j < header_table[i]->num_includes; ++j) {
             printf("- %s\n", header[header_table[i]->headers[j]]);
         }
     }
+    */
 }
 
+/*
 void putheader(const char *c_func_name)
 {
     // header를 put 한다.
 }
+*/

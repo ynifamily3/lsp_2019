@@ -11,7 +11,7 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 193 page 소스코드를 고쳐서 썼습니다.
 */
 
-#define NUMBER_OF_KEYWORDS 26
+#define NUMBER_OF_KEYWORDS 29
 #define NUMBER_OF_OPERATORS 20
 #define LEX_SIZE 256 // 패턴의 실제 내용
 #define PATTERN_SIZE 2048 // 패턴의 개수 원본 : 2048
@@ -55,6 +55,9 @@ LEX 분석 참고문헌 : Concepts of Programming Languages Tenth Edition. Rober
 #define PRINTF_CODE 41
 // 42 43 44 는 주석이라 생략
 #define ELSE_ENTER_CODE 45
+#define TRUE_CODE 46
+#define FALSE_CODE 47
+#define WRITE_CODE 48
 
 /* 오퍼레이션 정의 */
 #define DOT_OP 100

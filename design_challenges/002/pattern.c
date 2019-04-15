@@ -12,7 +12,9 @@ int PATT_is_initalized = 0;
 const char *C_codes[] = {
     "scanf", "\"%d\"", ",", "&", "*",
     "calloc", "(", ")", "sizeof", " ",
-    "int", "void"
+    "int", "void", "const", "{", "char *",
+    "FILE *", "fopen", "\"", "w", "a",
+    "fprintf", "fflush", "fclose"
 };
 
 _patternChanger patternIndex[NUMBER_OF_PATTERNS];
@@ -142,6 +144,226 @@ void PATT_init()
     pt6->c_pattern_length = 0;
     pt6->java_pattern[pt6->java_pattern_length++] = SCANNER_CODE;
     // 즉 C에선 거르는 패턴임. (패턴 없음)
+
+    // pattern : public static void main(String args[]){
+    // to : int main(void){
+    _patternChanger *pt7 = &patternIndex[7];
+    pt7->pattern_type = EXACT;
+    pt7->java_pattern_length = 0;
+    pt7->c_pattern_length = 0;
+    pt7->java_pattern[pt7->java_pattern_length++] = PUBLIC_CODE;
+    pt7->java_pattern[pt7->java_pattern_length++] = STATIC_CODE;
+    pt7->java_pattern[pt7->java_pattern_length++] = VOID_CODE;
+    pt7->java_pattern[pt7->java_pattern_length++] = IDENTFIER; // exactly main
+    pt7->java_pattern[pt7->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt7->java_pattern[pt7->java_pattern_length++] = STRING_CODE;
+    pt7->java_pattern[pt7->java_pattern_length++] = IDENTFIER;
+    pt7->java_pattern[pt7->java_pattern_length++] = SQUARE_BRACKET_LEFT_OP;
+    pt7->java_pattern[pt7->java_pattern_length++] = SQUARE_BRACKET_RIGHT_OP;
+    pt7->java_pattern[pt7->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt7->java_pattern[pt7->java_pattern_length++] = BRACE_LEFT_OP;
+    pt7->c_pattern[pt7->c_pattern_length++] = 1010; // int
+    pt7->c_pattern[pt7->c_pattern_length++] = 1009; // " "
+    pt7->c_pattern[pt7->c_pattern_length++] = 3; // main
+    pt7->c_pattern[pt7->c_pattern_length++] = 4; // (
+    pt7->c_pattern[pt7->c_pattern_length++] = 1011; // void
+    pt7->c_pattern[pt7->c_pattern_length++] = 9; // )
+    pt7->c_pattern[pt7->c_pattern_length++] = 1009; // " "
+    pt7->c_pattern[pt7->c_pattern_length++] = 10; // {
+
+    // pattern : class id{
+    // to : 없음 (파일만 생성)
+    _patternChanger *pt8 = &patternIndex[8];
+    pt8->pattern_type = EXACT;
+    pt8->java_pattern_length = 0;
+    pt8->c_pattern_length = 0;
+    pt8->java_pattern[pt8->java_pattern_length++] = CLASS_CODE;
+    pt8->java_pattern[pt8->java_pattern_length++] = IDENTFIER;
+    pt8->java_pattern[pt8->java_pattern_length++] = BRACE_LEFT_OP;
+
+    // pattern : int[] id;
+    // to : int *id;
+    _patternChanger *pt9 = &patternIndex[9];
+    pt9->pattern_type = EXACT;
+    pt9->java_pattern_length = 0;
+    pt9->c_pattern_length = 0;
+    pt9->java_pattern[pt9->java_pattern_length++] = INT_CODE;
+    pt9->java_pattern[pt9->java_pattern_length++] = SQUARE_BRACKET_LEFT_OP;
+    pt9->java_pattern[pt9->java_pattern_length++] = SQUARE_BRACKET_RIGHT_OP;
+    pt9->java_pattern[pt9->java_pattern_length++] = IDENTFIER;
+    pt9->java_pattern[pt9->java_pattern_length++] = SEMICOLON_OP;
+    pt9->c_pattern[pt9->c_pattern_length++] = 1010; // int
+    pt9->c_pattern[pt9->c_pattern_length++] = 1009; // " "
+    pt9->c_pattern[pt9->c_pattern_length++] = 1004; // *
+    pt9->c_pattern[pt9->c_pattern_length++] = 3; // IDENT
+    pt9->c_pattern[pt9->c_pattern_length++] = 4; // semicolon
+
+    // pattern : Stack st = new Stack();
+    // to : --, but Stack.c 를 인클루드 하고 st. 를 안티패턴으로 추가하도록 함
+    _patternChanger *pt10 = &patternIndex[10];
+    pt10->pattern_type = EXACT;
+    pt10->java_pattern_length = 0;
+    pt10->c_pattern_length = 0;
+    pt10->java_pattern[pt10->java_pattern_length++] = IDENTFIER;
+    pt10->java_pattern[pt10->java_pattern_length++] = IDENTFIER;
+    pt10->java_pattern[pt10->java_pattern_length++] = ASSIGN_OP;
+    pt10->java_pattern[pt10->java_pattern_length++] = NEW_CODE;
+    pt10->java_pattern[pt10->java_pattern_length++] = IDENTFIER;
+    pt10->java_pattern[pt10->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt10->java_pattern[pt10->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt10->java_pattern[pt10->java_pattern_length++] = SEMICOLON_OP;
+    //////////////////////////////////////////////////////////////////////
+
+    // pattern : public static final ~ (startswith)
+    // to : const ~ ==> 디파인으로 할 것 (패턴 컴파일 리턴값을 다르게 주어야함)
+    _patternChanger *pt11 = &patternIndex[11];
+    pt11->pattern_type = STARTSWITH;
+    pt11->java_pattern_length = 3; 
+    pt11->c_pattern_length = 2;
+    pt11->java_pattern[0] = PUBLIC_CODE;
+    pt11->java_pattern[1] = STATIC_CODE;
+    pt11->java_pattern[2] = FINAL_CODE;
+    pt11->c_pattern[0] = 1012;
+    pt11->c_pattern[1] = 1009;
+
+    // pattern : return ; 
+    // to : --
+    _patternChanger *pt12 = &patternIndex[12];
+    pt12->pattern_type = EXACT;
+    pt12->java_pattern_length = 2;
+    pt12->c_pattern_length = 0;
+    pt12->java_pattern[0] = RETURN_CODE;
+    pt12->java_pattern[1] = SEMICOLON_OP;
+
+    // pattern : public IDENT () {
+    // to : -- , 
+    _patternChanger *pt13 = &patternIndex[13];
+    pt13->pattern_type = EXACT;
+    pt13->java_pattern_length = 0;
+    pt13->c_pattern_length = 0;
+    pt13->java_pattern[pt13->java_pattern_length++] = PUBLIC_CODE;
+    pt13->java_pattern[pt13->java_pattern_length++] = IDENTFIER;
+    pt13->java_pattern[pt13->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt13->java_pattern[pt13->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt13->java_pattern[pt13->java_pattern_length++] = BRACE_LEFT_OP;
+    pt13->c_pattern[pt13->c_pattern_length++] = 1013;
+
+    // public static void main(String[] args) throws IOException {
+    // to : int main(void) {
+    _patternChanger *pt14 = &patternIndex[14];
+    pt14->pattern_type = EXACT;
+    pt14->java_pattern_length = 0;
+    pt14->c_pattern_length = 0;
+    pt14->java_pattern[pt14->java_pattern_length++] = PUBLIC_CODE;
+    pt14->java_pattern[pt14->java_pattern_length++] = STATIC_CODE;
+    pt14->java_pattern[pt14->java_pattern_length++] = VOID_CODE;
+    pt14->java_pattern[pt14->java_pattern_length++] = IDENTFIER; // main
+    pt14->java_pattern[pt14->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt14->java_pattern[pt14->java_pattern_length++] = STRING_CODE;
+    pt14->java_pattern[pt14->java_pattern_length++] = SQUARE_BRACKET_LEFT_OP;
+    pt14->java_pattern[pt14->java_pattern_length++] = SQUARE_BRACKET_RIGHT_OP;
+    pt14->java_pattern[pt14->java_pattern_length++] = IDENTFIER; // args
+    pt14->java_pattern[pt14->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt14->java_pattern[pt14->java_pattern_length++] = THROWS_CODE;
+    pt14->java_pattern[pt14->java_pattern_length++] = IOEXCEPTION_CODE;
+    pt14->java_pattern[pt14->java_pattern_length++] = BRACE_LEFT_OP;
+    pt14->c_pattern[pt14->c_pattern_length++] = 1010; // int
+    pt14->c_pattern[pt14->c_pattern_length++] = 1009; // " "
+    pt14->c_pattern[pt14->c_pattern_length++] = 3; // main
+    pt14->c_pattern[pt14->c_pattern_length++] = 4; // (
+    pt14->c_pattern[pt14->c_pattern_length++] = 1011; // void
+    pt14->c_pattern[pt14->c_pattern_length++] = 9; // )
+    pt14->c_pattern[pt14->c_pattern_length++] = 1009; // " "
+    pt14->c_pattern[pt14->c_pattern_length++] = 12; // {
+
+    // pattern : public ~
+    // to : --
+    // 앞에서 public 다른것들은 처리 해줬으므로 뒤에 걸리는 것들은 일반함수이다.
+    _patternChanger *pt15 = &patternIndex[15];
+    pt15->pattern_type = STARTSWITH;
+    pt15->java_pattern_length = 1;
+    pt15->c_pattern_length = 0;
+    pt15->java_pattern[0] = PUBLIC_CODE;
+
+    // pattern : File file = new File("id");
+    // to : char *file = "id";
+    _patternChanger *pt16 = &patternIndex[16];
+    pt16->pattern_type = EXACT;
+    pt16->java_pattern_length = 0;
+    pt16->c_pattern_length = 0;
+    pt16->java_pattern[pt16->java_pattern_length++] = FILE_CODE;
+    pt16->java_pattern[pt16->java_pattern_length++] = IDENTFIER;
+    pt16->java_pattern[pt16->java_pattern_length++] = ASSIGN_OP;
+    pt16->java_pattern[pt16->java_pattern_length++] = NEW_CODE;
+    pt16->java_pattern[pt16->java_pattern_length++] = FILE_CODE;
+    pt16->java_pattern[pt16->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt16->java_pattern[pt16->java_pattern_length++] = STR_LIT;
+    pt16->java_pattern[pt16->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt16->java_pattern[pt16->java_pattern_length++] = SEMICOLON_OP;
+    pt16->c_pattern[pt16->c_pattern_length++] = 1014; // char *
+    pt16->c_pattern[pt16->c_pattern_length++] = 1; // file
+    pt16->c_pattern[pt16->c_pattern_length++] = 1009; // " "
+    pt16->c_pattern[pt16->c_pattern_length++] = 2; // =
+    pt16->c_pattern[pt16->c_pattern_length++] = 1009; // " "
+    pt16->c_pattern[pt16->c_pattern_length++] = 6; // "id"
+    pt16->c_pattern[pt16->c_pattern_length++] = 8; // ;
+
+    // pattern : FileWriter writer = new FileWriter(file, false);
+    // to : File *writer = fopen(file, "w");
+    _patternChanger *pt17 = &patternIndex[17];
+    pt17->pattern_type = EXACT;
+    pt17->java_pattern_length = 0;
+    pt17->c_pattern_length = 0;
+    pt17->java_pattern[pt17->java_pattern_length++] = FILEWRITER_CODE;
+    pt17->java_pattern[pt17->java_pattern_length++] = IDENTFIER;
+    pt17->java_pattern[pt17->java_pattern_length++] = ASSIGN_OP;
+    pt17->java_pattern[pt17->java_pattern_length++] = NEW_CODE;
+    pt17->java_pattern[pt17->java_pattern_length++] = FILEWRITER_CODE;
+    pt17->java_pattern[pt17->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt17->java_pattern[pt17->java_pattern_length++] = IDENTFIER;
+    pt17->java_pattern[pt17->java_pattern_length++] = COMMA_OP;
+    pt17->java_pattern[pt17->java_pattern_length++] = FALSE_CODE;
+    pt17->java_pattern[pt17->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    pt17->java_pattern[pt17->java_pattern_length++] = SEMICOLON_OP;
+    pt17->c_pattern[pt17->c_pattern_length++] = 1015; // FILE *
+    pt17->c_pattern[pt17->c_pattern_length++] = 1; // writer
+    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // writer
+    pt17->c_pattern[pt17->c_pattern_length++] = 2; // = 
+    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // writer
+    pt17->c_pattern[pt17->c_pattern_length++] = 1016; // fopen
+    pt17->c_pattern[pt17->c_pattern_length++] = 5; // (
+    pt17->c_pattern[pt17->c_pattern_length++] = 6; // file
+    pt17->c_pattern[pt17->c_pattern_length++] = 7; // ,
+    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // writer
+    pt17->c_pattern[pt17->c_pattern_length++] = 1017; // "
+    pt17->c_pattern[pt17->c_pattern_length++] = 1018; // w 
+    pt17->c_pattern[pt17->c_pattern_length++] = 1017; // "
+    pt17->c_pattern[pt17->c_pattern_length++] = 9; // )
+    pt17->c_pattern[pt17->c_pattern_length++] = 10; // ;
+
+    // writer.write("~");
+    // fprintf(writer, "~");
+    _patternChanger *pt18 = &patternIndex[18];
+    pt18->pattern_type = STARTSWITH;
+    pt18->java_pattern_length = 0;
+    pt18->c_pattern_length = 0;
+    pt18->java_pattern[pt18->java_pattern_length++] = IDENTFIER;
+    pt18->java_pattern[pt18->java_pattern_length++] = DOT_OP;
+    pt18->java_pattern[pt18->java_pattern_length++] = WRITE_CODE;
+    pt18->java_pattern[pt18->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    pt18->java_pattern[pt18->java_pattern_length++] = STR_LIT;
+    //pt18->java_pattern[pt18->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    //pt18->java_pattern[pt18->java_pattern_length++] = SEMICOLON_OP;
+    pt18->c_pattern[pt18->c_pattern_length++] = 1020; // fprintf
+    pt18->c_pattern[pt18->c_pattern_length++] = 3; // (
+    pt18->c_pattern[pt18->c_pattern_length++] = 0; // writer
+    pt18->c_pattern[pt18->c_pattern_length++] = 1002; // ,
+    pt18->c_pattern[pt18->c_pattern_length++] = 1009; // " "
+    pt18->c_pattern[pt18->c_pattern_length++] = 4;
+    //pt18->c_pattern[pt18->c_pattern_length++] = 5;
+    //pt18->c_pattern[pt18->c_pattern_length++] = 6;
+
+
 }
 
 int PATT_is_match(const _lexPattern *pattern)
@@ -206,23 +428,33 @@ int PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
             // 결론은 c 패턴부터 원본 패턴 길이까지 전부 복사해봄
             for (int i = patt->java_pattern_length; i < pattern->pattern_length; ++i) {
                 strcat(resultbuf, pattern->buffer[i]); // startsWith 를 고려한 나머지는 쭉 출력해준다.
+                if (space_check(pattern, i))
+                    strcat(resultbuf, " ");
             }
         }
     } else {
         // 그대로 붙여 출력
         for (int i = 0; i < pattern->pattern_length; ++i) {
             strcat(resultbuf, pattern->buffer[i]);
-            // 다음 토큰이 수치리터럴, 아이덴티파이어, 연산자면 뛴다. 전위 후위, ; 연산자면 안뛴다. ) 가 뒤에 와도 안 뛴다. ','도 안 뛴다. '.'도 안 뛴다.
-            // 특정 연산자 (.등) 뒤에는 안 뛴다.
-            // DBGMSG("패턴 : %s 패턴번호 %d",pattern->buffer[i], pattern->pattern[i]);
-            if (
-                pattern->pattern[i] != 100 &&
-                pattern->pattern[i] != 103 &&
-                i+1 < pattern->pattern_length &&
+            if (space_check(pattern, i))
+                strcat(resultbuf, " ");
+        }
+    }
+    return ret;
+}
+
+int space_check(const _lexPattern *pattern, int i) {
+    // 다음 토큰이 수치리터럴, 아이덴티파이어, 연산자면 뛴다. 전위 후위, ; 연산자면 안뛴다. ) 가 뒤에 와도 안 뛴다. ','도 안 뛴다. '.'도 안 뛴다.
+    // 특정 연산자 (.등) 뒤에는 안 뛴다.
+if (
+                pattern->pattern[i] != DOT_OP && // 지금 . 연산자가 아니고
+                pattern->pattern[i] != SQUARE_BRACKET_LEFT_OP && // [가 아니고
+                pattern->pattern[i] != PARENTHESES_LEFT_OP && // (가 아니고
+                i+1 < pattern->pattern_length && // 다음이 있고
                 (
-                    pattern->pattern[i+1] == 10 ||
-                    pattern->pattern[i+1] == 11 ||
-                    pattern->pattern[i+1] == 2  || // 단순연산자
+                    pattern->pattern[i+1] == 10 || // 단순 리터럴?
+                    pattern->pattern[i+1] == 11 || // 단순 리터럴?
+                    pattern->pattern[i+1] == 2  || // 단순 연산자?
                     (
                         pattern->pattern[i+1] >= 100 &&
                         pattern->pattern[i+1] != 114 &&
@@ -231,6 +463,8 @@ int PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
                         pattern->pattern[i+1] != 103 &&
                         pattern->pattern[i+1] != 104 &&
                         pattern->pattern[i+1] != 119 &&
+                        pattern->pattern[i+1] != SQUARE_BRACKET_LEFT_OP &&
+                        pattern->pattern[i+1] != SQUARE_BRACKET_RIGHT_OP &&
                         pattern->pattern[i+1] != 100
                     ) ||
                     (
@@ -239,9 +473,7 @@ int PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
                     )
                 )
             ) {
-                strcat(resultbuf, " ");
+                return 1;
             }
-        }
-    }
-    return ret;
+            return 0;
 }

@@ -1,1 +1,1 @@
-System.out.printf("hello world %d",1);
+a = d;//a
