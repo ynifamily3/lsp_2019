@@ -5,6 +5,9 @@
 //extern int brace_stack;
 int patt_brace_stack = 0;
 
+extern int number_of_anti_pattern = 0;
+extern char anti_pattern[10][64]; //객체 등은 제거되어야 한다. 예를 들어 st.
+
 // 안티패턴의 정의 예를들어 st. 등 모두 제거되어야 할 것들
 
 int PATT_is_initalized = 0;
@@ -480,6 +483,17 @@ int PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
     int matchedIndex = PATT_is_match(pattern);
     if(matchedIndex >= 0) {
         _patternChanger *patt = &patternIndex[matchedIndex];
+
+        // 안티 패턴 파악하기. 해당 패턴 넘버 : 10
+        if (matchedIndex == 10) {
+            printf("안티패턴에 추가");
+            //int number_of_anti_pattern = 0;
+            //char anti_pattern[10][64]; //객체 등은 제거되어야 한다. 예를 들어 st.
+            strcpy(anti_pattern[number_of_anti_pattern++], "st.");
+        }
+
+
+
         for (int i = 0; i < patt->c_pattern_length; ++i) {
             if (patt->c_pattern[i] >= 1000) {
                 strcat(resultbuf, C_codes[patt->c_pattern[i]-1000]);
