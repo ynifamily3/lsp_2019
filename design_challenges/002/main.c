@@ -6,6 +6,7 @@
 #include "debug.h"
 #include "arg_read.h"
 #include "converter.h"
+#include "header_table.h"
 
 int brace_stack = 0; // 여닫는 중괄호 계층 스택
 // 0->1 로 되면 파일 생성이고 1->0이 되면 파일 close 이다.
@@ -39,6 +40,8 @@ void print_repeat(char p, int cnt) {
 int main(int argc, char *argv[])
 {
 
+    read_header_table("header_table.txt");
+/*
     if (argc < 2) {
         fprintf(stderr, "Usage : %s [java_source_file] [option]...\n", argv[0]);
         exit(1);
@@ -56,6 +59,6 @@ int main(int argc, char *argv[])
     char output[MAX_RESULT_CODE_LENGTH];
     size_t f_size = fread(input, sizeof(char), MAX_RESULT_CODE_LENGTH, fp);
     if(f_size) convert_java_to_c(output, input);
-    fclose(fp);
+    fclose(fp);*/
     exit(0);
 }
