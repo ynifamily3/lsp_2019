@@ -12,6 +12,7 @@ void ssu_show_limit(int rlim_type, char *rlim_name);
 int main(void)
 {
 	struct timeval start, end;
+	gettimeofday(&start, NULL);
 	printf("    resource soft limit hard limit     \n\n");
 	ssu_show(RLIMIT_CPU);
 	ssu_show(RLIMIT_FSIZE);
@@ -42,4 +43,22 @@ int main(void)
 	exit(0);
 }
 
-void ssu_show_limit(int rlim
+void ssu_show_limit(int rlim_type, char *rlim_name) {
+	struct rlimit rlim;
+	char cur[11], max[11];
+
+	getrlimit(rlim_type, &rlim);
+
+	if (rlim.rlim_cur == RLIM_INFINITY)
+		strcpy(cur, "infinity");
+	else
+		sprintf(cur, "%10ld", rlim.rlim_cur);
+
+	if (rlim.rlim_max == RLIM_INFINITY)
+		strcpy(max, "infinity");
+	else
+		sprintf(max, "%10ld", rlim.rlim_max);
+
+	printf("%15s : %10s %10s\n", rlim_name, cur, max);
+}
+
