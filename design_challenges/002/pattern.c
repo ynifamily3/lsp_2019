@@ -5,8 +5,8 @@
 //extern int brace_stack;
 int patt_brace_stack = 0;
 
-extern int number_of_anti_pattern = 0;
-extern char anti_pattern[10][64]; //객체 등은 제거되어야 한다. 예를 들어 st.
+// extern int number_of_anti_pattern = 0;
+// extern char anti_pattern[10][64]; //객체 등은 제거되어야 한다. 예를 들어 st.
 
 // 안티패턴의 정의 예를들어 st. 등 모두 제거되어야 할 것들
 
@@ -20,13 +20,15 @@ const char *C_codes[] = {
     "fprintf", "fflush", "fclose", ";"
 };
 
+int cngCnt[] = {0,0,0,0,0,0,0};
+char cngPatt[7][50];
+
 _patternChanger patternIndex[NUMBER_OF_PATTERNS];
 
 //////////////////////// 각 Java 패턴 ==> C 패턴 컨버전 정의 ////////////////////////
 // 패턴 구조체 변환 필요 : 1) 스트릿하게 일치, 2) 자료형 등의 변환 가능 3) ~로 시작하는 문장 이렇게 세 개의 매칭 가능성을 시사해야 됨
 void PATT_init()
 {
-    // stack = new int[stack_size]; 유형
     _patternChanger *pt0 = &patternIndex[0];
     pt0->pattern_type = EXACT;
     pt0->java_pattern_length = 8;
@@ -230,7 +232,7 @@ void PATT_init()
     pt11->c_pattern[1] = 1009;
 
     // pattern : return ; 
-    // to : --
+    // to : -- (main이 아닌 경우 그래도 둬야할 수도 있다.)
     _patternChanger *pt12 = &patternIndex[12];
     pt12->pattern_type = EXACT;
     pt12->java_pattern_length = 2;
@@ -484,12 +486,59 @@ int PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
     if(matchedIndex >= 0) {
         _patternChanger *patt = &patternIndex[matchedIndex];
 
+
+        // 패턴별 java->c 함수 발생시 기록
+        switch (matchedIndex) {
+            case 0:
+            if(cngCnt[0] != 1)  {
+                cngCnt[0] = 1;
+                sprintf(cngPatt[0], "%s.nextInt() -> scanf()", pattern->buffer[2]);
+            }
+            break;
+            case 1:
+            if(cngCnt[1] != 1)  {
+                cngCnt[1] = 1;
+                sprintf(cngPatt[1], "new int-> calloc()");
+            }
+            break;
+            case 2:
+            if(cngCnt[2] != 1)  {
+                cngCnt[2] = 1;
+                sprintf(cngPatt[2], "System.out.printf() -> printf()");
+            }
+            break;
+            case 17: case 20:
+            if(cngCnt[3] != 1)  {
+                cngCnt[3] = 1;
+                sprintf(cngPatt[3], "new FileWriter() -> fopen()"); // 이게 왜 안돼
+            }
+            break;
+            case 18:
+            if(cngCnt[4] != 1)  {
+                cngCnt[4] = 1;
+                sprintf(cngPatt[4], "%s.write() -> fprintf()", pattern->buffer[0]);
+            }
+            break;
+            case 19:
+            if(cngCnt[5] != 1)  {
+                cngCnt[5] = 1;
+                sprintf(cngPatt[5], "%s.flush() -> fflush()", pattern->buffer[0]);
+            }
+            break;
+            case 21:
+            if(cngCnt[6] != 1)  {
+                cngCnt[6] = 1;
+                sprintf(cngPatt[6], "%s.close() -> fclose()", pattern->buffer[0]);
+            }
+            break;
+        }
+
         // 안티 패턴 파악하기. 해당 패턴 넘버 : 10
         if (matchedIndex == 10) {
             printf("안티패턴에 추가");
             //int number_of_anti_pattern = 0;
             //char anti_pattern[10][64]; //객체 등은 제거되어야 한다. 예를 들어 st.
-            strcpy(anti_pattern[number_of_anti_pattern++], "st.");
+            //strcpy(anti_pattern[number_of_anti_pattern++], "st.");
         }
 
 

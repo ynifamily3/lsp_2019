@@ -2,6 +2,6 @@
 #define CONVERTER
 #include "pattern.h"
 
-void convert_java_to_c(char *output, const char *input);
+void convert_java_to_c(char *output, const char *input, char *argv1);
 
 #endif

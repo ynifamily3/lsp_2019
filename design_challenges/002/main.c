@@ -15,7 +15,6 @@ int is_main = 0; // 현재 변환중인 곳이 main 함수 내이면 1, 아니�
 
 int main(int argc, char *argv[])
 {
-
     read_header_table("header_table.txt");
     
     if (argc < 2) {
@@ -34,7 +33,7 @@ int main(int argc, char *argv[])
     char input[MAX_RESULT_CODE_LENGTH]; // 소스 코드의 길이 최대 4096 바이트
     char output[MAX_RESULT_CODE_LENGTH];
     size_t f_size = fread(input, sizeof(char), MAX_RESULT_CODE_LENGTH, fp);
-    if(f_size) convert_java_to_c(output, input);
+    if(f_size) convert_java_to_c(output, input, argv[1]);
     fclose(fp);
     exit(0);
 }
