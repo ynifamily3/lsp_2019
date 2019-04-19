@@ -1,3 +1,9 @@
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sys/wait.h>
 #include "lex.h"
 #include "arg_read.h"
 #include "pattern.h"
@@ -33,6 +39,9 @@ extern char (define_value)[30]; // #define X Y 에서 Y
 
 // 출력 누적물 (헤더들 제외)
 char c_source_file[MAX_RESULT_CODE_LENGTH];
+
+// 입력 누적 (-r 옵션을 위해)
+char java_buf[MAX_RESULT_CODE_LENGTH] = "";
 
 int produces_c_source_file_numbers = 0;
 char c_source_file_names[5][30]; // C언어 파일 이름들
@@ -160,6 +169,31 @@ void convert_java_to_c(char *output, const char *input)
                 // printf("%s\n", output); // 나중엔없애
                 strcat(output, "\n");
                 strncat(c_source_file, output, MAX_RESULT_CODE_LENGTH);
+            }
+        }
+
+        if (arg_option_r) {
+            pid_t pid = fork();
+            if (pid < 0) fprintf(stderr, "fork error\n");
+            if (pid == 0) {
+                // child process
+                system("clear");
+                for (int j = 0; j < pa[i]->pattern_length; j++)  {
+                    strcat(java_buf, pa[i]->buffer[j]);
+                    strcat(java_buf, " ");
+                }
+                strcat(java_buf, "\n");
+                printf("%s Converting...\n", java_file_name);
+                printf("--------\n%s\n--------\n%s\n", java_file_name, java_buf);
+                for (int k = 0; k < produces_c_source_file_numbers; k++) {
+                    printf("--------\n%s\n--------\n%s\n%s\n", c_source_file_names[k], reqHeaders, c_source_file);
+                }
+                getchar();
+                system("clear");
+                _exit(0);
+            } else {
+                // parent process
+                wait(NULL);
             }
         }
     }
