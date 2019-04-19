@@ -10,12 +10,14 @@
 void parse_args(int argc, char *argv[])
 {
 	int c;
+	extern int optopt;
 	arg_option_j = false;
  	arg_option_c = false;
  	arg_option_p = false;
  	arg_option_f = false;
  	arg_option_l = false;
 	arg_option_r = false;
+	java_file_name = argv[1];
 
 	while( (c = getopt(argc, argv, "jcpflr")) != -1) {
 		switch (c) {
@@ -45,7 +47,7 @@ void parse_args(int argc, char *argv[])
 			break;
 			default:
 				// 보통 '?' 가 오게 됨.
-				DBGMSG("지원하지 않는 옵션 사용");
+				DBGMSG("지원하지 않는 옵션 사용 : %c", optopt);
 				exit(1);
 			break;
 		}

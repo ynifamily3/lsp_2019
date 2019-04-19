@@ -34,6 +34,9 @@ extern char (define_value)[30]; // #define X Y 에서 Y
 // 출력 누적물 (헤더들 제외)
 char c_source_file[MAX_RESULT_CODE_LENGTH];
 
+int produces_c_source_file_numbers = 0;
+char c_source_file_names[5][30]; // C언어 파일 이름들
+
 void change_str_in_str(char *dest, const char *before, const char *after)
 {
     size_t cplen = strlen(before);
@@ -90,6 +93,7 @@ void convert_java_to_c(char *output, const char *input)
             // pa[i]->buffer[pa[i]->pattern_length-2]
             if (c == 1) {
                 sprintf(fname, "%s.c", pa[i]->buffer[pa[i]->pattern_length-2]);
+                strcpy(c_source_file_names[produces_c_source_file_numbers++], fname);
                 // fprintf(stderr, "make %s :\n", fname);
 
 
@@ -119,19 +123,8 @@ void convert_java_to_c(char *output, const char *input)
                     // 메인 함수가 아닌 파일이 끝남
                     // 그리고 헤더 사용 횟수 같은 것도 초기화
                     sprintf(include_sentence, "#include \"%s\"\n", fname); // main에 추가해 달라고 예약해야한다.
-                    // strcat(reqHeaders, include_sentence); // cpy를 cat로 바꿈
-                    // tailreqHeaders = strlen(include_sentence);
-                    //tailreqHeaders = 0;
-                    //reqHeaders[0] = '\0';
-                    //reset_ref_count();
             }
             is_main_func = 0; // 파일이 끝나면 메인도 끝난다.
-            // fprintf(stderr, "end of %s\n", fname);
-            // 출력 시 헤더 리스트 같이 출력
-            //printf("------------------------------------\n");
-            //printf("%s\n", reqHeaders);
-            //printf("%s", c_source_file); // 소스코드 쭉 출력
-            //printf("------------------------------------\n");
             fprintf(fp, "%s\n", reqHeaders);
             fprintf(fp, "%s", c_source_file);
             printf("%s converting is finished!\n", fname);
@@ -171,12 +164,70 @@ void convert_java_to_c(char *output, const char *input)
         }
     }
 
-    if(arg_option_p) {
+    if (arg_option_j) {
+        FILE *fp;
+        char buf[512]; // 한 라인을 위한 버퍼
+        fp = fopen(java_file_name, "r");
+        int lineCnt = 1;
+        while ( fgets(buf, 512, fp) ) {
+            printf("%d %s", lineCnt++, buf);
+        }
+    }
+    if (arg_option_c) {
+        FILE *fp;
+        char buf[512];
+        int lineCnt;
+        // 생성된 n 파일을 모두 보여줘야함.
+        for (int i = 0; i < produces_c_source_file_numbers; i++) {
+            lineCnt = 1;
+            fp = fopen(c_source_file_names[i], "r");
+            printf("----%s----\n", c_source_file_names[i]);
+            while ( fgets(buf, 512, fp) ) {
+                printf("%d %s", lineCnt++, buf);
+            }
+            printf("------------\n");
+        }
+    }
+    if (arg_option_p) {
         int j = 0;
         for (int i = 0; i < 7; i++) {
             if (cngCnt[i] == 1) {
                 printf("%d %s\n", ++j, cngPatt[i]);
             }
+        }
+    }
+    if (arg_option_f) {
+        FILE *fp;
+        long fsize;
+        // get java file size
+        fp = fopen(java_file_name, "r");
+        fseek(fp, 0, SEEK_END);
+        fsize = ftell(fp);
+        printf("%s file size is %ld bytes\n", java_file_name, fsize);
+        // 생성된 n 파일을 모두 보여줘야함.
+        for (int i = 0; i < produces_c_source_file_numbers; i++) {
+            fp = fopen(c_source_file_names[i], "r");
+            fseek(fp, 0, SEEK_END);
+            fsize = ftell(fp);
+            printf("%s file size is %ld bytes\n", c_source_file_names[i], fsize);
+        }
+    }
+    if (arg_option_l) {
+        FILE *fp;
+        long line = 0;
+        char buf[512];
+        // get java file size
+        fp = fopen(java_file_name, "r");
+        while ( fgets(buf, 512, fp) )
+            ++line;
+        printf("%s file line number is %ld lines\n", java_file_name, line);
+        // 생성된 n 파일을 모두 보여줘야함.
+        for (int i = 0; i < produces_c_source_file_numbers; i++) {
+            line = 0;
+            fp = fopen(c_source_file_names[i], "r");
+            while ( fgets(buf, 512, fp) )
+                ++line;
+            printf("%s file line number is %ld lines\n", c_source_file_names[i], line);
         }
     }
 }

@@ -27,27 +27,24 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    parse_args(argc-1, argv+1); // argv[1] (pathname) 제외
+    //parse_args(argc-1, argv+1); // argv[1] (pathname) 제외
+    parse_args(argc, argv); // argv[1] (pathname) 제외    
 
-    FILE *fp = fopen(argv[1], "r");
+    FILE *fp = fopen(java_file_name, "r");
     char input[MAX_RESULT_CODE_LENGTH]; // 소스 코드의 길이 최대 4096 바이트
     char output[MAX_RESULT_CODE_LENGTH];
     size_t f_size = fread(input, sizeof(char), MAX_RESULT_CODE_LENGTH, fp);
     if(f_size) convert_java_to_c(output, input);
     fclose(fp);
     // makefile 생성하기  q1_Makefile
-    char noextFn[40];
-    for (int i = 0; (argv[1][i] != '.' && argv[1][i] != '\0'); i++) {
-        noextFn[i] = argv[1][i];
+    char noextFn[30];
+    char makeFileFn[40];
+    for (int i = 0; (java_file_name[i] != '.' && java_file_name[i] != '\0'); i++) {
+        noextFn[i] = java_file_name[i];
     }
-    sprintf(noextFn, "%s_Makefile", noextFn);
-    printf("%s\n", noextFn);
+    sprintf(makeFileFn, "%s_Makefile", noextFn);
+    fp = fopen(makeFileFn, "w");
+    fprintf(fp, "%s : %s.c\n\tgcc %s.c -o %s", noextFn, noextFn, noextFn, noextFn);
+    fclose(fp);
     exit(0);
 }
-
-/*
-
-%.o : %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-*/

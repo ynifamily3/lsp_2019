@@ -20,6 +20,8 @@ bool arg_option_l;
 */
 bool arg_option_r;
 
+char *java_file_name;
+
 // argument option 파싱을 한다.
 void parse_args(int argc, char *argv[]);
 
