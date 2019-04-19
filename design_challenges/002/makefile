@@ -1,5 +1,5 @@
 OBJECTS	= main.o lex.o pattern.o arg_read.o converter.o header_table.o
-TARGET	= ./javatoC
+TARGET	= ./ssu_convert
 CC		= gcc
 CFLAGS	= -std=c99 -W -Wall -DDEBUG
 

@@ -215,7 +215,7 @@ void PATT_init()
     pt9->c_pattern[pt9->c_pattern_length++] = 4; // semicolon
 
     // pattern : Stack st = new Stack();
-    // to : --, but Stack.c 를 인클루드 하고 st. 를 안티패턴으로 추가하도록 함
+    // to : Stack();, but Stack.c 를 인클루드 하고 st. 를 안티패턴으로 추가하도록 함
     _patternChanger *pt10 = &patternIndex[10];
     pt10->pattern_type = EXACT;
     pt10->java_pattern_length = 0;
@@ -228,6 +228,11 @@ void PATT_init()
     pt10->java_pattern[pt10->java_pattern_length++] = PARENTHESES_LEFT_OP;
     pt10->java_pattern[pt10->java_pattern_length++] = PARENTHESES_RIGHT_OP;
     pt10->java_pattern[pt10->java_pattern_length++] = SEMICOLON_OP;
+    pt10->c_pattern[pt10->c_pattern_length++] = 4;
+    pt10->c_pattern[pt10->c_pattern_length++] = 5;
+    pt10->c_pattern[pt10->c_pattern_length++] = 6;
+    pt10->c_pattern[pt10->c_pattern_length++] = 7;
+
     //////////////////////////////////////////////////////////////////////
 
     // pattern : public static final ~ (startswith)
@@ -252,18 +257,21 @@ void PATT_init()
     pt12->java_pattern[0] = RETURN_CODE;
     pt12->java_pattern[1] = SEMICOLON_OP;
 
-    // pattern : public IDENT () {
-    // to : -- , 
+    // pattern : public IDENT ()
+    // to : void IDENT() {, 
     _patternChanger *pt13 = &patternIndex[13];
-    pt13->pattern_type = EXACT;
+    pt13->pattern_type = STARTSWITH;
     pt13->java_pattern_length = 0;
     pt13->c_pattern_length = 0;
     pt13->java_pattern[pt13->java_pattern_length++] = PUBLIC_CODE;
     pt13->java_pattern[pt13->java_pattern_length++] = IDENTFIER;
     pt13->java_pattern[pt13->java_pattern_length++] = PARENTHESES_LEFT_OP;
     pt13->java_pattern[pt13->java_pattern_length++] = PARENTHESES_RIGHT_OP;
-    pt13->java_pattern[pt13->java_pattern_length++] = BRACE_LEFT_OP;
-    pt13->c_pattern[pt13->c_pattern_length++] = 1013;
+    pt13->c_pattern[pt13->c_pattern_length++] = 1011;
+    pt13->c_pattern[pt13->c_pattern_length++] = 1009;
+    pt13->c_pattern[pt13->c_pattern_length++] = 1;
+    pt13->c_pattern[pt13->c_pattern_length++] = 2;
+    pt13->c_pattern[pt13->c_pattern_length++] = 3;
 
     // public static void main(String[] args) throws IOException {
     // to : int main(void) {

@@ -60,6 +60,9 @@ void read_header_table(const char *header_table_fname)
 
 
     fp = fopen(header_table_fname, "r");
+    if (!fp) {
+        fprintf(stderr, "header_table.txt doesn't exitst\n");
+    }
     // 메모리 잡는법
     while (fgets(line_buf, 178, fp) != NULL && line_buf[0] != '\n') {
         sscanf(line_buf, "%s", func_name_buf); // 띄어쓰기 전까지

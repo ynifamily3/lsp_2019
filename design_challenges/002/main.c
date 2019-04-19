@@ -35,5 +35,19 @@ int main(int argc, char *argv[])
     size_t f_size = fread(input, sizeof(char), MAX_RESULT_CODE_LENGTH, fp);
     if(f_size) convert_java_to_c(output, input);
     fclose(fp);
+    // makefile 생성하기  q1_Makefile
+    char noextFn[40];
+    for (int i = 0; (argv[1][i] != '.' && argv[1][i] != '\0'); i++) {
+        noextFn[i] = argv[1][i];
+    }
+    sprintf(noextFn, "%s_Makefile", noextFn);
+    printf("%s\n", noextFn);
     exit(0);
 }
+
+/*
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+*/

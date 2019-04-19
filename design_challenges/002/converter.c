@@ -91,6 +91,8 @@ void convert_java_to_c(char *output, const char *input)
             if (c == 1) {
                 sprintf(fname, "%s.c", pa[i]->buffer[pa[i]->pattern_length-2]);
                 // fprintf(stderr, "make %s :\n", fname);
+
+
                 fp = fopen(fname, "w");
                 tailreqHeaders = 0; // tail 초기화
                 reqHeaders[0] = '\0'; // 헤더 목록 초기화
@@ -126,12 +128,12 @@ void convert_java_to_c(char *output, const char *input)
             is_main_func = 0; // 파일이 끝나면 메인도 끝난다.
             // fprintf(stderr, "end of %s\n", fname);
             // 출력 시 헤더 리스트 같이 출력
-            printf("------------------------------------\n");
-            printf("%s\n", reqHeaders);
-            printf("%s", c_source_file); // 소스코드 쭉 출력
-            printf("------------------------------------\n");
-            //fprintf(fp, "%s\n", reqHeaders);
-            //fprintf(fp, "%s", c_source_file);
+            //printf("------------------------------------\n");
+            //printf("%s\n", reqHeaders);
+            //printf("%s", c_source_file); // 소스코드 쭉 출력
+            //printf("------------------------------------\n");
+            fprintf(fp, "%s\n", reqHeaders);
+            fprintf(fp, "%s", c_source_file);
             printf("%s converting is finished!\n", fname);
             fclose(fp);
             c_source_file[0] = '\0'; // 초기화
