@@ -95,11 +95,28 @@ void read_header_table(const char *header_table_fname)
         }
     }
     */
+    
 }
 
-/*
-void putheader(const char *c_func_name)
+void putheader(char *header_bank_tail_ptr, const char *c_func_name)
 {
-    // header를 put 한다.
+    // c함수이름이 오면 func_list에 있는지 보고 있으면 해당하는 헤더를 추가하는 명령을 내린다.
+    for (int i = 0; i < number_of_header_tables; ++i) {
+        char *fnname = header_table[i]->func_name;
+        if (strcmp(fnname, c_func_name) == 0) {
+            for (int j = 0; j < header_table[i]->num_includes; ++j) {
+                if ( header_ref_count[header_table[i]->headers[j]] == 0 ) {
+                    header_ref_count[header_table[i]->headers[j]] = 1; // ref-count 올림 (중복추가 방지)
+                    // 헤더들을 추가 해 줌
+                    strcpy(header_bank_tail_ptr, header[header_table[i]->headers[j]]);
+                    strcpy(header_bank_tail_ptr+strlen(header[header_table[i]->headers[j]]), "\n");
+                }
+            }
+        }
+    }
 }
-*/
+
+void reset_ref_count(void) {
+    for (int i = 0; i < number_of_headers; i++)
+        header_ref_count[i] = 0;
+}

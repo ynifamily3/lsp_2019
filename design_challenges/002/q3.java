@@ -13,8 +13,7 @@ public class q3{
 		/****** true : 기존 파일의 내용 이후부터 쓰여짐 ******/
 		/****** false : 처음부터 쓰여짐 ******/
 		
-		FileWriter writer = new FileWriter(file, false);
-		// IO Exception 처리 : if (!file) exit(1);
+		FileWriter writer = new FileWriter(file, true);
 		
 		writer.write("2019 OSLAB\n");
 		writer.write("Linux System Programming\n");

@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     char input[MAX_RESULT_CODE_LENGTH]; // 소스 코드의 길이 최대 4096 바이트
     char output[MAX_RESULT_CODE_LENGTH];
     size_t f_size = fread(input, sizeof(char), MAX_RESULT_CODE_LENGTH, fp);
-    if(f_size) convert_java_to_c(output, input, argv[1]);
+    if(f_size) convert_java_to_c(output, input);
     fclose(fp);
     exit(0);
 }

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "pattern.h"
+#include "header_table.h"
 #include "debug.h"
 
 //extern int brace_stack;
@@ -17,11 +18,21 @@ const char *C_codes[] = {
     "calloc", "(", ")", "sizeof", " ",
     "int", "void", "const", "{", "char *",
     "FILE *", "fopen", "\"", "w", "a",
-    "fprintf", "fflush", "fclose", ";"
+    "fprintf", "fflush", "fclose", ";", "if",
+    "!", "exit", "1", "\n", "// "
 };
 
 int cngCnt[] = {0,0,0,0,0,0,0};
 char cngPatt[7][50];
+
+int number_of_anti_pattern = 0;
+char anti_pattern[10][64];
+
+int tailreqHeaders = 0;
+char reqHeaders[512]; // #include <xxx>\n#include <yyy> 등 (define 도)
+
+char define_name[20]; // #define X Y 에서 X
+char define_value[30]; // #define X Y 에서 Y
 
 _patternChanger patternIndex[NUMBER_OF_PATTERNS];
 
@@ -220,16 +231,17 @@ void PATT_init()
     //////////////////////////////////////////////////////////////////////
 
     // pattern : public static final ~ (startswith)
-    // to : const ~ ==> 디파인으로 할 것 (패턴 컴파일 리턴값을 다르게 주어야함)
+    // to : const ~ ==> 디파인으로 할 것 (패턴 컴파일 리턴값을 다르게 주어야함) ==> 해결중
     _patternChanger *pt11 = &patternIndex[11];
     pt11->pattern_type = STARTSWITH;
     pt11->java_pattern_length = 3; 
-    pt11->c_pattern_length = 2;
+    pt11->c_pattern_length = 3;
     pt11->java_pattern[0] = PUBLIC_CODE;
     pt11->java_pattern[1] = STATIC_CODE;
     pt11->java_pattern[2] = FINAL_CODE;
-    pt11->c_pattern[0] = 1012;
-    pt11->c_pattern[1] = 1009;
+    pt11->c_pattern[0] = 1029;
+    pt11->c_pattern[1] = 1012;
+    pt11->c_pattern[2] = 1009;
 
     // pattern : return ; 
     // to : -- (main이 아닌 경우 그래도 둬야할 수도 있다.)
@@ -332,17 +344,29 @@ void PATT_init()
     pt17->java_pattern[pt17->java_pattern_length++] = SEMICOLON_OP;
     pt17->c_pattern[pt17->c_pattern_length++] = 1015; // FILE *
     pt17->c_pattern[pt17->c_pattern_length++] = 1; // writer
-    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // writer
+    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // 공백
     pt17->c_pattern[pt17->c_pattern_length++] = 2; // = 
-    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // writer
+    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // 공백
     pt17->c_pattern[pt17->c_pattern_length++] = 1016; // fopen
     pt17->c_pattern[pt17->c_pattern_length++] = 5; // (
     pt17->c_pattern[pt17->c_pattern_length++] = 6; // file
     pt17->c_pattern[pt17->c_pattern_length++] = 7; // ,
-    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // writer
+    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // 공백
     pt17->c_pattern[pt17->c_pattern_length++] = 1017; // "
     pt17->c_pattern[pt17->c_pattern_length++] = 1018; // w 
     pt17->c_pattern[pt17->c_pattern_length++] = 1017; // "
+    pt17->c_pattern[pt17->c_pattern_length++] = 9; // )
+    pt17->c_pattern[pt17->c_pattern_length++] = 10; // ;
+    // if (!writer) exit(1);
+    pt17->c_pattern[pt17->c_pattern_length++] = 1009; // 공백
+    pt17->c_pattern[pt17->c_pattern_length++] = 1024; // if
+    pt17->c_pattern[pt17->c_pattern_length++] = 5; // (
+    pt17->c_pattern[pt17->c_pattern_length++] = 1025; // !
+    pt17->c_pattern[pt17->c_pattern_length++] = 1; // writer
+    pt17->c_pattern[pt17->c_pattern_length++] = 9; // )
+    pt17->c_pattern[pt17->c_pattern_length++] = 1026; // exit
+    pt17->c_pattern[pt17->c_pattern_length++] = 5; // (
+    pt17->c_pattern[pt17->c_pattern_length++] = 1027; // 1
     pt17->c_pattern[pt17->c_pattern_length++] = 9; // )
     pt17->c_pattern[pt17->c_pattern_length++] = 10; // ;
 
@@ -401,17 +425,29 @@ void PATT_init()
     pt20->java_pattern[pt20->java_pattern_length++] = SEMICOLON_OP;
     pt20->c_pattern[pt20->c_pattern_length++] = 1015; // FILE *
     pt20->c_pattern[pt20->c_pattern_length++] = 1; // writer
-    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // writer
+    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // 공백
     pt20->c_pattern[pt20->c_pattern_length++] = 2; // = 
-    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // writer
+    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // 공백
     pt20->c_pattern[pt20->c_pattern_length++] = 1016; // fopen
     pt20->c_pattern[pt20->c_pattern_length++] = 5; // (
     pt20->c_pattern[pt20->c_pattern_length++] = 6; // file
     pt20->c_pattern[pt20->c_pattern_length++] = 7; // ,
-    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // writer
+    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // 공백
     pt20->c_pattern[pt20->c_pattern_length++] = 1017; // "
     pt20->c_pattern[pt20->c_pattern_length++] = 1019; // a
     pt20->c_pattern[pt20->c_pattern_length++] = 1017; // "
+    pt20->c_pattern[pt20->c_pattern_length++] = 9; // )
+    pt20->c_pattern[pt20->c_pattern_length++] = 10; // ;
+    // if (!writer) exit(1);
+    pt20->c_pattern[pt20->c_pattern_length++] = 1009; // 공백
+    pt20->c_pattern[pt20->c_pattern_length++] = 1024; // if
+    pt20->c_pattern[pt20->c_pattern_length++] = 5; // (
+    pt20->c_pattern[pt20->c_pattern_length++] = 1025; // !
+    pt20->c_pattern[pt20->c_pattern_length++] = 1; // writer
+    pt20->c_pattern[pt20->c_pattern_length++] = 9; // )
+    pt20->c_pattern[pt20->c_pattern_length++] = 1026; // exit
+    pt20->c_pattern[pt20->c_pattern_length++] = 5; // (
+    pt20->c_pattern[pt20->c_pattern_length++] = 1027; // 1
     pt20->c_pattern[pt20->c_pattern_length++] = 9; // )
     pt20->c_pattern[pt20->c_pattern_length++] = 10; // ;
 
@@ -498,7 +534,7 @@ int PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
             case 1:
             if(cngCnt[1] != 1)  {
                 cngCnt[1] = 1;
-                sprintf(cngPatt[1], "new int-> calloc()");
+                sprintf(cngPatt[1], "new int -> calloc()");
             }
             break;
             case 2:
@@ -533,20 +569,36 @@ int PATT_pattern_compile(const _lexPattern *pattern, char *resultbuf)
             break;
         }
 
+        // main 패턴 검사
+        switch (matchedIndex) {
+            case 5: case 7: case 14:
+            ret = 3;
+            break;
+        }
+
         // 안티 패턴 파악하기. 해당 패턴 넘버 : 10
         if (matchedIndex == 10) {
-            printf("안티패턴에 추가");
-            //int number_of_anti_pattern = 0;
-            //char anti_pattern[10][64]; //객체 등은 제거되어야 한다. 예를 들어 st.
-            //strcpy(anti_pattern[number_of_anti_pattern++], "st.");
+            char tmp[20];
+            sprintf(tmp, "%s.", pattern->buffer[1]);
+            strcpy(anti_pattern[number_of_anti_pattern++], tmp); // st가 아닌 다른 것도 해당함.
+        } else if (matchedIndex == 11) {
+            // define 추가
+            // public static final int STACK_SIZE = 10;
+            strcpy(define_name, pattern->buffer[4]);
+            strcpy(define_value, pattern->buffer[6]);
+            ret = 4;
         }
 
 
 
         for (int i = 0; i < patt->c_pattern_length; ++i) {
             if (patt->c_pattern[i] >= 1000) {
+                putheader(reqHeaders+tailreqHeaders, C_codes[patt->c_pattern[i]-1000]);
+                tailreqHeaders = strlen(reqHeaders);
                 strcat(resultbuf, C_codes[patt->c_pattern[i]-1000]);
             } else {
+                putheader(reqHeaders+tailreqHeaders, pattern->buffer[patt->c_pattern[i]]);
+                tailreqHeaders = strlen(reqHeaders);
                 strcat(resultbuf, pattern->buffer[patt->c_pattern[i]]);
             }
         }
