@@ -8,6 +8,9 @@
 #include "converter.h"
 #include "header_table.h"
 
+char pathname[1024]; // (상대/절대) 파일경로 ./ 또는 /로 시작하거나 asdf/... 
+char filename[256]; // 순수 파일명 xx.java
+
 // 0->1 로 되면 파일 생성이고 1->0이 되면 파일 close 이다.
 int brace_stack = 0; // 여닫는 중괄호 계층 스택
 
