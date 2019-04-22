@@ -4,7 +4,7 @@
 int main(void) {
 	printf("Enter the number : ");
 	int num;
-	scanf("%d",&num);
+	scanf("%d", &num);
 	int even = 0, odd = 0;
 	for(int i = 1; i <= num; i++)
 	{

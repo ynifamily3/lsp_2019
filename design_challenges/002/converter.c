@@ -101,6 +101,11 @@ void convert_java_to_c(char *output, const char *input)
         if (c == 1 || c == 3) {
             // pa[i]->buffer[pa[i]->pattern_length-2]
             if (c == 1) {
+                size_t olen = strlen(pa[i]->buffer[pa[i]->pattern_length-2]);
+                if (pa[i]->buffer[pa[i]->pattern_length-2][olen-1] == '\n') {
+                    // class ~~\n { 대응
+                    pa[i]->buffer[pa[i]->pattern_length-2][olen-1] = '\0';
+                }
                 sprintf(fname, "%s.c", pa[i]->buffer[pa[i]->pattern_length-2]);
                 strcpy(c_source_file_names[produces_c_source_file_numbers++], fname);
                 // fprintf(stderr, "make %s :\n", fname);

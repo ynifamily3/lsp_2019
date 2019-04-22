@@ -14,12 +14,13 @@ int patt_brace_stack = 0;
 int PATT_is_initalized = 0;
 
 const char *C_codes[] = {
-    "scanf", "\"%d\"", ",", "&", "*",
-    "calloc", "(", ")", "sizeof", " ",
-    "int", "void", "const", "{", "char *",
-    "FILE *", "fopen", "\"", "w", "a",
-    "fprintf", "fflush", "fclose", ";", "if",
-    "!", "exit", "1", "\n", "// "
+    "scanf", "\"%d\"", ",", "&", "*", // 0 4
+    "calloc", "(", ")", "sizeof", " ", // 5 9
+    "int", "void", "const", "{", "char *", // 10 14
+    "FILE *", "fopen", "\"", "w", "a", // 15 19
+    "fprintf", "fflush", "fclose", ";", "if", // 20 24
+    "!", "exit", "1", "\n", "// ", // 25 29
+    "[", "]", "1024", "char", "strcpy" // 30 34
 };
 
 int cngCnt[] = {0,0,0,0,0,0,0};
@@ -43,7 +44,7 @@ void PATT_init()
     _patternChanger *pt0 = &patternIndex[0];
     pt0->pattern_type = EXACT;
     pt0->java_pattern_length = 8;
-    pt0->c_pattern_length = 8;
+    pt0->c_pattern_length = 9;
     pt0->java_pattern[0] = IDENTFIER;
     pt0->java_pattern[1] = ASSIGN_OP;
     pt0->java_pattern[2] = IDENTFIER;
@@ -56,10 +57,11 @@ void PATT_init()
     pt0->c_pattern[1] = 5;
     pt0->c_pattern[2] = 1001;
     pt0->c_pattern[3] = 1002;
-    pt0->c_pattern[4] = 1003;
-    pt0->c_pattern[5] = 0;
-    pt0->c_pattern[6] = 6;
-    pt0->c_pattern[7] = 7;
+    pt0->c_pattern[4] = 1009; // ' '
+    pt0->c_pattern[5] = 1003;
+    pt0->c_pattern[6] = 0;
+    pt0->c_pattern[7] = 6;
+    pt0->c_pattern[8] = 7;
 
     _patternChanger *pt1 = &patternIndex[1];
     pt1->pattern_type = EXACT;
@@ -249,7 +251,7 @@ void PATT_init()
     pt11->c_pattern[2] = 1009;
 
     // pattern : return ; 
-    // to : -- (main이 아닌 경우 그래도 둬야할 수도 있다.)
+    // to : --
     _patternChanger *pt12 = &patternIndex[12];
     pt12->pattern_type = EXACT;
     pt12->java_pattern_length = 2;
@@ -476,6 +478,165 @@ void PATT_init()
     pt21->c_pattern[pt21->c_pattern_length++] = 0; // writer
     pt21->c_pattern[pt21->c_pattern_length++] = 4; // )
     pt21->c_pattern[pt21->c_pattern_length++] = 5; // ;
+
+    /// 변수 선언 그만 하자!
+    _patternChanger *ptn;
+
+    ptn = &patternIndex[22];
+    ptn->pattern_type = EXACT;
+    ptn->java_pattern_length = 0;
+    ptn->c_pattern_length = 0;
+    ptn->java_pattern[ptn->java_pattern_length++] = FILE_CODE; // File
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER; // file
+    ptn->java_pattern[ptn->java_pattern_length++] = SEMICOLON_OP; // ;
+    ptn->c_pattern[ptn->c_pattern_length++] = 1033; // char
+    ptn->c_pattern[ptn->c_pattern_length++] = 1009; // ' '
+    ptn->c_pattern[ptn->c_pattern_length++] = 1; // file
+    ptn->c_pattern[ptn->c_pattern_length++] = 1030; // [
+    ptn->c_pattern[ptn->c_pattern_length++] = 1032; // 1024
+    ptn->c_pattern[ptn->c_pattern_length++] = 1031; // ]
+    ptn->c_pattern[ptn->c_pattern_length++] = 2; // ;
+
+    ptn = &patternIndex[23];
+    ptn->pattern_type = EXACT;
+    ptn->java_pattern_length = 0;
+    ptn->c_pattern_length = 0;
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER; // file
+    ptn->java_pattern[ptn->java_pattern_length++] = ASSIGN_OP; // =
+    ptn->java_pattern[ptn->java_pattern_length++] = NEW_CODE; // new
+    ptn->java_pattern[ptn->java_pattern_length++] = FILE_CODE; // FILE
+    ptn->java_pattern[ptn->java_pattern_length++] = PARENTHESES_LEFT_OP; // (
+    ptn->java_pattern[ptn->java_pattern_length++] = STR_LIT; // "~~"
+    ptn->java_pattern[ptn->java_pattern_length++] = PARENTHESES_RIGHT_OP; // )
+    ptn->java_pattern[ptn->java_pattern_length++] = SEMICOLON_OP; // ;
+    ptn->c_pattern[ptn->c_pattern_length++] = 1034; // strcpy (string.h 필요)
+    ptn->c_pattern[ptn->c_pattern_length++] = 4; // (
+    ptn->c_pattern[ptn->c_pattern_length++] = 0; // file
+    ptn->c_pattern[ptn->c_pattern_length++] = 1002; // ,
+    ptn->c_pattern[ptn->c_pattern_length++] = 1009; // (공백)
+    ptn->c_pattern[ptn->c_pattern_length++] = 5; // "~~"
+    ptn->c_pattern[ptn->c_pattern_length++] = 6; // )
+    ptn->c_pattern[ptn->c_pattern_length++] = 7; // ;
+
+    ptn = &patternIndex[24];
+    ptn->pattern_type = EXACT;
+    ptn->java_pattern_length = 0;
+    ptn->c_pattern_length = 0;
+    ptn->java_pattern[ptn->java_pattern_length++] = FILEWRITER_CODE;
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER; 
+    ptn->java_pattern[ptn->java_pattern_length++] = SEMICOLON_OP;
+    ptn->c_pattern[ptn->c_pattern_length++] = 1015; // FILE *
+    ptn->c_pattern[ptn->c_pattern_length++] = 1; // writer
+    ptn->c_pattern[ptn->c_pattern_length++] = 2; // ;
+
+    ptn = &patternIndex[25];
+    ptn->pattern_type = EXACT;
+    ptn->java_pattern_length = 0;
+    ptn->c_pattern_length = 0;
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER; // 0
+    ptn->java_pattern[ptn->java_pattern_length++] = ASSIGN_OP; // 1
+    ptn->java_pattern[ptn->java_pattern_length++] = NEW_CODE; // 2
+    ptn->java_pattern[ptn->java_pattern_length++] = FILEWRITER_CODE; // 3
+    ptn->java_pattern[ptn->java_pattern_length++] = PARENTHESES_LEFT_OP; // 4
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER; // 5
+    ptn->java_pattern[ptn->java_pattern_length++] = COMMA_OP; // 6
+    ptn->java_pattern[ptn->java_pattern_length++] = TRUE_CODE; // 7
+    ptn->java_pattern[ptn->java_pattern_length++] = PARENTHESES_RIGHT_OP; // 8
+    ptn->java_pattern[ptn->java_pattern_length++] = SEMICOLON_OP; // 9
+    ptn->c_pattern[ptn->c_pattern_length++] = 1016; // fopen
+    ptn->c_pattern[ptn->c_pattern_length++] = 4; // (
+    ptn->c_pattern[ptn->c_pattern_length++] = 5; // file
+    ptn->c_pattern[ptn->c_pattern_length++] = 6; // ,
+    ptn->c_pattern[ptn->c_pattern_length++] = 1009; // 공백
+    ptn->c_pattern[ptn->c_pattern_length++] = 1017; // "
+    ptn->c_pattern[ptn->c_pattern_length++] = 1019; // a
+    ptn->c_pattern[ptn->c_pattern_length++] = 1017; // "
+    ptn->c_pattern[ptn->c_pattern_length++] = 8; // )
+    ptn->c_pattern[ptn->c_pattern_length++] = 9; // ;
+    ptn->c_pattern[ptn->c_pattern_length++] = 1009; // 공백
+    ptn->c_pattern[ptn->c_pattern_length++] = 1024; // if
+    ptn->c_pattern[ptn->c_pattern_length++] = 4; // (
+    ptn->c_pattern[ptn->c_pattern_length++] = 1025; // !
+    ptn->c_pattern[ptn->c_pattern_length++] = 0; // writer
+    ptn->c_pattern[ptn->c_pattern_length++] = 8; // )
+    ptn->c_pattern[ptn->c_pattern_length++] = 1026; // exit
+    ptn->c_pattern[ptn->c_pattern_length++] = 4; // (
+    ptn->c_pattern[ptn->c_pattern_length++] = 1027; // 1
+    ptn->c_pattern[ptn->c_pattern_length++] = 8; // )
+    ptn->c_pattern[ptn->c_pattern_length++] = 9; // ;
+
+    ptn = &patternIndex[26];
+    ptn->pattern_type = EXACT;
+    ptn->java_pattern_length = 0;
+    ptn->c_pattern_length = 0;
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER; // 0
+    ptn->java_pattern[ptn->java_pattern_length++] = ASSIGN_OP; // 1
+    ptn->java_pattern[ptn->java_pattern_length++] = NEW_CODE; // 2
+    ptn->java_pattern[ptn->java_pattern_length++] = FILEWRITER_CODE; // 3
+    ptn->java_pattern[ptn->java_pattern_length++] = PARENTHESES_LEFT_OP; // 4
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER; // 5
+    ptn->java_pattern[ptn->java_pattern_length++] = COMMA_OP; // 6
+    ptn->java_pattern[ptn->java_pattern_length++] = FALSE_CODE; // 7
+    ptn->java_pattern[ptn->java_pattern_length++] = PARENTHESES_RIGHT_OP; // 8
+    ptn->java_pattern[ptn->java_pattern_length++] = SEMICOLON_OP; // 9
+    ptn->c_pattern[ptn->c_pattern_length++] = 1016; // fopen
+    ptn->c_pattern[ptn->c_pattern_length++] = 4; // (
+    ptn->c_pattern[ptn->c_pattern_length++] = 5; // file
+    ptn->c_pattern[ptn->c_pattern_length++] = 6; // ,
+    ptn->c_pattern[ptn->c_pattern_length++] = 1009; // 공백
+    ptn->c_pattern[ptn->c_pattern_length++] = 1017; // "
+    ptn->c_pattern[ptn->c_pattern_length++] = 1018; // w
+    ptn->c_pattern[ptn->c_pattern_length++] = 1017; // "
+    ptn->c_pattern[ptn->c_pattern_length++] = 8; // )
+    ptn->c_pattern[ptn->c_pattern_length++] = 9; // ;
+    ptn->c_pattern[ptn->c_pattern_length++] = 1009; // 공백
+    ptn->c_pattern[ptn->c_pattern_length++] = 1024; // if
+    ptn->c_pattern[ptn->c_pattern_length++] = 4; // (
+    ptn->c_pattern[ptn->c_pattern_length++] = 1025; // !
+    ptn->c_pattern[ptn->c_pattern_length++] = 0; // writer
+    ptn->c_pattern[ptn->c_pattern_length++] = 8; // )
+    ptn->c_pattern[ptn->c_pattern_length++] = 1026; // exit
+    ptn->c_pattern[ptn->c_pattern_length++] = 4; // (
+    ptn->c_pattern[ptn->c_pattern_length++] = 1027; // 1
+    ptn->c_pattern[ptn->c_pattern_length++] = 8; // )
+    ptn->c_pattern[ptn->c_pattern_length++] = 9; // ;
+
+    ptn = &patternIndex[27];
+    ptn->pattern_type = STARTSWITH_TRIM_ALL;
+    ptn->java_pattern_length = 0;
+    ptn->c_pattern_length = 0;
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER;
+    ptn->java_pattern[ptn->java_pattern_length++] = ASSIGN_OP;
+    ptn->java_pattern[ptn->java_pattern_length++] = NEW_CODE;
+    ptn->java_pattern[ptn->java_pattern_length++] = SCANNER_CODE;
+
+    ptn = &patternIndex[28];
+    ptn->pattern_type = EXACT;
+    ptn->java_pattern_length = 0;
+    ptn->c_pattern_length = 0;
+    ptn->java_pattern[ptn->java_pattern_length++] = INT_CODE;
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER;
+    ptn->java_pattern[ptn->java_pattern_length++] = ASSIGN_OP;
+    ptn->java_pattern[ptn->java_pattern_length++] = IDENTFIER;
+    ptn->java_pattern[ptn->java_pattern_length++] = DOT_OP;
+    ptn->java_pattern[ptn->java_pattern_length++] = NEXTINT_CODE;
+    ptn->java_pattern[ptn->java_pattern_length++] = PARENTHESES_LEFT_OP;
+    ptn->java_pattern[ptn->java_pattern_length++] = PARENTHESES_RIGHT_OP;
+    ptn->java_pattern[ptn->java_pattern_length++] = SEMICOLON_OP;
+    ptn->c_pattern[ptn->c_pattern_length++] = 0; // int 
+    ptn->c_pattern[ptn->c_pattern_length++] = 1009; //  ' '
+    ptn->c_pattern[ptn->c_pattern_length++] = 1; // num
+    ptn->c_pattern[ptn->c_pattern_length++] = 8; // ;
+    ptn->c_pattern[ptn->c_pattern_length++] = 1009; // ' '
+    ptn->c_pattern[ptn->c_pattern_length++] = 1000; // scanf
+    ptn->c_pattern[ptn->c_pattern_length++] = 6; // (
+    ptn->c_pattern[ptn->c_pattern_length++] = 1001; // "%d"
+    ptn->c_pattern[ptn->c_pattern_length++] = 1002; // ,
+    ptn->c_pattern[ptn->c_pattern_length++] = 1009; // ' '
+    ptn->c_pattern[ptn->c_pattern_length++] = 1003; // &
+    ptn->c_pattern[ptn->c_pattern_length++] = 1; // num
+    ptn->c_pattern[ptn->c_pattern_length++] = 7; // )
+    ptn->c_pattern[ptn->c_pattern_length++] = 8; // ;
 
 }
 

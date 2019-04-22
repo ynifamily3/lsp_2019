@@ -6,14 +6,14 @@ public class q3{
 	public static void main(String[] args) throws IOException{
 
 
-		File file = new File("q3java.txt");
+		File file; file=new File("q3java.txt");
 		
 
 		/****** 두번째 매개변수 ******/
 		/****** true : 기존 파일의 내용 이후부터 쓰여짐 ******/
 		/****** false : 처음부터 쓰여짐 ******/
 		
-		FileWriter writer = new FileWriter(file, true);
+		FileWriter writer; writer= new FileWriter(file, false);
 		
 		writer.write("2019 OSLAB\n");
 		writer.write("Linux System Programming\n");
