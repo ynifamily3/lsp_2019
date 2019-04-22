@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     //parse_args(argc-1, argv+1); // argv[1] (pathname) 제외
     parse_args(argc, argv); // argv[1] (pathname) 제외    
 
-    FILE *fp = fopen(java_file_name, "r");
+    FILE *fp = fopen(java_file_name, "r"); // 상대 경로 / 절대 경로 지정시 문제
     char input[MAX_RESULT_CODE_LENGTH]; // 소스 코드의 길이 최대 4096 바이트
     char output[MAX_RESULT_CODE_LENGTH];
     size_t f_size = fread(input, sizeof(char), MAX_RESULT_CODE_LENGTH, fp);
@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
         noextFn[i] = java_file_name[i];
     }
     sprintf(makeFileFn, "%s_Makefile", noextFn);
+    fprintf(stderr, "테스트 : %s .... %s\n", noextFn, makeFileFn);
     fp = fopen(makeFileFn, "w");
     fprintf(fp, "%s : %s.c\n\tgcc %s.c -o %s", noextFn, noextFn, noextFn, noextFn);
     fclose(fp);
