@@ -89,13 +89,13 @@ void getChar(_lexV *lV)
             //fprintf(stderr, "주석 유지..\n");
             lV->LEX_charClass = COMMENT;
         } 
-        else if (isalpha(lV->LEX_nextChar) || lV->LEX_nextChar == '_' || lV->LEX_nextChar == '\n') // else \n if 처리하려 넣은 \n 구문이.. ㅠ => else를 제외한 나머지는 토큰내 \n을 무시하도록 한다.
+        else if (isalpha(lV->LEX_nextChar) || lV->LEX_nextChar == '_' || lV->LEX_nextChar == '\n') // else \n if 처리하려 넣은 \n 구문
             lV->LEX_charClass = LETTER; 
         else if (isdigit(lV->LEX_nextChar))
             lV->LEX_charClass = DIGIT;
         else if (isoperator(lV->LEX_nextChar))
             lV->LEX_charClass = OPERATOR;
-        else lV->LEX_charClass = UNKNOWN; // LETTER로 바꿨는데 import java 를 하나로 인식(버그) 그냥 언노운 할래..
+        else lV->LEX_charClass = UNKNOWN;
     }
     else
         lV->LEX_charClass = EOF;
@@ -234,7 +234,6 @@ void lex_analysis(_lexPattern **pattern, _lexV *lV)
     }
     if (lV->LEX_nextToken != EOF) {
         pattern[lexPattern_number_of_line]->pattern[pattern[lexPattern_number_of_line]->pattern_length] = lV->LEX_nextToken;
-        // fprintf(stderr, "[%s]", lV->LEX_lexeme);
         int newline_test = pattern[lexPattern_number_of_line]->pattern[pattern[lexPattern_number_of_line]->pattern_length];
         
         if (newline_test == 103) {
