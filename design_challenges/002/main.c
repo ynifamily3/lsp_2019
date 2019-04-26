@@ -7,9 +7,15 @@
 #include "arg_read.h"
 #include "converter.h"
 #include "header_table.h"
+#include "ssu_runtime.h"
 
-char pathname[1024]; // (상대/절대) 파일경로 ./ 또는 /로 시작하거나 asdf/... 
+char dir_path[512]; // (상대/절대) 파일경로 ./ 또는 /로 시작하거나 asdf/... 
 char filename[256]; // 순수 파일명 xx.java
+char makefilename[256]; // xx_Makefile
+char pathname[767]; // dir_path + filename
+
+char input[MAX_RESULT_CODE_LENGTH]; // 소스 코드의 길이 최대 4096 바이트
+char output[MAX_RESULT_CODE_LENGTH];
 
 // 0->1 로 되면 파일 생성이고 1->0이 되면 파일 close 이다.
 int brace_stack = 0; // 여닫는 중괄호 계층 스택
@@ -18,6 +24,8 @@ int is_main = 0; // 현재 변환중인 곳이 main 함수 내이면 1, 아니�
 
 int main(int argc, char *argv[])
 {
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
     read_header_table("header_table.txt");
     
     if (argc < 2) {
@@ -30,25 +38,36 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    //parse_args(argc-1, argv+1); // argv[1] (pathname) 제외
-    parse_args(argc, argv); // argv[1] (pathname) 제외    
+    parse_args(argc, argv); // argv[1] (pathname) 제외
 
-    FILE *fp = fopen(java_file_name, "r"); // 상대 경로 / 절대 경로 지정시 문제
-    char input[MAX_RESULT_CODE_LENGTH]; // 소스 코드의 길이 최대 4096 바이트
-    char output[MAX_RESULT_CODE_LENGTH];
+    // 상대 경로 부분과 절대 경로 부분 추출
+    int last = strlen(java_file_name) - 1;
+    while (last >= 0 && java_file_name[last] != '/')
+        --last;
+    ++last;
+    strncpy(dir_path, java_file_name, last); // path
+    strcpy(filename, java_file_name + last); // name
+    strcpy(pathname, dir_path); // pathname
+    strcat(pathname, filename); // pathname
+    DBGMSG("path : %s\nname : %s\npathname : %s\n", dir_path, filename, pathname);
+
+    
+    FILE *fp = fopen(pathname, "r");
     size_t f_size = fread(input, sizeof(char), MAX_RESULT_CODE_LENGTH, fp);
     if(f_size) convert_java_to_c(output, input);
     fclose(fp);
     // makefile 생성하기  q1_Makefile
-    char noextFn[30];
-    char makeFileFn[40];
-    for (int i = 0; (java_file_name[i] != '.' && java_file_name[i] != '\0'); i++) {
-        noextFn[i] = java_file_name[i];
+    char noextFn[256];
+    memset(noextFn, 0x00, 256);
+    for (int i = 0; (filename[i] != '.' && filename[i] != '\0'); ++i) {
+        noextFn[i] = filename[i];
     }
-    sprintf(makeFileFn, "%s_Makefile", noextFn);
-    fprintf(stderr, "테스트 : %s .... %s\n", noextFn, makeFileFn);
-    fp = fopen(makeFileFn, "w");
+    sprintf(makefilename, "%s%s_Makefile", dir_path, noextFn);
+    DBGMSG("test : %s\n", makefilename);
+    fp = fopen(makefilename, "w");
     fprintf(fp, "%s : %s.c\n\tgcc %s.c -o %s", noextFn, noextFn, noextFn, noextFn);
     fclose(fp);
+    gettimeofday(&end, NULL);
+    ssu_runtime(&start, &end);
     exit(0);
 }
