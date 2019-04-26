@@ -148,7 +148,8 @@ void convert_java_to_c(char *output, const char *input)
             is_main_func = 0; // 파일이 끝나면 메인도 끝난다.
             fprintf(fp, "%s\n", reqHeaders);
             fprintf(fp, "%s", c_source_file);
-            printf("%s converting is finished!\n", cfilename);
+            if(!arg_option_r)
+                printf("%s converting is finished!\n", cfilename);
             fclose(fp);
             // c_source_file[0] = '\0'; // 초기화
         }
@@ -220,12 +221,29 @@ void convert_java_to_c(char *output, const char *input)
                 system("clear");
                 printf("%s Converting....\n", filename);
                 printf("--------\n%s\n--------\n%s\n", filename, java_buf);
-                for (int k = 0; k < produces_c_source_file_numbers; k++) {
-                    printf("--------\n%s\n--------\n%s\n%s\n", c_source_file_names_print[k], reqHeaders, c_source_file);
+                // tmpnam으로 헤더랑 c를 조합해 놓은 것을 만든다.
+                FILE *tmp_c_file = tmpfile();
+                if (strlen(reqHeaders))
+                    fprintf(tmp_c_file, "%s\n%s", reqHeaders, c_source_file);
+                else
+                    fprintf(tmp_c_file, "%s", c_source_file);
+                if (produces_c_source_file_numbers != 0) {
+                    printf("--------\n%s\n--------\n", c_source_file_names_print[produces_c_source_file_numbers-1]);
+                    rewind(tmp_c_file);
+                    int c_line_count = 0;
+                    char c_line_buf[512];
+                    while (fgets(c_line_buf, 512, tmp_c_file) != NULL) {
+                        printf("%d ", ++c_line_count);
+                        printf("%s", c_line_buf);
+                    }
                 }
+                fclose(tmp_c_file);
                 // usleep(10);
                 sleep(1);
                 // system("clear");
+                if (c == 2) {
+                    printf("%s converting is finished!\n", cfilename);
+                }
                 exit(0);
             }
             wait(NULL);
