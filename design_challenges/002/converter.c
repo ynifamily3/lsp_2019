@@ -89,7 +89,7 @@ void print_repeat(char *p, int cnt) {
     }
 }
 
-void convert_java_to_c(char *output, const char *input)
+void convert_java_to_c(char *output, char *input)
 {
     char cfilename[256]; // 순수 c 파일 이름
     char fname[767]; // path 포함한 c 파일 이름
@@ -98,6 +98,20 @@ void convert_java_to_c(char *output, const char *input)
     _lexPattern **pa = (_lexPattern **)calloc(MAX_LINE_PER_FILE, sizeof(_lexPattern *));
     for (int i = 0; i < MAX_LINE_PER_FILE; i++) {
         pa[i] = (_lexPattern *)calloc(1, sizeof(_lexPattern));
+    }
+    // {~~}else {공백}\n 를 위한 정규화
+    char *else_ptr = input;
+    while ((else_ptr = strstr(else_ptr, "else")) != NULL) {
+        char *origin;
+        // 공백이면 다음부분 검사, 다른 문자가 들어오면 불일치, \n들어오면 일치
+        else_ptr += 4;
+        origin = else_ptr;
+        while (isspace(*else_ptr) && *else_ptr != '\n') {
+            else_ptr++;
+        }
+        if (*else_ptr == '\n') {
+            *origin = '\n';
+        }
     }
 
     lex(pa, input);
