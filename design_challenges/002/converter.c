@@ -117,7 +117,7 @@ void convert_java_to_c(char *output, const char *input)
                 strcpy(c_source_file_names[produces_c_source_file_numbers++], fname);
                 // fprintf(stderr, "make %s :\n", cfilename);
 
-
+                c_source_file[0] = '\0'; // 초기화
                 fp = fopen(fname, "w");
                 tailreqHeaders = 0; // tail 초기화
                 reqHeaders[0] = '\0'; // 헤더 목록 초기화
@@ -150,7 +150,7 @@ void convert_java_to_c(char *output, const char *input)
             fprintf(fp, "%s", c_source_file);
             printf("%s converting is finished!\n", cfilename);
             fclose(fp);
-            c_source_file[0] = '\0'; // 초기화
+            // c_source_file[0] = '\0'; // 초기화
         }
         else {
             if(strlen(output)) {
@@ -178,35 +178,57 @@ void convert_java_to_c(char *output, const char *input)
                     print_repeat("\t", patt_brace_stack-2);
                 else
                     print_repeat("\t", patt_brace_stack-1);
-                // printf("%s\n", output); // 나중엔없애
+
                 strcat(output, "\n");
                 strncat(c_source_file, output, MAX_RESULT_CODE_LENGTH);
             }
         }
 
         if (arg_option_r) {
+            static int java_line_count = 0;
+            static int java_brace_stack = 0;
+            char lc[5];
+            int m = 1; // 들여쓰기 관련
+            if(pa[i]->pattern[pa[i]->pattern_length-1] == BRACE_RIGHT_OP) m = 2;
+            for (int j = 0; j < pa[i]->pattern_length; j++)  {
+                if (j == 0) {
+                    ++java_line_count;
+                    sprintf(lc, "%d ", java_line_count);
+                    strcat(java_buf, lc);
+                    // 들여쓰기 삽입
+                    for (int cnt = java_brace_stack-m; cnt >= 0; cnt--) {
+                        m = 1;
+                        strcat(java_buf, "\t");
+                    }
+                }
+                // 괄호 스택을 검사
+                if(pa[i]->pattern[j] == BRACE_LEFT_OP) {
+                    ++java_brace_stack;
+                } else if (pa[i]->pattern[j] == BRACE_RIGHT_OP) {
+                    --java_brace_stack;
+                }
+                strcat(java_buf, pa[i]->buffer[j]);
+                strcat(java_buf, " ");
+            }
+            
+            strcat(java_buf, "\n");
+
             pid_t pid = fork();
             if (pid < 0) fprintf(stderr, "fork error\n");
-            if (pid == 0) {
+            else if (pid == 0) {
                 // child process
                 system("clear");
-                for (int j = 0; j < pa[i]->pattern_length; j++)  {
-                    strcat(java_buf, pa[i]->buffer[j]);
-                    strcat(java_buf, " ");
-                }
-                strcat(java_buf, "\n");
-                printf("%s Converting...\n", filename);
+                printf("%s Converting....\n", filename);
                 printf("--------\n%s\n--------\n%s\n", filename, java_buf);
                 for (int k = 0; k < produces_c_source_file_numbers; k++) {
                     printf("--------\n%s\n--------\n%s\n%s\n", c_source_file_names_print[k], reqHeaders, c_source_file);
                 }
-                getchar();
-                system("clear");
-                _exit(0);
-            } else {
-                // parent process
-                wait(NULL);
+                // usleep(10);
+                sleep(1);
+                // system("clear");
+                exit(0);
             }
+            wait(NULL);
         }
     }
 
