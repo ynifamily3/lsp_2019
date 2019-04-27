@@ -22,6 +22,13 @@ int brace_stack = 0; // 여닫는 중괄호 계층 스택
 
 int is_main = 0; // 현재 변환중인 곳이 main 함수 내이면 1, 아니라면 0
 
+extern int produces_c_source_file_numbers; // 프로듀스된 C들
+extern char (c_source_file_names)[5][767]; // C언어 파일 이름들 (full path)
+extern char (c_source_file_names_print)[5][256]; // C언어 파일 이름들 (순수 path)
+extern int go_include;
+char gccs[1280]; // gcc 파일 리스트 쭈욱 이어 붙인 것
+// 프로듀스 된 C들 >= 2 && go_include 여부 판별 1시 => make 옵션을 다르게 줌
+
 int main(int argc, char *argv[])
 {
     struct timeval start, end;
@@ -63,9 +70,20 @@ int main(int argc, char *argv[])
         noextFn[i] = filename[i];
     }
     sprintf(makefilename, "%s%s_Makefile", dir_path, noextFn);
-    DBGMSG("test : %s\n", makefilename);
+    // DBGMSG("test : %s\n", makefilename);
+    DBGMSG("go_include 여부 : %d", go_include);
     fp = fopen(makefilename, "w");
-    fprintf(fp, "%s : %s.c\n\tgcc %s.c -o %s", noextFn, noextFn, noextFn, noextFn);
+    if (produces_c_source_file_numbers >= 2 && go_include == 1) {
+        //q2 : q2.c Stack.c\n\tgcc q2.c Stack.c -w -o q2
+        strcpy(gccs, c_source_file_names_print[0]);
+        for (int i = 1; i < produces_c_source_file_numbers; ++i) {
+            strcat(gccs, " ");
+            strcat(gccs, c_source_file_names_print[i]);
+        }
+        fprintf(fp, "%s : %s\n\tgcc %s -std=c99 -w -o %s", noextFn, gccs, gccs, noextFn);
+    } else {
+        fprintf(fp, "%s : %s.c\n\tgcc %s.c -std=c99 -o %s", noextFn, noextFn, noextFn, noextFn);
+    }
     fclose(fp);
     gettimeofday(&end, NULL);
     ssu_runtime(&start, &end);
