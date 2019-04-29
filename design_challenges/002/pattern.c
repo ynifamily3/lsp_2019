@@ -638,6 +638,35 @@ void PATT_init()
     ptn->c_pattern[ptn->c_pattern_length++] = 7; // )
     ptn->c_pattern[ptn->c_pattern_length++] = 8; // ;
 
+    ptn = &patternIndex[29];
+    ptn->pattern_type = EXACT;
+    ptn->java_pattern_length = 8;
+    ptn->c_pattern_length = 17;
+    ptn->java_pattern[0] = IDENTFIER;
+    ptn->java_pattern[1] = ASSIGN_OP;
+    ptn->java_pattern[2] = NEW_CODE;
+    ptn->java_pattern[3] = INT_CODE;
+    ptn->java_pattern[4] = SQUARE_BRACKET_LEFT_OP;
+    ptn->java_pattern[5] = INT_LIT;
+    ptn->java_pattern[6] = SQUARE_BRACKET_RIGHT_OP;
+    ptn->java_pattern[7] = SEMICOLON_OP;
+    ptn->c_pattern[0] = 0; // stack
+    ptn->c_pattern[1] = 1; // =
+    ptn->c_pattern[2] = 1006; // (
+    ptn->c_pattern[3] = 3; // int
+    ptn->c_pattern[4] = 1009; // " "
+    ptn->c_pattern[5] = 1004; // *
+    ptn->c_pattern[6] = 1007; // )
+    ptn->c_pattern[7] = 1005; // calloc
+    ptn->c_pattern[8] = 1006; // (
+    ptn->c_pattern[9] = 5; // INT_LIT
+    ptn->c_pattern[10] = 1002; // ,
+    ptn->c_pattern[11] = 1008; // sizeof
+    ptn->c_pattern[12] = 1006; // (
+    ptn->c_pattern[13] = 3; // int
+    ptn->c_pattern[14] = 1007; // )
+    ptn->c_pattern[15] = 1007; // )
+    ptn->c_pattern[16] = 7; // ;
 }
 
 int PATT_is_match(const _lexPattern *pattern)

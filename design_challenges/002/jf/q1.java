@@ -5,7 +5,7 @@ public class q1{
 		Scanner scn = new Scanner(System.in);
 
 		System.out.printf("Enter the number : ");
-		
+
 		int num;
 		num = scn.nextInt();
 		int even=0, odd=0;
@@ -25,4 +25,3 @@ public class q1{
 		return ;
 	}
 }
-

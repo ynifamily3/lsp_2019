@@ -44,7 +44,12 @@ char c_source_file[MAX_RESULT_CODE_LENGTH];
 char java_buf[MAX_RESULT_CODE_LENGTH] = "";
 
 int produces_c_source_file_numbers = 0;
-char c_source_file_names[5][30]; // C언어 파일 이름들
+char c_source_file_names[5][767]; // C언어 파일 이름들 (full path)
+char c_source_file_names_print[5][256]; // C언어 파일 이름들 (순수 path)
+
+extern char dir_path[512]; // main에 정의된 것.
+extern char filename[256]; // main에 정의된 것. 순수 파일명 xx.java
+extern char pathname[767]; // main에 정의된 것. dir_path + filename
 
 void change_str_in_str(char *dest, const char *before, const char *after)
 {
@@ -84,15 +89,29 @@ void print_repeat(char *p, int cnt) {
     }
 }
 
-void convert_java_to_c(char *output, const char *input)
+void convert_java_to_c(char *output, char *input)
 {
-    // char cfilename[256];
-    char fname[256];
+    char cfilename[256]; // 순수 c 파일 이름
+    char fname[767]; // path 포함한 c 파일 이름
     char include_sentence[50];
     FILE *fp;
     _lexPattern **pa = (_lexPattern **)calloc(MAX_LINE_PER_FILE, sizeof(_lexPattern *));
     for (int i = 0; i < MAX_LINE_PER_FILE; i++) {
         pa[i] = (_lexPattern *)calloc(1, sizeof(_lexPattern));
+    }
+    // {~~}else {공백}\n 를 위한 정규화
+    char *else_ptr = input;
+    while ((else_ptr = strstr(else_ptr, "else")) != NULL) {
+        char *origin;
+        // 공백이면 다음부분 검사, 다른 문자가 들어오면 불일치, \n들어오면 일치
+        else_ptr += 4;
+        origin = else_ptr;
+        while (isspace(*else_ptr) && *else_ptr != '\n') {
+            else_ptr++;
+        }
+        if (*else_ptr == '\n') {
+            *origin = '\n';
+        }
     }
 
     lex(pa, input);
@@ -106,11 +125,13 @@ void convert_java_to_c(char *output, const char *input)
                     // class ~~\n { 대응
                     pa[i]->buffer[pa[i]->pattern_length-2][olen-1] = '\0';
                 }
-                sprintf(fname, "%s.c", pa[i]->buffer[pa[i]->pattern_length-2]);
+                sprintf(fname, "%s%s.c", dir_path, pa[i]->buffer[pa[i]->pattern_length-2]);
+                sprintf(cfilename, "%s.c", pa[i]->buffer[pa[i]->pattern_length-2]);
+                strcpy(c_source_file_names_print[produces_c_source_file_numbers], cfilename);
                 strcpy(c_source_file_names[produces_c_source_file_numbers++], fname);
-                // fprintf(stderr, "make %s :\n", fname);
+                // fprintf(stderr, "make %s :\n", cfilename);
 
-
+                c_source_file[0] = '\0'; // 초기화
                 fp = fopen(fname, "w");
                 tailreqHeaders = 0; // tail 초기화
                 reqHeaders[0] = '\0'; // 헤더 목록 초기화
@@ -136,14 +157,15 @@ void convert_java_to_c(char *output, const char *input)
                     go_include = 1;
                     // 메인 함수가 아닌 파일이 끝남
                     // 그리고 헤더 사용 횟수 같은 것도 초기화
-                    sprintf(include_sentence, "#include \"%s\"\n", fname); // main에 추가해 달라고 예약해야한다.
+                    sprintf(include_sentence, "#include \"%s\"\n", cfilename); // main에 추가해 달라고 예약해야한다.
             }
             is_main_func = 0; // 파일이 끝나면 메인도 끝난다.
             fprintf(fp, "%s\n", reqHeaders);
             fprintf(fp, "%s", c_source_file);
-            printf("%s converting is finished!\n", fname);
+            if(!arg_option_r)
+                printf("%s converting is finished!\n", cfilename);
             fclose(fp);
-            c_source_file[0] = '\0'; // 초기화
+            // c_source_file[0] = '\0'; // 초기화
         }
         else {
             if(strlen(output)) {
@@ -171,42 +193,81 @@ void convert_java_to_c(char *output, const char *input)
                     print_repeat("\t", patt_brace_stack-2);
                 else
                     print_repeat("\t", patt_brace_stack-1);
-                // printf("%s\n", output); // 나중엔없애
+
                 strcat(output, "\n");
                 strncat(c_source_file, output, MAX_RESULT_CODE_LENGTH);
             }
         }
 
         if (arg_option_r) {
+            static int java_line_count = 0;
+            static int java_brace_stack = 0;
+            char lc[5];
+            int m = 1; // 들여쓰기 관련
+            if(pa[i]->pattern[pa[i]->pattern_length-1] == BRACE_RIGHT_OP) m = 2;
+            for (int j = 0; j < pa[i]->pattern_length; j++)  {
+                if (j == 0) {
+                    ++java_line_count;
+                    sprintf(lc, "%d ", java_line_count);
+                    strcat(java_buf, lc);
+                    // 들여쓰기 삽입
+                    for (int cnt = java_brace_stack-m; cnt >= 0; cnt--) {
+                        m = 1;
+                        strcat(java_buf, "\t");
+                    }
+                }
+                // 괄호 스택을 검사
+                if(pa[i]->pattern[j] == BRACE_LEFT_OP) {
+                    ++java_brace_stack;
+                } else if (pa[i]->pattern[j] == BRACE_RIGHT_OP) {
+                    --java_brace_stack;
+                }
+                strcat(java_buf, pa[i]->buffer[j]);
+                strcat(java_buf, " ");
+            }
+            
+            strcat(java_buf, "\n");
+
             pid_t pid = fork();
             if (pid < 0) fprintf(stderr, "fork error\n");
-            if (pid == 0) {
+            else if (pid == 0) {
                 // child process
                 system("clear");
-                for (int j = 0; j < pa[i]->pattern_length; j++)  {
-                    strcat(java_buf, pa[i]->buffer[j]);
-                    strcat(java_buf, " ");
+                printf("%s Converting....\n", filename);
+                printf("--------\n%s\n--------\n%s\n", filename, java_buf);
+                // tmpnam으로 헤더랑 c를 조합해 놓은 것을 만든다.
+                FILE *tmp_c_file = tmpfile();
+                if (strlen(reqHeaders))
+                    fprintf(tmp_c_file, "%s\n%s", reqHeaders, c_source_file);
+                else
+                    fprintf(tmp_c_file, "%s", c_source_file);
+                if (produces_c_source_file_numbers != 0) {
+                    printf("--------\n%s\n--------\n", c_source_file_names_print[produces_c_source_file_numbers-1]);
+                    rewind(tmp_c_file);
+                    int c_line_count = 0;
+                    char c_line_buf[512];
+                    while (fgets(c_line_buf, 512, tmp_c_file) != NULL) {
+                        printf("%d ", ++c_line_count);
+                        printf("%s", c_line_buf);
+                    }
                 }
-                strcat(java_buf, "\n");
-                printf("%s Converting...\n", java_file_name);
-                printf("--------\n%s\n--------\n%s\n", java_file_name, java_buf);
-                for (int k = 0; k < produces_c_source_file_numbers; k++) {
-                    printf("--------\n%s\n--------\n%s\n%s\n", c_source_file_names[k], reqHeaders, c_source_file);
+                fclose(tmp_c_file);
+                // usleep(10);
+                sleep(1);
+                // system("clear");
+                if (c == 2) {
+                    printf("%s converting is finished!\n", cfilename);
                 }
-                getchar();
-                system("clear");
-                _exit(0);
-            } else {
-                // parent process
-                wait(NULL);
+                exit(0);
             }
+            wait(NULL);
         }
     }
 
     if (arg_option_j) {
         FILE *fp;
         char buf[512]; // 한 라인을 위한 버퍼
-        fp = fopen(java_file_name, "r");
+        fp = fopen(pathname, "r");
         int lineCnt = 1;
         while ( fgets(buf, 512, fp) ) {
             printf("%d %s", lineCnt++, buf);
@@ -220,7 +281,7 @@ void convert_java_to_c(char *output, const char *input)
         for (int i = 0; i < produces_c_source_file_numbers; i++) {
             lineCnt = 1;
             fp = fopen(c_source_file_names[i], "r");
-            printf("----%s----\n", c_source_file_names[i]);
+            printf("----%s----\n", c_source_file_names_print[i]);
             while ( fgets(buf, 512, fp) ) {
                 printf("%d %s", lineCnt++, buf);
             }
@@ -242,13 +303,13 @@ void convert_java_to_c(char *output, const char *input)
         fp = fopen(java_file_name, "r");
         fseek(fp, 0, SEEK_END);
         fsize = ftell(fp);
-        printf("%s file size is %ld bytes\n", java_file_name, fsize);
+        printf("%s file size is %ld bytes\n", filename, fsize);
         // 생성된 n 파일을 모두 보여줘야함.
         for (int i = 0; i < produces_c_source_file_numbers; i++) {
             fp = fopen(c_source_file_names[i], "r");
             fseek(fp, 0, SEEK_END);
             fsize = ftell(fp);
-            printf("%s file size is %ld bytes\n", c_source_file_names[i], fsize);
+            printf("%s file size is %ld bytes\n", c_source_file_names_print[i], fsize);
         }
     }
     if (arg_option_l) {
@@ -259,14 +320,14 @@ void convert_java_to_c(char *output, const char *input)
         fp = fopen(java_file_name, "r");
         while ( fgets(buf, 512, fp) )
             ++line;
-        printf("%s file line number is %ld lines\n", java_file_name, line);
+        printf("%s file line number is %ld lines\n", filename, line);
         // 생성된 n 파일을 모두 보여줘야함.
         for (int i = 0; i < produces_c_source_file_numbers; i++) {
             line = 0;
             fp = fopen(c_source_file_names[i], "r");
             while ( fgets(buf, 512, fp) )
                 ++line;
-            printf("%s file line number is %ld lines\n", c_source_file_names[i], line);
+            printf("%s file line number is %ld lines\n", c_source_file_names_print[i], line);
         }
     }
 }
