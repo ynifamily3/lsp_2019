@@ -61,7 +61,7 @@ void read_header_table(const char *header_table_fname)
 
     fp = fopen(header_table_fname, "r");
     if (!fp) {
-        fprintf(stderr, "header_table.txt doesn't exitst\n");
+        fprintf(stderr, "header_table.txt doesn't exist\n");
         return;
     }
     // 메모리 잡는법
