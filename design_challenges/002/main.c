@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 {
     struct timeval start, end;
     gettimeofday(&start, NULL);
-    read_header_table("header_table.txt");
+    read_header_table("header");
     
     if (argc < 2) {
         fprintf(stderr, "Usage : %s [java_source_file] [option]...\n", argv[0]);
