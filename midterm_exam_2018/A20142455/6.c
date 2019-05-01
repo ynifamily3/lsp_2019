@@ -23,5 +23,46 @@ int main(void)
 	int i, j = 0;
 	Student list[STUDENT_NUM];
 
-	for (j = 0; j < 
+	if ((fp = fopen(ssu_answer, "rb")) == NULL) {
+		fprintf(stderr, "open error for %s\n", ssu_answer);
+		exit(1);
+	}
+
+	for (j = 0; j < STUDENT_NUM; j++) {
+		
+		list[j].score = 0; // 학생 점수 0화
+		if ( fgets(list[j].name, BUFFER_SIZE, fp) == NULL ) {
+			fprintf(stderr, "fgets error\n");
+			exit(1);
+		}
+		i = 0;
+		for (; list[j].name[i] != '\n'; i++);
+		list[j].name[i] = '\0';
+		if ( fgets(tmp_score, BUFFER_SIZE, fp) == NULL ) {
+			fprintf(stderr, "fgets error\n");
+			exit(1);
+		}
+		i = 0;
+		for (; tmp_score[i] != '\n'; i++);
+		tmp_score[i] = '\0';
+		for (i = 0; answer[i] != '\0'; i++) {
+			if (answer[i] != tmp_score[i])
+				list[j].res[i] = 'X';
+			else {
+				list[j].res[i] = 'O';
+				list[j].score += 10;
+			}
+		}
+		list[j].res[i] = '\0';
+		printf("Student name : %s , score : %d , res : %s\n", list[j].name, list[j].score, list[j].res);
+	}
+	fclose(fp);
+	if((fp = fopen(ssu_res, "wb")) == NULL) {
+		fprintf(stderr, "open error for %s\n", ssu_res);
+		exit(1);
+	}
+	for (j = 0; j < STUDENT_NUM; j++)
+		fprintf(fp, "%s |%d| %s\n", list[j].name, list[j].score, list[j].res);
+	fclose(fp);
+	exit(0);
 }
