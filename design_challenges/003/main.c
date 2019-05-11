@@ -6,6 +6,7 @@
 #include "sys/stat.h"
 #include "sys/types.h"
 #include "command_checker.h"
+#include "backup.h"
 
 int main(int argc, char *argv[])
 {
@@ -81,6 +82,7 @@ int main(int argc, char *argv[])
         } else if (check_ls(input_command) || check_vim(input_command)) {
             system(input_command);
         } else if (input_command_length != 0) {
+            twae(backup_directory);
             printf("Invalid command.\n");
         }
     }

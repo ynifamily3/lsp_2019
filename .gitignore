@@ -34,7 +34,7 @@ relative/path/to/dir/anotherfile
 *.vscode*
 
 # unignore makefile
-!makefile
+!Makefile
 
 # ignore .out .o
 *.out

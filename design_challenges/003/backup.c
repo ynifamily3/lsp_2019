@@ -1,4 +1,8 @@
-#include "dirent.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <dirent.h>
 /*
 백업해야할 파일(FILENAME)을 백업 리스트에 새롭게 추가
 백업 리스트는 링크드 리스트로 구현
@@ -33,6 +37,23 @@
 
 void twae(const char *absolute_dir)
 {
+    static char current_dir[512] = "";
+    static char *ptr;
+    if (strlen (current_dir) == 0) {
+        // 경로 초기화 작업
+        strncpy(current_dir, absolute_dir, 512);
+        ptr = strlen(current_dir);
+    }
     DIR *dirp;
     struct dirent *dirent;
+
+    if ((dirp = opendir(current_dir) == NULL)) {
+        fprintf(stderr, "디렉토리를 열 수 없습니다. -> %s\n",current_dir);
+        return;
+    }
+
+    while ( (dirent = readdir(dirp) ) != NULL ) {
+        printf("[%s]\n", dirent->d_name);
+    }
+    return;
 }
