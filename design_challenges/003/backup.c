@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
+
+#define DT_REG 8
+#define DT_DIR 4
 /*
 백업해야할 파일(FILENAME)을 백업 리스트에 새롭게 추가
 백업 리스트는 링크드 리스트로 구현
@@ -42,18 +45,30 @@ void twae(const char *absolute_dir)
     if (strlen (current_dir) == 0) {
         // 경로 초기화 작업
         strncpy(current_dir, absolute_dir, 512);
-        ptr = strlen(current_dir);
+        ptr = current_dir + strlen(current_dir);
     }
     DIR *dirp;
     struct dirent *dirent;
-
-    if ((dirp = opendir(current_dir) == NULL)) {
+    if ((dirp = opendir(current_dir)) == NULL) {
         fprintf(stderr, "디렉토리를 열 수 없습니다. -> %s\n",current_dir);
         return;
     }
-
-    while ( (dirent = readdir(dirp) ) != NULL ) {
-        printf("[%s]\n", dirent->d_name);
+    while ((dirent = readdir(dirp)) != NULL ) {
+        if (strcmp(".", dirent->d_name) == 0 || strcmp("..", dirent->d_name) == 0) {
+            continue;
+        }
+        if (dirent->d_type == DT_REG) {
+            printf("reg : [%s]\n", dirent->d_name);
+        } else if (dirent->d_type == DT_DIR) {
+            printf("dir : <%s>\n", dirent->d_name);
+            // 포인터를 옮겨서, 디렉토리 작업
+            *ptr++ = '/';
+            *ptr = '\0';
+            strcat(current_dir, dirent->d_name);
+            ptr = current_dir + strlen(current_dir);
+            twae(current_dir);
+            ptr -= strlen(dirent->d_name);
+        }
     }
     return;
 }

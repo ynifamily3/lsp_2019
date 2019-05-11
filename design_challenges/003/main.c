@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
         } else if (check_ls(input_command) || check_vim(input_command)) {
             system(input_command);
         } else if (input_command_length != 0) {
-            twae(backup_directory);
+            twae("/home/jong/lsp/design_challenges");
             printf("Invalid command.\n");
         }
     }
