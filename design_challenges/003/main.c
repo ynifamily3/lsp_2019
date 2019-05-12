@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
         if (mkdir(backup_postfix, 0777) < 0) {
                 fprintf(stderr, "백업 디렉토리 생성 실패\n");
                 fprintf(stderr, "%s\n", strerror(errno));
-                exit(1);
+                //exit(1);
             }
         if (chdir(backup_postfix) < 0) {
             fprintf(stderr, "해당 경로에 백업할 수 없습니다.\n");
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
         } else if (check_ls(input_command) || check_vim(input_command)) {
             system(input_command);
         } else if (input_command_length != 0) {
-            twae("/home/jong/lsp/design_challenges");
+            twae("/home/jong/lsp/test");
             printf("Invalid command.\n");
         }
     }

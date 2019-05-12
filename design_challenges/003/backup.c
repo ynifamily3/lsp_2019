@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-#define DT_REG 8
-#define DT_DIR 4
 /*
 백업해야할 파일(FILENAME)을 백업 리스트에 새롭게 추가
 백업 리스트는 링크드 리스트로 구현
@@ -40,35 +40,48 @@
 
 void twae(const char *absolute_dir)
 {
-    static char current_dir[512] = "";
-    static char *ptr;
-    if (strlen (current_dir) == 0) {
-        // 경로 초기화 작업
-        strncpy(current_dir, absolute_dir, 512);
-        ptr = current_dir + strlen(current_dir);
-    }
-    DIR *dirp;
-    struct dirent *dirent;
-    if ((dirp = opendir(current_dir)) == NULL) {
-        fprintf(stderr, "디렉토리를 열 수 없습니다. -> %s\n",current_dir);
+    static char pathname[512] = "";
+    struct dirent *dirp;
+    struct stat statbuf;
+    char *ptr;
+    DIR *dp;
+    if (strlen(pathname) == 0)
+        strncpy(pathname, absolute_dir, 512);
+    
+    if (strlen(pathname) > 255) {
+        fprintf(stderr, "path length is too long !\n");
         return;
     }
-    while ((dirent = readdir(dirp)) != NULL ) {
-        if (strcmp(".", dirent->d_name) == 0 || strcmp("..", dirent->d_name) == 0) {
-            continue;
-        }
-        if (dirent->d_type == DT_REG) {
-            printf("reg : [%s]\n", dirent->d_name);
-        } else if (dirent->d_type == DT_DIR) {
-            printf("dir : <%s>\n", dirent->d_name);
-            // 포인터를 옮겨서, 디렉토리 작업
-            *ptr++ = '/';
-            *ptr = '\0';
-            strcat(current_dir, dirent->d_name);
-            ptr = current_dir + strlen(current_dir);
-            twae(current_dir);
-            ptr -= strlen(dirent->d_name);
-        }
+    
+    if (lstat(pathname, &statbuf) < 0) {
+        fprintf(stderr, "lstat error for %s\n", pathname);
+        return;
     }
+
+    if (S_ISREG(statbuf.st_mode)) {
+        // 일반 FILE
+        printf("%s\n", pathname);
+        return;
+    }
+    else if (!S_ISDIR(statbuf.st_mode))
+        return;
+    
+    // 디렉토리
+    ptr = pathname + strlen(pathname);
+    *ptr++ = '/';
+    *ptr = '\0';
+
+    if ((dp = opendir(pathname)) == NULL) {
+        fprintf(stderr, "opendir error for %s\n", pathname);
+        return;
+    }
+
+    while ((dirp = readdir(dp)) != NULL)
+        if (strcmp(dirp->d_name, ".") && strcmp(dirp->d_name, "..")) {
+            strncpy(ptr, dirp->d_name, 512);
+            twae(NULL);
+        }
+    ptr[-1] = 0;
+    closedir(dp);
     return;
 }
