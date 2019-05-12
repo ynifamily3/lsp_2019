@@ -83,6 +83,8 @@ int main(int argc, char *argv[])
             system(input_command);
         } else if (input_command_length != 0) {
             twae("/home/jong/lsp/test");
+            twae("/home");
+            twae("/home/jong/lsp/test");
             printf("Invalid command.\n");
         }
     }
