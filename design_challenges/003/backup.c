@@ -45,7 +45,7 @@ void twae(const char *absolute_dir)
     struct stat statbuf;
     char *ptr;
     DIR *dp;
-    if (strlen(pathname) == 0)
+    if (absolute_dir != NULL)
         strncpy(pathname, absolute_dir, 512);
     
     if (strlen(pathname) > 255) {
