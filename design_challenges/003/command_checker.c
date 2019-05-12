@@ -30,3 +30,43 @@ int check_vim(const char *command)
     }
     return 0;
 }
+
+int check_add(const char *command)
+{
+    // i) -d 옵션 없을 경우
+    size_t len = strlen(command);
+    if (len >= 4 && command[0] == 'a' && command[1] == 'd' && command[2] == 'd' && command[3] == ' ') {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+void parse_args(char *input_text, int *arg_count, char **arg_vector)
+{
+    // 동적 메모리 할당을 함.
+    // add /file/path/and/name.txt ...
+    // 띄어쓰기 단위로 구분함.
+    *arg_count = 0;
+    char *ptr = input_text;
+    char *ptr2;
+    int length, i;
+    while (*ptr != '\0') {
+        while (isspace(*ptr)) ++ptr; // 공백 제거
+        // 문자열의 파싱 ( \0이 나오거나 띄어쓰기가 나올 때까지)
+        ptr2 = ptr;
+        while (!isspace(*ptr2) && *ptr2 != '\0') ++ptr2;
+        length = ptr2 - ptr;
+        printf("length : %d\n", length);
+        arg_vector[*arg_count] = malloc((length+1) * sizeof(char));
+        for (i = 0; i < length; i++) {
+            arg_vector[*arg_count][i] = *(ptr + i);
+        }
+        arg_vector[*arg_count][length] = '\0';
+        ++(*arg_count);
+        ptr = ptr2;
+        if (*arg_count >= 11) {
+            break;
+        }
+    }
+}

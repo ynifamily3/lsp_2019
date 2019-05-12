@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <ctype.h>
 #include "sys/stat.h"
 #include "sys/types.h"
 #include "command_checker.h"
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
         if (argv[1][0] == '/') {
             strncpy(backup_directory, argv[1], 512);
             if (chdir(backup_directory) < 0) {
-                fprintf(stderr, "해당 경로에 백업할 수 없습니다.\n");
+                fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
@@ -33,14 +34,14 @@ int main(int argc, char *argv[])
                 exit(1);
             }
             if (chdir(backup_postfix) < 0) {
-                fprintf(stderr, "해당 경로에 백업할 수 없습니다.\n");
+                fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
         } else {
             // 절대 경로가 주어지지 않은 경우
             if (chdir(argv[1]) < 0) {
-                fprintf(stderr, "해당 경로에 백업할 수 없습니다.\n");
+                fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
                 exit(1);
             }
             if (chdir(backup_postfix) < 0) {
-                fprintf(stderr, "해당 경로에 백업할 수 없습니다.\n");
+                fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
@@ -81,10 +82,18 @@ int main(int argc, char *argv[])
             exit(0);
         } else if (check_ls(input_command) || check_vim(input_command)) {
             system(input_command);
-        } else if (input_command_length != 0) {
-            twae("/home/jong/lsp/test");
-            twae("/home");
-            twae("/home/jong/lsp/test");
+        } else if (check_add(input_command)) {
+            // add command
+            printf("add command\n");
+            // opt parse 
+            int add_argc;
+            char *add_argv[11];
+            parse_args(input_command, &add_argc, add_argv);
+            for (int i = 0; i < add_argc; i++) {
+                printf("test2 : %d, %s\n", i, add_argv[i]);
+            }
+        }
+        else if (input_command_length != 0) {
             printf("Invalid command.\n");
         }
     }
