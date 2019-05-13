@@ -83,15 +83,22 @@ int main(int argc, char *argv[])
         } else if (check_ls(input_command) || check_vim(input_command)) {
             system(input_command);
         } else if (check_add(input_command)) {
-            // add command
-            printf("add command\n");
             // opt parse 
             int add_argc;
             char *add_argv[11];
+            
+            // 아규먼트를 위한 메모리 할당 (in parse_args)
             parse_args(input_command, &add_argc, add_argv);
             for (int i = 0; i < add_argc; i++) {
-                printf("test2 : %d, %s\n", i, add_argv[i]);
+                printf("add_argv[%d] = %s\n", i, add_argv[i]);
             }
+            
+            // add Action 실행
+            add_command_action(add_argc, add_argv);
+            
+            // 메모리 해제
+            for (int i = 0; i < add_argc; i++)
+                free(add_argv[i]); // 메모리 해제
         }
         else if (input_command_length != 0) {
             printf("Invalid command.\n");

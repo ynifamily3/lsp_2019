@@ -31,7 +31,7 @@ struct backup_file_node {
 /*
 백업해야할 파일(FILENAME)을 백업 리스트에 새롭게 추가
 백업 리스트는 링크드 리스트로 구현
-백업 리스트 구조체는 1. 파일의 절대경로, 2. 백업 주기, 3. 백업 옵션 등을 포
+백업 리스트 구조체는 1. 파일의 절대경로, 2. 백업 주기, 3. 백업 옵션 등을 포함
 
 라. add 명령어 10
 마. add –m 옵션 4
@@ -106,4 +106,106 @@ void twae(const char *absolute_dir)
     ptr[-1] = 0;
     closedir(dp);
     return;
+}
+
+// add명령어에 해당하는 것을 처리
+void add_command_action(int argc, char **argv)
+{
+    int m_option = 0;
+    int n_option = 0;
+    int n_option_number = 0; // 백업 파일의 최대 개수
+    int t_option = 0;
+    int t_option_number = 0; // 백업 파일의 보관 기간
+    int d_option = 0;
+    char *pathname;
+    // printf("add 액션 처리\n");
+    // i) 옵션 처리 -m -n -t -d 처리하기
+    for (int i = 0; i < argc; i++) {
+        /*
+        -m : 입력받은 PERIOD마다 파일의 mtime이 수정 되었을 경우 백업 실행
+        */
+        if (!m_option && strcmp("-m", argv[i]) == 0) {
+            fprintf(stderr, "m option enabled\n");
+            m_option = 1;
+        }
+        /*
+        -n NUMBER : NUMBER는 백업한 파일의 최대 개수. 가장 최근 NUMBER개의 백업파일 외 나머지 파일은 삭제
+        (1) NUMBER는 정수형이며, 정수형이 아닌 실수형 입력 시 에러 처리 후 프롬프트로 제어가 넘어감
+        (2) NUMBER 입력 없을 시 에러 처리 후 프롬프트로 제어가 넘어감
+        (3) 채점의 편의를 위해 제출할 예제 프로그램에서는 1≤NUMBER≤100로 설정하여 실행시켜 제출
+        */
+        if (!n_option && strcmp("-n", argv[i]) == 0) {
+            fprintf(stderr, "n option enabled\n");
+            n_option = 1;
+            if (i + 1 >= argc) {
+                fprintf(stderr, "usage : add <filename> <period> -n NUMBER\n");
+                return;
+            }
+            if (strchr(argv[i + 1], '.') != NULL) {
+                fprintf(stderr, "NUMBER : positive integer ONLY\n");
+                return;
+            }
+            n_option_number = atoi(argv[i + 1]);
+            if (n_option_number == 0) {
+                fprintf(stderr, "invalid NUMBER : %s\n", argv[i + 1]);
+                return;
+            }
+        }
+
+        /*
+        -t TIME : 백업해야할 파일에 대한 백업 디렉토리 내 보관 기간을 TIME만큼 설정
+        (1) TIME는 정수형이며 초를 나타냄. 정수형이 아닌 실수형 입력 시 에러 처리 후 프롬프트로 제어가 넘어감
+        (2) TIME 입력 없을 시 에러 처리 후 프롬프트로 제어가 넘어감
+        (3) 매 PERIOD마다 백업 파일을 생성하고 기존 모든 백업 파일의 생성시간을 확인. 확인한 파일의 생성시간이 주어진 TIME보다 크면 해당 파일 삭제
+        (4) 채점의 편의를 위해 제출할 예제 프로그램에서는 60≤TIME≤1200로 설정하여 실행시켜 제출
+        */
+        if (!t_option && strcmp("-t", argv[i]) == 0) {
+            fprintf(stderr, "t option enabled\n");
+            t_option = 1;
+            if (i + 1 >= argc) {
+                fprintf(stderr, "usage : add <filename> <period> -t TIME\n");
+                return;
+            }
+            if (strchr(argv[i + 1], '.') != NULL) {
+                fprintf(stderr, "TIME : positive integer ONLY\n");
+                return;
+            }
+            t_option_number = atoi(argv[i + 1]);
+            if (t_option_number == 0) {
+                fprintf(stderr, "invalid TIME : %s\n", argv[i + 1]);
+                return;
+            }
+        }
+
+        /*
+        -d : 지정한 디렉토리 내의 모든 파일들을 백업 리스트에 추가
+        (1) 한번에 인자로 줄 수 있는 디렉토리는 최대 1개이며 해당 디렉토리 내 모든 파일을 리스트에 추가. 디렉토리 내의 서브디렉토리 내 모든 파일까지 모두 리스트에 추가
+        (2) FILENAME이 디렉토리가 아닐 경우 에러 처리 후 프롬프트로 제어가 넘어감
+        (3) 디렉토리 내에 있는 파일이 이미 백업 리스트에 존재할 경우 해당 파일은 리스트에 추가하지 않고 건너뜀
+        */
+        if (!d_option && strcmp("-d", argv[i]) == 0) {
+            fprintf(stderr, "d option enabled\n");
+            d_option = 1;
+            if (i + 1 >= argc) {
+                fprintf(stderr, "usage : add <filename> <period> -d DIRECTORY\n");
+                fprintf(stderr, "usage : add -d DIRECTORY <period>\n");
+                return;
+            }
+            struct stat statbuf;
+            // d옵션에서 인자를 상대경로로 주면 뭐지?
+            // 일단 절대 경로 기준으로만 처리하기로 함 나중에 수정
+            if (stat(argv[i+1], &statbuf) < 0) {
+                fprintf(stderr, "stat error\n");
+                return;
+            }
+            if (!S_ISDIR(statbuf.st_mode)) {
+                fprintf(stderr, "%s is not directory\n", argv[i + 1]);
+                return;
+            }
+            printf("%s is directory\n", argv[i + 1]);
+            
+            // 재귀적으로 돌며 백업 처리..
+            
+        }
+    }
 }
