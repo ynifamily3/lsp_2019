@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
     getcwd(backup_directory, 512);
     printf("백업 디렉토리 : %s\n", backup_directory);
     setbuf(stdout, NULL);
+    backup_list_init();
     while (1) {
         printf("20142455>");
         fgets(input_command, 512, stdin);

@@ -8,10 +8,6 @@
 #include <pthread.h>
 #include <string.h>
 
-struct backups_head {
-
-};
-
 struct backup_file_node {
     struct backup_file_node *next;
     char pathname[256];
@@ -27,6 +23,55 @@ struct backup_file_node {
     // int option_d; // -d : 지정한 디렉토리 내의 모든 파일들을 백업 리스트에 추가
     pthread_t backup_thread;
 };
+
+struct backups_head {
+    int number_of_nodes;
+    struct backup_file_node *start;
+};
+
+struct backups_head backup_list; // 백업 리스트 전역 변수 선언
+
+void backup_list_init()
+{
+    backup_list.number_of_nodes = 0;
+    backup_list.start = NULL;
+}
+
+void backup_list_delete(char *pathname)
+{
+    if(pathname) {
+
+    }
+}
+
+void backup_list_append(char *pathname, int period, int option_m, int option_n, int maxn, int option_t, int store_time)
+{
+    printf("============ 다음 파일을 백업합니다. ============\n");
+    printf("파일명 : %s\n", pathname);
+    printf("백업 주기 : %d초마다\n", period);
+    if (option_m) {
+        printf("파일이 수정될 때에 한해 주기마다 백업을 진행합니다.\n");
+    } else {
+        printf("파일 수정과 관계없이 주기마다 백업을 진행합니다.\n");
+    }
+    if (option_n) {
+        printf("최대 %d개의 백업본을 만듭니다.\n", maxn);
+    } else {
+        printf("무제한의 백업 사본을 생성합니다.\n");
+    }
+    if (option_t) {
+        printf("백업 파일은 최대 %d초간 생존합니다.\n", store_time);
+    } else {
+        printf("백업된 파일은 얼마가 지나든 계속 살아 있습니다.\n");
+    }
+    printf("=================================================\n");
+}
+
+void backup_list_print()
+{
+
+}
+
 
 /*
 백업해야할 파일(FILENAME)을 백업 리스트에 새롭게 추가
@@ -111,6 +156,7 @@ void twae(const char *absolute_dir)
 // add명령어에 해당하는 것을 처리
 void add_command_action(int argc, char **argv)
 {
+    int period = 0;
     int m_option = 0;
     int n_option = 0;
     int n_option_number = 0; // 백업 파일의 최대 개수
@@ -120,6 +166,40 @@ void add_command_action(int argc, char **argv)
     char *pathname;
     // printf("add 액션 처리\n");
     // i) 옵션 처리 -m -n -t -d 처리하기
+    if (argc < 3) {
+        fprintf(stderr, "Usage :  add <FILENAME> [PERIOD] [OPTION]\n");
+        return;
+    }
+
+    if (strcmp("-d", argv[1]) == 0) {
+        // add -d testdir 5 같은 경우.
+        // pass
+        pathname = NULL;
+        period = atoi(argv[3]);
+    } else {
+        // 나중에 상대 경로 처리를 해 줘야 한다. 상대->절대
+        pathname = argv[1];
+        struct stat statbuf;
+        if (stat(argv[1], &statbuf) < 0) {
+            fprintf(stderr, "stat error : %s\n", argv[1]);
+            return;
+        }
+        if (!S_ISREG(statbuf.st_mode)) {
+            fprintf(stderr, "%s is not regular file\n", argv[1]);
+            return;
+        }
+        period = atoi(argv[2]);
+    }
+    
+    if (strchr(argv[2], '.') != NULL) {
+        fprintf(stderr, "PERIOD : positive integer ONLY\n");
+        return;
+    }
+    if (period <= 0) {
+        fprintf(stderr, "PERIOD error\n");
+        return;
+    }
+
     for (int i = 0; i < argc; i++) {
         /*
         -m : 입력받은 PERIOD마다 파일의 mtime이 수정 되었을 경우 백업 실행
@@ -146,7 +226,7 @@ void add_command_action(int argc, char **argv)
                 return;
             }
             n_option_number = atoi(argv[i + 1]);
-            if (n_option_number == 0) {
+            if (n_option_number <= 0) {
                 fprintf(stderr, "invalid NUMBER : %s\n", argv[i + 1]);
                 return;
             }
@@ -171,7 +251,7 @@ void add_command_action(int argc, char **argv)
                 return;
             }
             t_option_number = atoi(argv[i + 1]);
-            if (t_option_number == 0) {
+            if (t_option_number <= 0) {
                 fprintf(stderr, "invalid TIME : %s\n", argv[i + 1]);
                 return;
             }
@@ -203,9 +283,13 @@ void add_command_action(int argc, char **argv)
                 return;
             }
             printf("%s is directory\n", argv[i + 1]);
-            
-            // 재귀적으로 돌며 백업 처리..
-            
         }
     }
+    // -d 옵션이 있는 경우 그 파일들을 모두 백업 처리 (옵션은 똑같이 처리하여 구조체에 넣는다.)
+    if (d_option) {
+
+    }
+
+    // 리스트에 append
+    backup_list_append(pathname, period, m_option, n_option, n_option_number, t_option, t_option_number);
 }
