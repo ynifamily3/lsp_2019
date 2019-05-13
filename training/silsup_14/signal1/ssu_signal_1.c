@@ -21,7 +21,7 @@ int main(void)
 
 void ssu_signal_handler(int signo) {
 	printf("SIGINT 시그널 발생.\n");
-	printf("SIGINT를SIG_DFS로 재설정 함.\n");
+	printf("SIGINT를SIG_DFL로 재설정 함.\n");
 	signal(SIGINT, ssu_func);
 }
 
