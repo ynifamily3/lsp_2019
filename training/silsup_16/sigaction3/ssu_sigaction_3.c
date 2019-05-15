@@ -14,7 +14,7 @@ int main(void)
 
 	act_int.sa_handler = ssu_signal_handler1;
 	sigemptyset(&act_int.sa_mask);
-	sigaddset(&act_int.sa_mask, SIGINT);
+	sigaddset(&act_int.sa_mask, SIGQUIT);
 	act_int.sa_flags = 0;
 
 	if (sigaction(SIGINT, &act_int, NULL) < 0) {
@@ -24,7 +24,7 @@ int main(void)
 
 	act_quit.sa_handler = ssu_signal_handler2;
 	sigemptyset(&act_quit.sa_mask);
-	sigaddset(&act_quit.sa_mask, SIGQUIT);
+	sigaddset(&act_quit.sa_mask, SIGINT);
 	act_quit.sa_flags = 0;
 
 	if (sigaction(SIGQUIT, &act_quit, NULL) < 0) {
@@ -33,6 +33,7 @@ int main(void)
 	}
 
 	pause();
+	printf("test after pause()\n");
 	exit(0);
 }
 

@@ -10,6 +10,7 @@ int main(void)
 {
 	sigset_t new_mask, old_mask, wait_mask;
 	ssu_print_mask("program start: ");
+	printf("%d %d %d\n", SIG_BLOCK, SIG_UNBLOCK, SIG_SETMASK);
 
 	if (signal(SIGINT, ssu_func) == SIG_ERR) {
 		fprintf(stderr, "signal(SIGINT) error\n");
@@ -45,4 +46,63 @@ int main(void)
 }
 
 void ssu_print_mask(const char *str) {
+	sigset_t sig_set;
+	int err_num;
+
+	err_num = errno;
+
+	if (sigprocmask(0, NULL, &sig_set) < 0) {
+		fprintf(stderr, "sigprocmask() error\n");
+		exit(1);
+	}
+
+	printf("%s", str);
+
+	if (sigismember(&sig_set, SIGINT))
+		printf("SIGINT ");
+
+	if (sigismember(&sig_set, SIGQUIT))
+		printf("SIGQUIT ");
+
+	if (sigismember(&sig_set, SIGUSR1))
+		printf("SIGUSR1 ");
+
+	if (sigismember(&sig_set, SIGALRM))
+		printf("SIGALRM ");
+
+	printf("\n");
+	errno = err_num;
 }
+
+static void ssu_func(int signo) {
+	ssu_print_mask("\nin ssu_func: ");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
