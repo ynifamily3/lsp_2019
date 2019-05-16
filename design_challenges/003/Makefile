@@ -10,4 +10,4 @@ $(TARGET) : $(OBJECTS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
-	-rm $(OBJECTS)
+	-rm $(OBJECTS) $(TARGET)

@@ -35,7 +35,8 @@ int check_add(const char *command)
 {
     // i) -d 옵션 없을 경우
     size_t len = strlen(command);
-    if (len >= 4 && command[0] == 'a' && command[1] == 'd' && command[2] == 'd' && command[3] == ' ') {
+    if ((len >= 3 && command[0] == 'a' && command[1] == 'd' && command[2] == 'd' && command[3] == '\0') ||
+        (len >= 4 && command[0] == 'a' && command[1] == 'd' && command[2] == 'd' && command[3] == ' ')) {
         return 1;
     } else {
         return 0;
@@ -57,7 +58,6 @@ void parse_args(char *input_text, int *arg_count, char **arg_vector)
         ptr2 = ptr;
         while (!isspace(*ptr2) && *ptr2 != '\0') ++ptr2;
         length = ptr2 - ptr;
-        printf("length : %d\n", length);
         arg_vector[*arg_count] = malloc((length+1) * sizeof(char));
         for (i = 0; i < length; i++) {
             arg_vector[*arg_count][i] = *(ptr + i);

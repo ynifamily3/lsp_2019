@@ -8,6 +8,8 @@
 #include <pthread.h>
 #include <string.h>
 
+extern char binary_directory[512]; // in main c
+
 struct backup_file_node {
     struct backup_file_node *next;
     char pathname[256];
@@ -180,8 +182,8 @@ void add_command_action(int argc, char **argv)
         // 나중에 상대 경로 처리를 해 줘야 한다. 상대->절대
         pathname = argv[1];
         struct stat statbuf;
-        if (stat(argv[1], &statbuf) < 0) {
-            fprintf(stderr, "stat error : %s\n", argv[1]);
+        if (lstat(argv[1], &statbuf) < 0) {
+            fprintf(stderr, "lstat error : %s\n", argv[1]);
             return;
         }
         if (!S_ISREG(statbuf.st_mode)) {
@@ -274,8 +276,8 @@ void add_command_action(int argc, char **argv)
             struct stat statbuf;
             // d옵션에서 인자를 상대경로로 주면 뭐지?
             // 일단 절대 경로 기준으로만 처리하기로 함 나중에 수정
-            if (stat(argv[i+1], &statbuf) < 0) {
-                fprintf(stderr, "stat error\n");
+            if (lstat(argv[i+1], &statbuf) < 0) {
+                fprintf(stderr, "lstat error\n");
                 return;
             }
             if (!S_ISDIR(statbuf.st_mode)) {

@@ -9,16 +9,20 @@
 #include "command_checker.h"
 #include "backup.h"
 
+char binary_directory[512]; // 바이너리 기준 현재 위치의 절대 경로
+char backup_directory[512]; // 백업 디렉토리 위치의 절대 경로
+
 int main(int argc, char *argv[])
 {
     size_t input_command_length;
-    char backup_directory[512];
     char input_command[512];
     char *backup_postfix = "ssu_backup_dir";
     if (argc > 2) {
         fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
         exit(1);
     }
+
+    getcwd(binary_directory, 512); // 해당 프로그램이 있는 현재 경로의 절댓값.
 
     if (argc == 2) {
         if (argv[1][0] == '/') {
@@ -70,9 +74,13 @@ int main(int argc, char *argv[])
         }
     }
     getcwd(backup_directory, 512);
-    printf("백업 디렉토리 : %s\n", backup_directory);
+    printf("바이너리 경로 : %s\n", binary_directory);
+    printf("백업저장 경로 : %s\n", backup_directory);
     setbuf(stdout, NULL);
     backup_list_init();
+
+    chdir(binary_directory); // 바이너리 위치 기준으로 현재 위치 설정함.
+
     while (1) {
         printf("20142455>");
         fgets(input_command, 512, stdin);
@@ -87,16 +95,10 @@ int main(int argc, char *argv[])
             // opt parse 
             int add_argc;
             char *add_argv[11];
-            
             // 아규먼트를 위한 메모리 할당 (in parse_args)
             parse_args(input_command, &add_argc, add_argv);
-            for (int i = 0; i < add_argc; i++) {
-                printf("add_argv[%d] = %s\n", i, add_argv[i]);
-            }
-            
             // add Action 실행
             add_command_action(add_argc, add_argv);
-            
             // 메모리 해제
             for (int i = 0; i < add_argc; i++)
                 free(add_argv[i]); // 메모리 해제
