@@ -1,7 +1,7 @@
 OBJECTS	= main.o backup.o command_checker.o
 TARGET	= ./ssu_backup
 CC		= gcc
-CFLAGS	= -W -Wall -lpthread
+CFLAGS	= -W -Wall -lpthread -pthread
 
 $(TARGET) : $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJECTS)

@@ -4,34 +4,39 @@
 #include <unistd.h>
 #include <errno.h>
 #include <ctype.h>
-#include "sys/stat.h"
-#include "sys/types.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
 #include "command_checker.h"
 #include "backup.h"
 
 char binary_directory[512]; // 바이너리 기준 현재 위치의 절대 경로
 char backup_directory[512]; // 백업 디렉토리 위치의 절대 경로
+extern FILE *log_file;
 
 int main(int argc, char *argv[])
 {
     size_t input_command_length;
     char input_command[512];
+    char *sys_init_command = "rm -rf ssu_backup_dir > /dev/null 2>&1";
     char *backup_postfix = "ssu_backup_dir";
     if (argc > 2) {
         fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
         exit(1);
     }
 
+    backup_list_init(); // 초기화..
     getcwd(binary_directory, 512); // 해당 프로그램이 있는 현재 경로의 절댓값.
 
     if (argc == 2) {
         if (argv[1][0] == '/') {
-            strncpy(backup_directory, argv[1], 512);
+            strncpy(backup_directory, argv[1], 511);
             if (chdir(backup_directory) < 0) {
                 fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
+            system(sys_init_command); // 기존 백업 폴더 삭제
             if (mkdir(backup_postfix, 0777) < 0) {
                 fprintf(stderr, "백업 디렉토리 생성 실패\n");
                 fprintf(stderr, "%s\n", strerror(errno));
@@ -49,6 +54,7 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
+            system(sys_init_command); // 기존 백업 폴더 삭제
             if (mkdir(backup_postfix, 0777) < 0) {
                 fprintf(stderr, "백업 디렉토리 생성 실패\n");
                 fprintf(stderr, "%s\n", strerror(errno));
@@ -62,6 +68,7 @@ int main(int argc, char *argv[])
         }
     } else {
         // 인자 x
+        system(sys_init_command); // 기존 백업 폴더 삭제
         if (mkdir(backup_postfix, 0777) < 0) {
                 fprintf(stderr, "백업 디렉토리 생성 실패\n");
                 fprintf(stderr, "%s\n", strerror(errno));
@@ -73,6 +80,10 @@ int main(int argc, char *argv[])
             exit(1);
         }
     }
+    // create log file
+    log_file = fopen("log.txt", "a");
+    setbuf(log_file, NULL); // 로그 버퍼 없음
+
     getcwd(backup_directory, 512);
     printf("바이너리 경로 : %s\n", binary_directory);
     printf("백업저장 경로 : %s\n", backup_directory);
@@ -88,6 +99,7 @@ int main(int argc, char *argv[])
         input_command[--input_command_length] = '\0';
         if (check_exit(input_command)) {
             // 백업 중인 모든 파일 중단 루틴 실행
+            fclose(log_file);
             exit(0);
         } else if (check_ls(input_command) || check_vim(input_command)) {
             system(input_command);
@@ -102,6 +114,8 @@ int main(int argc, char *argv[])
             // 메모리 해제
             for (int i = 0; i < add_argc; i++)
                 free(add_argv[i]); // 메모리 해제
+        } else if (check_list(input_command)) {
+            list_command_action();
         }
         else if (input_command_length != 0) {
             printf("Invalid command.\n");

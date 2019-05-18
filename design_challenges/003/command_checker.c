@@ -43,6 +43,14 @@ int check_add(const char *command)
     }
 }
 
+int check_list(const char *command)
+{
+    if (strcmp("list", command) == 0) {
+        return 1;
+    }
+    return 0;
+}
+
 void parse_args(char *input_text, int *arg_count, char **arg_vector)
 {
     // 동적 메모리 할당을 함.

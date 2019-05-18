@@ -7,12 +7,17 @@
 #include <sys/types.h>
 #include <pthread.h>
 #include <string.h>
+#include <time.h>
 
 extern char binary_directory[512]; // in main c
 
+FILE *log_file;
+
+void *file_backup_thr(void *);
+
 struct backup_file_node {
     struct backup_file_node *next;
-    char pathname[256];
+    char pathname[512];
     
     int period;
     int option_m; // 입력받은 PERIOD마다 파일의 mtime이 수정 되었을 경우 백업 실행
@@ -32,6 +37,48 @@ struct backups_head {
 };
 
 struct backups_head backup_list; // 백업 리스트 전역 변수 선언
+
+
+// 백업파일 관리를 위한 순환 queue, 큐 사이즈는 최대 100
+struct backuped_file_queue {
+    int front, rear;
+    int limit; // n옵션의 인자가 된다. (최대 100의 값이 들어온다고 가정)
+    int number_of_nodes;
+    char *queue[100];
+
+};
+
+void backuped_file_init(struct backuped_file_queue *bfq, int n_option_arg) {
+    bfq->number_of_nodes = 0;
+    bfq->front = bfq->rear = 0;
+    bfq->limit = n_option_arg;
+}
+
+void backuped_file_add(struct backuped_file_queue *bfq, const char *data) {
+    if ((bfq->rear+1) % bfq->limit == bfq->front) {
+        fprintf(stderr, "backuped_file fully added!!\n");
+        return;
+    }
+    ++bfq->number_of_nodes;
+    ++bfq->rear;
+    bfq->rear %= bfq->limit;
+    bfq->queue[bfq->rear] = (char *)calloc(1, strlen(data) + 1);
+    strncpy(bfq->queue[bfq->rear], data, 511);
+
+}
+
+// 처음에 추가된 data 가 빠져 나간다. (제일 오래된 백업)
+void backuped_file_del(struct backuped_file_queue *bfq) {
+    if (bfq->front == bfq->rear) {
+        fprintf(stderr, "queue is empty\n");
+        return;
+    }
+    free(bfq->queue[bfq->front]); // 쓰이지 않을 데이터는 힙에서 해제
+    --bfq->number_of_nodes;
+    ++bfq->front;
+    bfq->front %= bfq->limit;
+}
+
 
 void backup_list_init()
 {
@@ -67,6 +114,72 @@ void backup_list_append(char *pathname, int period, int option_m, int option_n, 
         printf("백업된 파일은 얼마가 지나든 계속 살아 있습니다.\n");
     }
     printf("=================================================\n");
+
+    // 링크드 리스트 구성하기.
+    struct backup_file_node *node = (struct backup_file_node *)calloc(1, sizeof(struct backup_file_node));
+    node->next = backup_list.start;
+    strncpy(node->pathname, pathname, 511);
+    node->period = period;
+    node->option_m = option_m;
+    node->option_n = option_n;
+    node->maxn = maxn;
+    node->option_t = option_t;
+    node->store_time = store_time;
+    backup_list.start = node;
+    // thread on
+    pthread_create(&node->backup_thread, NULL, file_backup_thr, (void *)node);
+    ++backup_list.number_of_nodes;
+}
+
+void cleanup(void *args)
+{
+    if (args == NULL) {
+        printf("n 옵션이 없으므로 해제할 것도 없음\n");
+        return;
+    }
+    struct backuped_file_queue *bfq = (struct backuped_file_queue *)args;
+    printf("이 파일은 더 이상 백업하지 않으므로 메모리를 해제합니다.");
+    // 큐에 들어 있는 모든 것을 pop해야 됨.
+    // 하지만, 실제로 파일은 삭제하지 않는다. -n 옵션에서 걸린 것이 아니라, 단순히 백업을 중지하기 때문이다.
+    while(bfq->front != bfq->rear)
+        backuped_file_del(bfq);
+    free(args);
+}
+
+void *file_backup_thr(void *args)
+{
+    struct backup_file_node *node = (struct backup_file_node *)args;
+    struct backuped_file_queue *bfq = NULL; //  백업된 파일 리스트
+    struct tm *tm_p;
+    time_t now;
+    time(&now);
+    tm_p = localtime(&now);
+
+    if (node->option_n) {
+        // n option enabled
+        bfq = (struct backuped_file_queue *)calloc(1, sizeof(struct backuped_file_queue));
+        backuped_file_init(bfq, node->maxn);
+        // 쓰레드가 끝나기 전에 bfq에 할당된 동적 메모리가 반납되어야 한다.
+    }
+
+    pthread_cleanup_push(cleanup, bfq);
+
+    fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s added\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, node->pathname);
+    while (1) {
+        sleep(node->period); // period 마다 백업을 진행함
+        time(&now);
+        tm_p = localtime(&now);
+        if (node->option_n) {
+            // 여기서부터 구현하면 된다.
+            // 파일 삭제
+            
+        }
+        fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, node->pathname);
+    }
+
+    pthread_cleanup_pop(1);
+
+    return NULL;
 }
 
 void backup_list_print()
@@ -115,7 +228,7 @@ void twae(const char *absolute_dir)
     char *ptr;
     DIR *dp;
     if (absolute_dir != NULL)
-        strncpy(pathname, absolute_dir, 512);
+        strncpy(pathname, absolute_dir, 511);
     
     if (strlen(pathname) > 255) {
         fprintf(stderr, "path length is too long !\n");
@@ -147,7 +260,7 @@ void twae(const char *absolute_dir)
 
     while ((dirp = readdir(dp)) != NULL)
         if (strcmp(dirp->d_name, ".") && strcmp(dirp->d_name, "..")) {
-            strncpy(ptr, dirp->d_name, 512);
+            strncpy(ptr, dirp->d_name, 511);
             twae(NULL);
         }
     ptr[-1] = 0;
@@ -164,8 +277,8 @@ void add_command_action(int argc, char **argv)
     int n_option_number = 0; // 백업 파일의 최대 개수
     int t_option = 0;
     int t_option_number = 0; // 백업 파일의 보관 기간
-    int d_option = 0;
-    char *pathname;
+    int d_option = 0, d_path_pos;
+    char pathname[512];
     // printf("add 액션 처리\n");
     // i) 옵션 처리 -m -n -t -d 처리하기
     if (argc < 3) {
@@ -173,25 +286,26 @@ void add_command_action(int argc, char **argv)
         return;
     }
 
-    if (strcmp("-d", argv[1]) == 0) {
-        // add -d testdir 5 같은 경우.
-        // pass
-        pathname = NULL;
-        period = atoi(argv[3]);
+    // 절대 경로화
+    if (argv[1][0] != '/') {
+        strncpy(pathname, binary_directory, 511);
+        strncat(pathname, "/", 511);
+        strncat(pathname, argv[1], 511);
     } else {
-        // 나중에 상대 경로 처리를 해 줘야 한다. 상대->절대
-        pathname = argv[1];
-        struct stat statbuf;
-        if (lstat(argv[1], &statbuf) < 0) {
-            fprintf(stderr, "lstat error : %s\n", argv[1]);
-            return;
-        }
-        if (!S_ISREG(statbuf.st_mode)) {
-            fprintf(stderr, "%s is not regular file\n", argv[1]);
-            return;
-        }
-        period = atoi(argv[2]);
+        strncpy(pathname, argv[1], 511);
     }
+    struct stat statbuf;
+    if (lstat(pathname, &statbuf) < 0 && access(pathname, R_OK) != 0) {
+        fprintf(stderr, "해당 파일에 접근할 수 없습니다. : %s\n", pathname);
+        return;
+    }
+
+    if (!S_ISREG(statbuf.st_mode)) {
+        fprintf(stderr, "%s is not regular file\n", pathname);
+        return;
+    }
+
+    period = atoi(argv[2]);
     
     if (strchr(argv[2], '.') != NULL) {
         fprintf(stderr, "PERIOD : positive integer ONLY\n");
@@ -270,12 +384,9 @@ void add_command_action(int argc, char **argv)
             d_option = 1;
             if (i + 1 >= argc) {
                 fprintf(stderr, "usage : add <filename> <period> -d DIRECTORY\n");
-                fprintf(stderr, "usage : add -d DIRECTORY <period>\n");
                 return;
             }
             struct stat statbuf;
-            // d옵션에서 인자를 상대경로로 주면 뭐지?
-            // 일단 절대 경로 기준으로만 처리하기로 함 나중에 수정
             if (lstat(argv[i+1], &statbuf) < 0) {
                 fprintf(stderr, "lstat error\n");
                 return;
@@ -284,14 +395,39 @@ void add_command_action(int argc, char **argv)
                 fprintf(stderr, "%s is not directory\n", argv[i + 1]);
                 return;
             }
+            d_path_pos = i + 1;
             printf("%s is directory\n", argv[i + 1]);
         }
     }
-    // -d 옵션이 있는 경우 그 파일들을 모두 백업 처리 (옵션은 똑같이 처리하여 구조체에 넣는다.)
-    if (d_option) {
-
-    }
-
     // 리스트에 append
     backup_list_append(pathname, period, m_option, n_option, n_option_number, t_option, t_option_number);
+
+    // -d 옵션이 있는 경우 그 파일들을 모두 백업 처리 (옵션은 똑같이 처리하여 구조체에 넣는다.)
+    // 절대 경로화 필요.
+    if (d_option) {
+        // 일단 모든 파일을 출력해보기 테스트
+        // 절대 경로화
+        if (argv[1][0] != '/') {
+            strncpy(pathname, binary_directory, 511);
+            strncat(pathname, "/", 511);
+            strncat(pathname, argv[d_path_pos], 511);
+        } else {
+            strncpy(pathname, argv[d_path_pos], 511);
+        }   
+        
+        twae(pathname);
+
+    }
+}
+// list 명령어 처리
+void list_command_action(void)
+{
+    // LL을 탐색하면서 어떤게 백업 됐는지 출력함.
+    // 현재 백업 실행중인 모든 백업 리스트 출력
+    // 한 줄에 한 개 파일의 절대경로, PERIOD, OPTION 출력
+    struct backup_file_node *curr = backup_list.start;
+    while (curr) {
+        printf("%s\t%d\n", curr->pathname, curr->period);
+        curr = curr->next;
+    }
 }
