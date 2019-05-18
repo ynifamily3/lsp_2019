@@ -44,14 +44,14 @@ struct backuped_file_queue {
     int front, rear;
     int limit; // n옵션의 인자가 된다. (최대 100의 값이 들어온다고 가정)
     int number_of_nodes;
-    char *queue[100];
+    char *queue[101];
 
 };
 
 void backuped_file_init(struct backuped_file_queue *bfq, int n_option_arg) {
     bfq->number_of_nodes = 0;
     bfq->front = bfq->rear = 0;
-    bfq->limit = n_option_arg;
+    bfq->limit = n_option_arg + 1;
 }
 
 void backuped_file_add(struct backuped_file_queue *bfq, const char *data) {
@@ -62,8 +62,12 @@ void backuped_file_add(struct backuped_file_queue *bfq, const char *data) {
     ++bfq->number_of_nodes;
     ++bfq->rear;
     bfq->rear %= bfq->limit;
-    bfq->queue[bfq->rear] = (char *)calloc(1, strlen(data) + 1);
-    strncpy(bfq->queue[bfq->rear], data, 511);
+    printf("bfq->queue[%d] 에 %lu만큼 할당 시도\n", bfq->rear, strlen(data) + 1);
+    char *tmp = (char *)calloc(1, strlen(data) + 1); // => 이건 에러 없음.
+    bfq->queue[bfq->rear] = tmp;
+    printf("memory allocated at %d\n", bfq->rear);
+    strncpy(bfq->queue[bfq->rear], data, strlen(data));
+    printf("<%s>\n", bfq->queue[bfq->rear]);
 
 }
 
@@ -73,6 +77,8 @@ void backuped_file_del(struct backuped_file_queue *bfq) {
         fprintf(stderr, "queue is empty\n");
         return;
     }
+    printf("free..\n");
+    bfq->queue[bfq->front] = NULL;
     free(bfq->queue[bfq->front]); // 쓰이지 않을 데이터는 힙에서 해제
     --bfq->number_of_nodes;
     ++bfq->front;
@@ -171,10 +177,14 @@ void *file_backup_thr(void *args)
         tm_p = localtime(&now);
         if (node->option_n) {
             // 여기서부터 구현하면 된다.
-            // 파일 삭제
-            
+            if (bfq->number_of_nodes >= bfq->limit - 1) {
+                backuped_file_del(bfq);
+            }
         }
         fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, node->pathname);
+        if (node->option_n) {
+            backuped_file_add(bfq, "backback");
+        }
     }
 
     pthread_cleanup_pop(1);
