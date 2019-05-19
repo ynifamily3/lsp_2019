@@ -62,12 +62,10 @@ void backuped_file_add(struct backuped_file_queue *bfq, const char *data) {
     ++bfq->number_of_nodes;
     ++bfq->rear;
     bfq->rear %= bfq->limit;
-    printf("bfq->queue[%d] 에 %lu만큼 할당 시도\n", bfq->rear, strlen(data) + 1);
     char *tmp = (char *)calloc(1, strlen(data) + 1); // => 이건 에러 없음.
     bfq->queue[bfq->rear] = tmp;
-    printf("memory allocated at %d\n", bfq->rear);
     strncpy(bfq->queue[bfq->rear], data, strlen(data));
-    printf("<%s>\n", bfq->queue[bfq->rear]);
+    bfq->queue[bfq->rear][strlen(data)] = '\0';
 
 }
 
@@ -77,12 +75,12 @@ void backuped_file_del(struct backuped_file_queue *bfq) {
         fprintf(stderr, "queue is empty\n");
         return;
     }
-    printf("free..\n");
-    bfq->queue[bfq->front] = NULL;
-    free(bfq->queue[bfq->front]); // 쓰이지 않을 데이터는 힙에서 해제
     --bfq->number_of_nodes;
     ++bfq->front;
     bfq->front %= bfq->limit;
+    // printf("free.. [%d] : %s\n", bfq->front, bfq->queue[bfq->front]);
+    bfq->queue[bfq->front] = NULL;
+    free(bfq->queue[bfq->front]); // 쓰이지 않을 데이터는 힙에서 해제
 }
 
 
@@ -92,15 +90,53 @@ void backup_list_init()
     backup_list.start = NULL;
 }
 
+// 모두 삭제를 위한 내부함수
+void backup_list_pop()
+{
+    if (backup_list.number_of_nodes == 0) {
+        fprintf(stderr, "이미 백업 리스트 비었음\n");
+        return;
+    }
+    --backup_list.number_of_nodes;
+    struct backup_file_node *tmp = backup_list.start;
+    backup_list.start = backup_list.start->next;
+    free(tmp);
+}
+
 void backup_list_delete(char *pathname)
 {
-    if(pathname) {
-
+    // 백업 중인 작업 중지
+    int find = 0;
+    struct backup_file_node *prev = NULL;
+    struct backup_file_node *curr = backup_list.start;
+    while (curr) {
+        if (strcmp(curr->pathname, pathname) == 0) {
+            pthread_cancel(curr->backup_thread); // 내부 백업 과정을 중지시킴
+            find = 1;
+            break;
+        }
+        prev = curr;
+        curr = curr->next;
     }
+    if (!find) {
+        fprintf(stderr, "%s는 백업되지 않음\n", pathname);
+        return;
+    }
+    // curr에 있는 것 메모리 해제함. 링크를 이어줌.
+
+    // 찾은 노드가 head에 있는 것이라면
+    if (curr == backup_list.start) {
+        backup_list_pop(); //헤드에 있는 것
+        return;
+    }
+    prev->next = curr->next;
+    free(curr);
+    --backup_list.number_of_nodes;
 }
 
 void backup_list_append(char *pathname, int period, int option_m, int option_n, int maxn, int option_t, int store_time)
 {
+    /*
     printf("============ 다음 파일을 백업합니다. ============\n");
     printf("파일명 : %s\n", pathname);
     printf("백업 주기 : %d초마다\n", period);
@@ -120,10 +156,14 @@ void backup_list_append(char *pathname, int period, int option_m, int option_n, 
         printf("백업된 파일은 얼마가 지나든 계속 살아 있습니다.\n");
     }
     printf("=================================================\n");
+    */
 
     // 링크드 리스트 구성하기.
     struct backup_file_node *node = (struct backup_file_node *)calloc(1, sizeof(struct backup_file_node));
-    node->next = backup_list.start;
+    if (backup_list.number_of_nodes != 0)
+        node->next = backup_list.start;
+    else
+        node->next = NULL;
     strncpy(node->pathname, pathname, 511);
     node->period = period;
     node->option_m = option_m;
@@ -140,11 +180,11 @@ void backup_list_append(char *pathname, int period, int option_m, int option_n, 
 void cleanup(void *args)
 {
     if (args == NULL) {
-        printf("n 옵션이 없으므로 해제할 것도 없음\n");
+        // printf("n 옵션이 없으므로 해제할 것도 없음\n");
         return;
     }
     struct backuped_file_queue *bfq = (struct backuped_file_queue *)args;
-    printf("이 파일은 더 이상 백업하지 않으므로 메모리를 해제합니다.");
+    // printf("이 파일은 더 이상 백업하지 않으므로 메모리를 해제합니다.");
     // 큐에 들어 있는 모든 것을 pop해야 됨.
     // 하지만, 실제로 파일은 삭제하지 않는다. -n 옵션에서 걸린 것이 아니라, 단순히 백업을 중지하기 때문이다.
     while(bfq->front != bfq->rear)
@@ -157,6 +197,7 @@ void *file_backup_thr(void *args)
     struct backup_file_node *node = (struct backup_file_node *)args;
     struct backuped_file_queue *bfq = NULL; //  백업된 파일 리스트
     struct tm *tm_p;
+    char backuped_pathname[512];
     time_t now;
     time(&now);
     tm_p = localtime(&now);
@@ -181,9 +222,12 @@ void *file_backup_thr(void *args)
                 backuped_file_del(bfq);
             }
         }
-        fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, node->pathname);
+        sprintf(backuped_pathname, "%s_%02d%02d%02d%02d%02d%02d", node->pathname, (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
+        fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
         if (node->option_n) {
-            backuped_file_add(bfq, "backback");
+            // 백업된 파일 리스트에 추가한다.
+            // printf("백업됨 : %s\n", backuped_pathname);
+            backuped_file_add(bfq, backuped_pathname);
         }
     }
 
@@ -230,7 +274,7 @@ void backup_list_print()
  * 절대경로로 디렉토리가 주어지면, 모든 파일 리스트를 뱉음. (재귀적으로)
  */
 
-void twae(const char *absolute_dir)
+void twae(const char *absolute_dir, int period, int option_m, int option_n, int maxn, int option_t, int store_time)
 {
     static char pathname[512] = "";
     struct dirent *dirp;
@@ -252,7 +296,8 @@ void twae(const char *absolute_dir)
 
     if (S_ISREG(statbuf.st_mode)) {
         // 일반 FILE
-        printf("%s\n", pathname);
+        // printf("%s\n", pathname);
+        backup_list_append(pathname, period, option_m, option_n, maxn, option_t, store_time); // 백업리스트에 추가
         return;
     }
     else if (!S_ISDIR(statbuf.st_mode))
@@ -271,7 +316,7 @@ void twae(const char *absolute_dir)
     while ((dirp = readdir(dp)) != NULL)
         if (strcmp(dirp->d_name, ".") && strcmp(dirp->d_name, "..")) {
             strncpy(ptr, dirp->d_name, 511);
-            twae(NULL);
+            twae(NULL, period, option_m, option_n, maxn, option_t, store_time);
         }
     ptr[-1] = 0;
     closedir(dp);
@@ -417,15 +462,14 @@ void add_command_action(int argc, char **argv)
     if (d_option) {
         // 일단 모든 파일을 출력해보기 테스트
         // 절대 경로화
-        if (argv[1][0] != '/') {
+        if (argv[d_path_pos][0] != '/') {
             strncpy(pathname, binary_directory, 511);
             strncat(pathname, "/", 511);
             strncat(pathname, argv[d_path_pos], 511);
         } else {
             strncpy(pathname, argv[d_path_pos], 511);
-        }   
-        
-        twae(pathname);
+        }
+        twae(pathname, period, m_option, n_option, n_option_number, t_option, t_option_number);
 
     }
 }
@@ -439,5 +483,39 @@ void list_command_action(void)
     while (curr) {
         printf("%s\t%d\n", curr->pathname, curr->period);
         curr = curr->next;
+    }
+}
+
+void remove_command_action(int argc, char **argv)
+{
+    char pathname[512];
+    if (argc != 2) {
+        fprintf(stderr, "usage :\nremove -a\nremove <filename>\n");
+        return;
+    }
+    if (strlen(argv[1]) == 2 && argv[1][0] == '-' && argv[1][1] == 'a') {
+        // 모두 삭제 (백업 중인 작업 중지)
+        struct backup_file_node *curr = backup_list.start;
+        while (curr) {
+            printf("백업 중지 : %s\n", curr->pathname);
+            pthread_cancel(curr->backup_thread);
+            curr = curr->next;
+        }
+
+        // 모두 삭제 (링크드 리스트에서 백업 리스트 없애기)
+        while (backup_list.number_of_nodes != 0) {
+            backup_list_pop();
+        }
+    } else {
+        // 지정한 <filename> 삭제
+        // 절대 경로화
+        if (argv[1][0] != '/') {
+            strncpy(pathname, binary_directory, 511);
+            strncat(pathname, "/", 511);
+            strncat(pathname, argv[1], 511);
+        } else {
+            strncpy(pathname, argv[1], 511);
+        }
+        backup_list_delete(pathname); // 해당 파일 백업을 중단
     }
 }

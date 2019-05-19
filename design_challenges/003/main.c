@@ -116,6 +116,13 @@ int main(int argc, char *argv[])
                 free(add_argv[i]); // 메모리 해제
         } else if (check_list(input_command)) {
             list_command_action();
+        } else if (check_remove(input_command)) {
+            int remove_argc;
+            char *remove_argv[2];
+            parse_args(input_command, &remove_argc, remove_argv);
+            remove_command_action(remove_argc, remove_argv);
+            for (int i = 0; i < remove_argc; i++)
+                free(remove_argv[i]);
         }
         else if (input_command_length != 0) {
             printf("Invalid command.\n");

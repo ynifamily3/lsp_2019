@@ -33,7 +33,6 @@ int check_vim(const char *command)
 
 int check_add(const char *command)
 {
-    // i) -d 옵션 없을 경우
     size_t len = strlen(command);
     if ((len >= 3 && command[0] == 'a' && command[1] == 'd' && command[2] == 'd' && command[3] == '\0') ||
         (len >= 4 && command[0] == 'a' && command[1] == 'd' && command[2] == 'd' && command[3] == ' ')) {
@@ -49,6 +48,18 @@ int check_list(const char *command)
         return 1;
     }
     return 0;
+}
+
+int check_remove(const char *command)
+{
+    // i) -d 옵션 없을 경우
+    size_t len = strlen(command);
+    if ((len >= 6 && command[0] == 'r' && command[1] == 'e' && command[2] == 'm' && command[3] == 'o' && command[4] == 'v' && command[5] == 'e' && command[6] == '\0') ||
+        (len >= 7 && command[0] == 'r' && command[1] == 'e' && command[2] == 'm' && command[3] == 'o' && command[4] == 'v' && command[5] == 'e' && command[6] == ' ')) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 void parse_args(char *input_text, int *arg_count, char **arg_vector)
