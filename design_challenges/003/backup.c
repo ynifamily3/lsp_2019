@@ -10,6 +10,10 @@
 #include <string.h>
 #include <time.h>
 
+#ifndef R_OK
+#define R_OK 4
+#endif
+
 extern char (binary_directory)[512]; // in main c
 extern char (backup_directory)[512]; // in main c
 
@@ -609,4 +613,44 @@ void remove_command_action(int argc, char **argv)
         printf("백업 중지 : %s\n", pathname);
         backup_list_delete(pathname); // 해당 파일 백업을 중단
     }
+}
+
+/*
+    compare <FILENAME1> <FILENAME2>
+    FILENAME1과 FILENAME2의 mtime과 파일 크기 비교. 백업한 파일, 백업할 파일 모두 적용 가능 -> O
+    FILENAME이 존재하지 않거나 일반 파일이 아닐 경우 에러 처리 후 프롬프트로 제어가 넘어감 -> O
+    입력 인자가 2개가 아닐 경우 에러 처리 후 프롬프트로 제어가 넘어감 -> O
+    mtime과 파일 크기가 같은 경우 두 파일은 동일한 파일로 취급 -> O
+    두 파일이 동일할 경우 표준출력으로 동일하다는 문구 출력 -> O
+    두 파일이 동일하지 않을 때 표준출력으로 각 파일의 mtime과 파일 크기 출력
+*/
+void compare_command_action(int argc, char **argv)
+{
+    char absPath1[512], absPath2[512];
+    struct stat statbuf1, statbuf2;
+    if (argc != 3) {
+        fprintf(stderr, "usage: compare <FILENAME1> <FILENAME2>\n");
+        return;
+    }
+    if (lstat(argv[1], &statbuf1) < 0 || lstat(argv[2], &statbuf2) < 0) {
+        fprintf(stderr, "올바르지 않은 파일 경로\n");
+        return;
+    }
+    if (!S_ISREG(statbuf1.st_mode) || !S_ISREG(statbuf2.st_mode)) {
+        fprintf(stderr, "일반 파일만 입력가능합니다.\n");
+        return;
+    }
+    if (statbuf1.st_size != statbuf2.st_size || statbuf1.st_mtime != statbuf2.st_mtime) {
+        get_absolute_path(absPath1, argv[1]);
+        get_absolute_path(absPath2, argv[2]);
+        printf("두 파일은 다릅니다.\n%s\tsize : [%ld]\tmtime : [%ld]\n%s\tsize : [%ld]\tmtime : [%ld]\n", absPath1, statbuf1.st_size, statbuf1.st_mtime, absPath2, statbuf2.st_size, statbuf2.st_mtime);
+        return;
+    }
+    printf("두 파일은 동일합니다.\n");
+}
+void recover_command_action(int argc, char **argv)
+{
+    printf("리코버 커맨드\n");
+    if(argc){}
+    if(argv){}
 }

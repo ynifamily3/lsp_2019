@@ -62,6 +62,28 @@ int check_remove(const char *command)
     }
 }
 
+int check_compare(const char *command)
+{
+    size_t len = strlen(command);
+    if ((len >= 7 && command[0] == 'c' && command[1] == 'o' && command[2] == 'm' && command[3] == 'p' && command[4] == 'a' && command[5] == 'r' && command[6] == 'e' && command[7] == '\0') ||
+        (len >= 8 && command[0] == 'c' && command[1] == 'o' && command[2] == 'm' && command[3] == 'p' && command[4] == 'a' && command[5] == 'r' && command[6] == 'e' && command[7] == ' ')) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int check_recover(const char *command)
+{
+    size_t len = strlen(command);
+    if ((len >= 7 && command[0] == 'r' && command[1] == 'e' && command[2] == 'c' && command[3] == 'o' && command[4] == 'v' && command[5] == 'e' && command[6] == 'r' && command[7] == '\0') ||
+        (len >= 8 && command[0] == 'r' && command[1] == 'e' && command[2] == 'c' && command[3] == 'o' && command[4] == 'v' && command[5] == 'e' && command[6] == 'r' && command[7] == ' ')) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 void parse_args(char *input_text, int *arg_count, char **arg_vector)
 {
     // 동적 메모리 할당을 함.

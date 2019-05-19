@@ -118,11 +118,25 @@ int main(int argc, char *argv[])
             list_command_action();
         } else if (check_remove(input_command)) {
             int remove_argc;
-            char *remove_argv[2];
+            char *remove_argv[11];
             parse_args(input_command, &remove_argc, remove_argv);
             remove_command_action(remove_argc, remove_argv);
             for (int i = 0; i < remove_argc; i++)
                 free(remove_argv[i]);
+        } else if (check_compare(input_command)) {
+            int compare_argc;
+            char *compare_argv[11];
+            parse_args(input_command, &compare_argc, compare_argv);
+            compare_command_action(compare_argc, compare_argv);
+            for (int i = 0; i < compare_argc; i++)
+                free(compare_argv[i]);
+        } else if (check_recover(input_command)) {
+            int recover_argc;
+            char *recover_argv[11];
+            parse_args(input_command, &recover_argc, recover_argv);
+            recover_command_action(recover_argc, recover_argv);
+            for (int i = 0; i < recover_argc; i++)
+                free(recover_argv[i]);
         }
         else if (input_command_length != 0) {
             printf("Invalid command.\n");
