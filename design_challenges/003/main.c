@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     }
 
     backup_list_init(); // 초기화..
-    getcwd(binary_directory, 512); // 해당 프로그램이 있는 현재 경로의 절댓값.
+    getcwd(binary_directory, 511); // 해당 프로그램이 있는 현재 경로의 절댓값.
 
     if (argc == 2) {
         if (argv[1][0] == '/') {
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     log_file = fopen("log.txt", "a");
     setbuf(log_file, NULL); // 로그 버퍼 없음
 
-    getcwd(backup_directory, 512);
+    getcwd(backup_directory, 511);
     printf("바이너리 경로 : %s\n", binary_directory);
     printf("백업저장 경로 : %s\n", backup_directory);
     setbuf(stdout, NULL);
