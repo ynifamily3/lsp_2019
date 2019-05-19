@@ -13,6 +13,9 @@
 #ifndef R_OK
 #define R_OK 4
 #endif
+#ifndef F_OK
+#define F_OK 0
+#endif
 
 extern char (binary_directory)[512]; // in main c
 extern char (backup_directory)[512]; // in main c
@@ -310,14 +313,15 @@ void *file_backup_thr(void *args)
             backuped_file_del(bfq);
         }
         sprintf(backuped_pathname, "%s/%s_%02d%02d%02d%02d%02d%02d", backup_directory, getFileName(node->pathname), (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
-        fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
         // 백업 파일을 실질적으로 생성함
-        sprintf(sysCmd, "cp %s %s", node->pathname, backuped_pathname);
+        sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", node->pathname, backuped_pathname);
         if (system(sysCmd) != 0) {
-            fprintf(stderr, "백업 파일 생성에 실패함.\n%s->%s\n", node->pathname, backuped_pathname);
-            return NULL;
+            // 백업하려는 파일이 접근불가 한 경우
+            //fprintf(stderr, "[warning] %s 파일에 더 이상 접근할 수 없습니다.\n 복구하시려면 recover %s ... 명령을 사용하십시오.\n", node->pathname, node->pathname);
+        } else {
+            fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
+            backuped_file_add(bfq, backuped_pathname); // 백업된 파일에 추가한다.
         }
-        backuped_file_add(bfq, backuped_pathname); // 백업된 파일에 추가한다.
 
         // 매 PERIOD마다 백업 파일을 생성하고 기존 모든 백업 파일의 생성시간을 확인. 확인한 파일의 생성시간이 주어진 TIME보다 크면 해당 파일 삭제 
         if (node->option_t) {
@@ -650,7 +654,23 @@ void compare_command_action(int argc, char **argv)
 }
 void recover_command_action(int argc, char **argv)
 {
-    printf("리코버 커맨드\n");
-    if(argc){}
+    char pathname[512];
+    if (argc != 2 && argc != 4) {
+        fprintf(stderr, "usage :\nrecover <filename>\nrecover <filename> -n <newfile>\n");
+        return;
+    }
+    if (argc == 4 && strcmp(argv[2], "-n") != 0) {
+        fprintf(stderr, "usage :\nrecover <filename>\nrecover <filename> -n <newfile>\n");
+        return;
+    }
+    if (argc == 2 && access(argv[1], R_OK) != 0) {
+        // 기존 파일은 삭제 되도 상관없나?
+    }
+    if (argc == 4 && access(argv[3], F_OK) == 0) {
+        get_absolute_path(pathname, argv[3]);
+        fprintf(stderr, "%s already exists!!\n", pathname);
+        return;
+    }
+    
     if(argv){}
 }
