@@ -309,7 +309,6 @@ void *file_backup_thr(void *args)
         fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
         // 백업 파일을 실질적으로 생성함
         sprintf(sysCmd, "cp %s %s", node->pathname, backuped_pathname);
-        printf("test : %s -> %s\n", backup_directory, sysCmd);
         if (system(sysCmd) != 0) {
             fprintf(stderr, "백업 파일 생성에 실패함.\n%s->%s\n", node->pathname, backuped_pathname);
             return NULL;
@@ -331,7 +330,7 @@ void *file_backup_thr(void *args)
                 if (now - statbuf.st_mtime > node->store_time) { // 부등호를 >= 으로 설정하면 정확히 그 시점에 파일이 삭제됨. add test.txt 1 -t 10 하면 10개만 남음
                     // 이 파일은 오래되어서 삭제
                     // 개념상 큐의 첫 부분임이 분명하므로 deque로 충분하다.
-                    printf("삭제 %s\n", bfq->queue[idx]);
+                    // printf("삭제 %s\n", bfq->queue[idx]);
                     sprintf(sysCmd, "rm %s", bfq->queue[idx]);
                     if (system(sysCmd) != 0) {
                         fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", bfq->queue[idx]);
@@ -422,10 +421,7 @@ void twae(const char *absolute_dir, int period, int option_m, int option_n, int 
 
     while ((dirp = readdir(dp)) != NULL)
         if (strcmp(dirp->d_name, ".") && strcmp(dirp->d_name, "..")) {
-            printf("1 : [%s] : %lu\n", backup_directory, strlen(backup_directory));
-            printf("strlen 36? : %s ...    %lu\n", ptr, strlen(dirp->d_name));
             strcpy(ptr, dirp->d_name); // 이 부분에서 전역변수 backup_directory가 오염됨.. 해결 : strncpy -> strcpy로 수정함
-            printf("2 : [%s] : %lu\n", backup_directory, strlen(backup_directory));
             twae(NULL, period, option_m, option_n, maxn, option_t, store_time);
         }
     ptr[-1] = 0;
@@ -560,7 +556,12 @@ void add_command_action(int argc, char **argv)
 
     } else {
         // 리스트에 append
-        backup_list_append(pathname, period, m_option, n_option, n_option_number, t_option, t_option_number);
+        if(S_ISREG(statbuf.st_mode))
+            backup_list_append(pathname, period, m_option, n_option, n_option_number, t_option, t_option_number);
+        else  {// 디렉토리 등
+            fprintf(stderr, "일반 파일만 백업할 수 있습니다. 디렉터리는 -d 옵션 사용.\n");
+            return;
+        }
     }
 }
 // list 명령어 처리
