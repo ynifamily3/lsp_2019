@@ -10,7 +10,8 @@
 #include <string.h>
 #include <time.h>
 
-extern char binary_directory[512]; // in main c
+extern char (binary_directory)[512]; // in main c
+extern char (backup_directory)[512]; // in main c
 
 FILE *log_file;
 
@@ -49,6 +50,20 @@ struct backuped_file_queue {
 
 };
 
+// 가장 최근에 백업된 파일의 생성 시간을 얻어옴
+// 입력 : 큐
+// 출력 st_mtime
+time_t get_last_backuped_time(struct backuped_file_queue *bfq)
+{
+    struct stat statbuf;
+    if (lstat(bfq->queue[bfq->rear], &statbuf) < 0) {
+        fprintf(stderr, "lstat error\n");
+        return -1;
+    }
+    return statbuf.st_mtime;
+    // bfq->queue[bfq->rear]
+}
+
 void get_absolute_path(char *result, char *path)
 {
     char real_path[512];
@@ -59,7 +74,10 @@ void get_absolute_path(char *result, char *path)
 void backuped_file_init(struct backuped_file_queue *bfq, int n_option_arg) {
     bfq->number_of_nodes = 0;
     bfq->front = bfq->rear = 0;
-    bfq->limit = n_option_arg + 1;
+    if (n_option_arg < 0)
+        bfq->limit = 101; // 최대 보관 한계 100개
+    else
+        bfq->limit = n_option_arg + 1;
 }
 
 void backuped_file_add(struct backuped_file_queue *bfq, const char *data) {
@@ -205,7 +223,6 @@ void backup_list_append(char *pathname, int period, int option_m, int option_n, 
 void cleanup(void *args)
 {
     if (args == NULL) {
-        // printf("n 옵션이 없으므로 해제할 것도 없음\n");
         return;
     }
     struct backuped_file_queue *bfq = (struct backuped_file_queue *)args;
@@ -217,54 +234,120 @@ void cleanup(void *args)
     free(args);
 }
 
+
+// 경로에서 파일 이름만 가져옴
+char* getFileName(char *pathname)
+{
+    char *fn_ptr;
+    while(*pathname) {
+        if(*pathname == '/' && (pathname +1) != NULL )
+            fn_ptr = pathname+1;
+        ++pathname;
+    }
+    return fn_ptr;
+}
+
 void *file_backup_thr(void *args)
 {
     struct backup_file_node *node = (struct backup_file_node *)args;
     struct backuped_file_queue *bfq = NULL; //  백업된 파일 리스트
     struct tm *tm_p;
+    struct stat statbuf;
     char backuped_pathname[512];
     time_t now;
+    time_t recent_backup_mtime; //최근에 백업한 시간
+    int isFirst = 1;
+    char sysCmd[1024];
     time(&now);
     tm_p = localtime(&now);
 
-    if (node->option_n) {
-        // n option enabled
-        bfq = (struct backuped_file_queue *)calloc(1, sizeof(struct backuped_file_queue));
-        backuped_file_init(bfq, node->maxn);
-        // 쓰레드가 끝나기 전에 bfq에 할당된 동적 메모리가 반납되어야 한다.
-    }
-
+    bfq = (struct backuped_file_queue *)calloc(1, sizeof(struct backuped_file_queue));
+    backuped_file_init(bfq, node->maxn);
+    // 쓰레드가 끝나기 전에 bfq에 할당된 동적 메모리가 반납되어야 한다.
     pthread_cleanup_push(cleanup, bfq);
+
+    if (lstat(node->pathname, &statbuf) < 0) {
+        fprintf(stderr, "백업할 파일이 없습니다.\n");
+        return NULL;
+    }
+    recent_backup_mtime = statbuf.st_mtime; // 원본 파일의 수정 시간 기록
 
     fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s added\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, node->pathname);
     while (1) {
         sleep(node->period); // period 마다 백업을 진행함
         time(&now);
         tm_p = localtime(&now);
-        if (node->option_n) {
-            // 여기서부터 구현하면 된다.
-            if (bfq->number_of_nodes >= bfq->limit - 1) {
-                backuped_file_del(bfq);
+
+        // 1. m 옵션 확인 후 파일이 수정되지 않았다면 백업 처리를 하지 않음
+        if (node->option_m) {
+            if (lstat(node->pathname, &statbuf) < 0) {
+                fprintf(stderr, "백업할 파일이 없습니다.\n");
+                return NULL;
+            }
+            if (!isFirst && recent_backup_mtime == statbuf.st_mtime) {
+                // 수정 시간이 안 바뀌어서 백업을 진행하지 않음
+                continue;
+            }
+            // 수정 시간이 바뀌어 백업을 진행함. 시간은 갱신함.
+            isFirst = 0;
+            recent_backup_mtime = statbuf.st_mtime;
+        }
+
+        // 백업 한계에 다다른 경우 오래된 백업부터 삭제
+        if (bfq->number_of_nodes >= bfq->limit - 1) {
+            int front = bfq->front + 1;
+            front %= bfq->limit;
+            // printf("다음 파일을 삭제했음 : %s\n", bfq->queue[front]);
+            sprintf(sysCmd, "rm %s", bfq->queue[front]);
+            if (system(sysCmd) != 0) {
+                fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", bfq->queue[front]);
+                return NULL;
+            }
+            backuped_file_del(bfq);
+        }
+        sprintf(backuped_pathname, "%s/%s_%02d%02d%02d%02d%02d%02d", backup_directory, getFileName(node->pathname), (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
+        fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
+        // 백업 파일을 실질적으로 생성함
+        sprintf(sysCmd, "cp %s %s", node->pathname, backuped_pathname);
+        printf("test : %s -> %s\n", backup_directory, sysCmd);
+        if (system(sysCmd) != 0) {
+            fprintf(stderr, "백업 파일 생성에 실패함.\n%s->%s\n", node->pathname, backuped_pathname);
+            return NULL;
+        }
+        backuped_file_add(bfq, backuped_pathname); // 백업된 파일에 추가한다.
+
+        // 매 PERIOD마다 백업 파일을 생성하고 기존 모든 백업 파일의 생성시간을 확인. 확인한 파일의 생성시간이 주어진 TIME보다 크면 해당 파일 삭제 
+        if (node->option_t) {
+            // 큐를 선회함
+            time(&now); // current time
+            for (int i = 0; i < bfq->number_of_nodes; i++) {
+                int idx = bfq->front + i + 1;
+                idx %= bfq->limit;
+                // bfq->queue[idx] 파일에 대한 lstat실행
+                if (lstat(bfq->queue[idx], &statbuf) < 0) {
+                    fprintf(stderr, "백업된 파일에 접근할 수 없음. \n => %s\n", bfq->queue[idx]);
+                    return NULL;
+                }
+                if (now - statbuf.st_mtime > node->store_time) { // 부등호를 >= 으로 설정하면 정확히 그 시점에 파일이 삭제됨. add test.txt 1 -t 10 하면 10개만 남음
+                    // 이 파일은 오래되어서 삭제
+                    // 개념상 큐의 첫 부분임이 분명하므로 deque로 충분하다.
+                    printf("삭제 %s\n", bfq->queue[idx]);
+                    sprintf(sysCmd, "rm %s", bfq->queue[idx]);
+                    if (system(sysCmd) != 0) {
+                        fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", bfq->queue[idx]);
+                        return NULL;
+                    }
+                    backuped_file_del(bfq);
+                }
             }
         }
-        sprintf(backuped_pathname, "%s_%02d%02d%02d%02d%02d%02d", node->pathname, (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
-        fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
-        if (node->option_n) {
-            // 백업된 파일 리스트에 추가한다.
-            backuped_file_add(bfq, backuped_pathname);
-        }
+
     }
 
     pthread_cleanup_pop(1);
 
     return NULL;
 }
-
-void backup_list_print()
-{
-
-}
-
 
 /*
 백업해야할 파일(FILENAME)을 백업 리스트에 새롭게 추가
@@ -339,7 +422,10 @@ void twae(const char *absolute_dir, int period, int option_m, int option_n, int 
 
     while ((dirp = readdir(dp)) != NULL)
         if (strcmp(dirp->d_name, ".") && strcmp(dirp->d_name, "..")) {
-            strncpy(ptr, dirp->d_name, 511);
+            printf("1 : [%s] : %lu\n", backup_directory, strlen(backup_directory));
+            printf("strlen 36? : %s ...    %lu\n", ptr, strlen(dirp->d_name));
+            strcpy(ptr, dirp->d_name); // 이 부분에서 전역변수 backup_directory가 오염됨.. 해결 : strncpy -> strcpy로 수정함
+            printf("2 : [%s] : %lu\n", backup_directory, strlen(backup_directory));
             twae(NULL, period, option_m, option_n, maxn, option_t, store_time);
         }
     ptr[-1] = 0;
@@ -353,9 +439,9 @@ void add_command_action(int argc, char **argv)
     int period = 0;
     int m_option = 0;
     int n_option = 0;
-    int n_option_number = 0; // 백업 파일의 최대 개수
+    int n_option_number = -1; // 백업 파일의 최대 개수
     int t_option = 0;
-    int t_option_number = 0; // 백업 파일의 보관 기간
+    int t_option_number = -1; // 백업 파일의 보관 기간
     int d_option = 0;
     char pathname[512];
     // printf("add 액션 처리\n");
@@ -415,7 +501,7 @@ void add_command_action(int argc, char **argv)
                 return;
             }
             n_option_number = atoi(argv[i + 1]);
-            if (n_option_number <= 0) {
+            if (n_option_number < 1) {
                 fprintf(stderr, "invalid NUMBER : %s\n", argv[i + 1]);
                 return;
             }
@@ -440,7 +526,7 @@ void add_command_action(int argc, char **argv)
                 return;
             }
             t_option_number = atoi(argv[i + 1]);
-            if (t_option_number <= 0) {
+            if (t_option_number < 1) {
                 fprintf(stderr, "invalid TIME : %s\n", argv[i + 1]);
                 return;
             }
@@ -464,8 +550,6 @@ void add_command_action(int argc, char **argv)
                 fprintf(stderr, "%s is not directory\n", argv[1]);
                 return;
             }
-            // debug
-            printf("%s is directory\n", argv[1]);
         }
     }
 
