@@ -1,1 +1,0 @@
-w_ex9.c -Wfloat-conversion
