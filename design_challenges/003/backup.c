@@ -29,16 +29,12 @@ struct backuped_file_queue;
 struct backup_file_node {
     struct backup_file_node *next;
     char pathname[512];
-    
     int period;
     int option_m; // 입력받은 PERIOD마다 파일의 mtime이 수정 되었을 경우 백업 실행
-
     int option_n; // -n NUMBER : NUMBER는 백업한 파일의 최대 개수. 가장 최근 NUMBER개의 백업파일 외 나머지 파일은 삭제
     int maxn;
-    
     int option_t; // -t TIME : 백업해야할 파일에 대한 백업 디렉토리 내 보관 기간을 TIME만큼 설정
     int store_time; // 보관 기간
-    // int option_d; // -d : 지정한 디렉토리 내의 모든 파일들을 백업 리스트에 추가
     pthread_t backup_thread;
     struct backuped_file_queue *bfq;// 백업 중인 파일 리스트 관리를 위한 큐 포인터 
 };
@@ -47,9 +43,6 @@ struct backups_head {
     int number_of_nodes;
     struct backup_file_node *start;
 };
-
-struct backups_head backup_list; // 백업 리스트 전역 변수 선언
-
 
 // 백업파일 관리를 위한 순환 queue, 큐 사이즈는 최대 100
 struct backuped_file_queue {
@@ -60,18 +53,12 @@ struct backuped_file_queue {
 
 };
 
-// 가장 최근에 백업된 파일의 생성 시간을 얻어옴
-// 입력 : 큐
-// 출력 st_mtime
-time_t get_last_backuped_time(struct backuped_file_queue *bfq)
+struct backups_head backup_list; // 백업 리스트 전역 변수 선언
+
+void backup_list_init()
 {
-    struct stat statbuf;
-    if (lstat(bfq->queue[bfq->rear], &statbuf) < 0) {
-        fprintf(stderr, "lstat error\n");
-        return -1;
-    }
-    return statbuf.st_mtime;
-    // bfq->queue[bfq->rear]
+    backup_list.number_of_nodes = 0;
+    backup_list.start = NULL;
 }
 
 void get_absolute_path(char *result, char *path)
@@ -81,7 +68,20 @@ void get_absolute_path(char *result, char *path)
     strncpy(result, real_path, 511);
 }
 
-void backuped_file_init(struct backuped_file_queue *bfq, int n_option_arg) {
+// 경로에서 파일 이름만 가져옴
+char* getFileName(char *pathname)
+{
+    char *fn_ptr;
+    while (*pathname) {
+        if(*pathname == '/' && (pathname +1) != NULL )
+            fn_ptr = pathname+1;
+        ++pathname;
+    }
+    return fn_ptr;
+}
+
+void backuped_file_init(struct backuped_file_queue *bfq, int n_option_arg)
+{
     bfq->number_of_nodes = 0;
     bfq->front = bfq->rear = 0;
     if (n_option_arg < 0)
@@ -90,7 +90,8 @@ void backuped_file_init(struct backuped_file_queue *bfq, int n_option_arg) {
         bfq->limit = n_option_arg + 1;
 }
 
-void backuped_file_add(struct backuped_file_queue *bfq, const char *data) {
+void backuped_file_add(struct backuped_file_queue *bfq, const char *data)
+{
     if ((bfq->rear+1) % bfq->limit == bfq->front) {
         fprintf(stderr, "backuped_file fully added!!\n");
         return;
@@ -117,13 +118,6 @@ void backuped_file_del(struct backuped_file_queue *bfq) {
     // printf("free.. [%d] : %s\n", bfq->front, bfq->queue[bfq->front]);
     bfq->queue[bfq->front] = NULL;
     free(bfq->queue[bfq->front]); // 쓰이지 않을 데이터는 힙에서 해제
-}
-
-
-void backup_list_init()
-{
-    backup_list.number_of_nodes = 0;
-    backup_list.start = NULL;
 }
 
 // 모두 삭제를 위한 내부함수
@@ -179,28 +173,6 @@ void backup_list_delete(char *pathname)
 
 void backup_list_append(char *pathname, int period, int option_m, int option_n, int maxn, int option_t, int store_time)
 {
-    /*
-    printf("============ 다음 파일을 백업합니다. ============\n");
-    printf("파일명 : %s\n", pathname);
-    printf("백업 주기 : %d초마다\n", period);
-    if (option_m) {
-        printf("파일이 수정될 때에 한해 주기마다 백업을 진행합니다.\n");
-    } else {
-        printf("파일 수정과 관계없이 주기마다 백업을 진행합니다.\n");
-    }
-    if (option_n) {
-        printf("최대 %d개의 백업본을 만듭니다.\n", maxn);
-    } else {
-        printf("무제한의 백업 사본을 생성합니다.\n");
-    }
-    if (option_t) {
-        printf("백업 파일은 최대 %d초간 생존합니다.\n", store_time);
-    } else {
-        printf("백업된 파일은 얼마가 지나든 계속 살아 있습니다.\n");
-    }
-    printf("=================================================\n");
-    */
-
    // 이미 같은 pathname에 대해 백업이 진행중이라면 에러.
    struct backup_file_node *curr = backup_list.start;
    while (curr) {
@@ -242,19 +214,6 @@ void cleanup(void *args)
     while(bfq->front != bfq->rear)
         backuped_file_del(bfq);
     free(args);
-}
-
-
-// 경로에서 파일 이름만 가져옴
-char* getFileName(char *pathname)
-{
-    char *fn_ptr;
-    while(*pathname) {
-        if(*pathname == '/' && (pathname +1) != NULL )
-            fn_ptr = pathname+1;
-        ++pathname;
-    }
-    return fn_ptr;
 }
 
 void *file_backup_thr(void *args)
@@ -358,38 +317,6 @@ void *file_backup_thr(void *args)
 
     return NULL;
 }
-
-/*
-백업해야할 파일(FILENAME)을 백업 리스트에 새롭게 추가
-백업 리스트는 링크드 리스트로 구현
-백업 리스트 구조체는 1. 파일의 절대경로, 2. 백업 주기, 3. 백업 옵션 등을 포함
-
-라. add 명령어 10
-마. add –m 옵션 4
-바. add –n 옵션 4
-사. add –t 옵션 5
-아. add –d 옵션 
-
-스트럭트 *백업파일헤드 {
-    백업파일개수
-    
-    스트럭트 * 백업파일첫노드
-}
-
-
-스트럭트 백업파일노드 {
-    스트럭트* 백업파일노드 넥스트
-    파일의 절대경로
-    백업 주기
-    백업 옵션 (mntd)
-    담당쓰레드 정보
-}
-
-*/
-
-/*
- * 절대경로로 디렉토리가 주어지면, 모든 파일 리스트를 뱉음. (재귀적으로)
- */
 
 void twae(const char *absolute_dir, int period, int option_m, int option_n, int maxn, int option_t, int store_time)
 {
@@ -622,15 +549,6 @@ void remove_command_action(int argc, char **argv)
     }
 }
 
-/*
-    compare <FILENAME1> <FILENAME2>
-    FILENAME1과 FILENAME2의 mtime과 파일 크기 비교. 백업한 파일, 백업할 파일 모두 적용 가능 -> O
-    FILENAME이 존재하지 않거나 일반 파일이 아닐 경우 에러 처리 후 프롬프트로 제어가 넘어감 -> O
-    입력 인자가 2개가 아닐 경우 에러 처리 후 프롬프트로 제어가 넘어감 -> O
-    mtime과 파일 크기가 같은 경우 두 파일은 동일한 파일로 취급 -> O
-    두 파일이 동일할 경우 표준출력으로 동일하다는 문구 출력 -> O
-    두 파일이 동일하지 않을 때 표준출력으로 각 파일의 mtime과 파일 크기 출력
-*/
 void compare_command_action(int argc, char **argv)
 {
     char absPath1[512], absPath2[512];
@@ -656,8 +574,6 @@ void compare_command_action(int argc, char **argv)
     printf("두 파일은 동일합니다.\n");
 }
 
-
-
 void recover_command_action(int argc, char **argv)
 {
     char pathname[512];
@@ -670,6 +586,8 @@ void recover_command_action(int argc, char **argv)
     struct stat statbuf;
     char user_input[4]; // 번호 선택 용
     int user_input_int;
+    struct tm *tm_p;
+    time_t now;
 
     // (2) NEWFILE 입력 없을 시 에러 처리 후 프롬프트로 제어가 넘어감
     if (argc != 2 && argc != 4) {
@@ -740,6 +658,12 @@ void recover_command_action(int argc, char **argv)
         else
             sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", recover_pathList[user_input_int - 1], new_pathname);
         if (system(sysCmd) == 0) {
+            time(&now);
+            tm_p = localtime(&now);
+            if (argc == 2)
+                fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s recovered\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, pathname);
+            else 
+                fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s->%s recovered\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, pathname, new_pathname);
             printf("Recovery success\n");
         } else {
             printf("Recovery failed\n");
