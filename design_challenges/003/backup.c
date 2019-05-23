@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 #ifndef R_OK
 #define R_OK 4
@@ -23,6 +24,7 @@ extern char (backup_directory)[512]; // in main c
 FILE *log_file;
 
 void *file_backup_thr(void *);
+struct backuped_file_queue;
 
 struct backup_file_node {
     struct backup_file_node *next;
@@ -38,6 +40,7 @@ struct backup_file_node {
     int store_time; // 보관 기간
     // int option_d; // -d : 지정한 디렉토리 내의 모든 파일들을 백업 리스트에 추가
     pthread_t backup_thread;
+    struct backuped_file_queue *bfq;// 백업 중인 파일 리스트 관리를 위한 큐 포인터 
 };
 
 struct backups_head {
@@ -257,7 +260,7 @@ char* getFileName(char *pathname)
 void *file_backup_thr(void *args)
 {
     struct backup_file_node *node = (struct backup_file_node *)args;
-    struct backuped_file_queue *bfq = NULL; //  백업된 파일 리스트
+    // struct backuped_file_queue *bfq = NULL; //  백업된 파일 리스트
     struct tm *tm_p;
     struct stat statbuf;
     char backuped_pathname[512];
@@ -268,10 +271,10 @@ void *file_backup_thr(void *args)
     time(&now);
     tm_p = localtime(&now);
 
-    bfq = (struct backuped_file_queue *)calloc(1, sizeof(struct backuped_file_queue));
-    backuped_file_init(bfq, node->maxn);
+    node->bfq = (struct backuped_file_queue *)calloc(1, sizeof(struct backuped_file_queue));
+    backuped_file_init(node->bfq, node->maxn);
     // 쓰레드가 끝나기 전에 bfq에 할당된 동적 메모리가 반납되어야 한다.
-    pthread_cleanup_push(cleanup, bfq);
+    pthread_cleanup_push(cleanup, node->bfq);
 
     if (lstat(node->pathname, &statbuf) < 0) {
         fprintf(stderr, "백업할 파일이 없습니다.\n");
@@ -301,16 +304,16 @@ void *file_backup_thr(void *args)
         }
 
         // 백업 한계에 다다른 경우 오래된 백업부터 삭제
-        if (bfq->number_of_nodes >= bfq->limit - 1) {
-            int front = bfq->front + 1;
-            front %= bfq->limit;
+        if (node->bfq->number_of_nodes >= node->bfq->limit - 1) {
+            int front = node->bfq->front + 1;
+            front %= node->bfq->limit;
             // printf("다음 파일을 삭제했음 : %s\n", bfq->queue[front]);
-            sprintf(sysCmd, "rm %s", bfq->queue[front]);
+            sprintf(sysCmd, "rm %s", node->bfq->queue[front]);
             if (system(sysCmd) != 0) {
-                fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", bfq->queue[front]);
+                fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", node->bfq->queue[front]);
                 return NULL;
             }
-            backuped_file_del(bfq);
+            backuped_file_del(node->bfq);
         }
         sprintf(backuped_pathname, "%s/%s_%02d%02d%02d%02d%02d%02d", backup_directory, getFileName(node->pathname), (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
         // 백업 파일을 실질적으로 생성함
@@ -320,31 +323,31 @@ void *file_backup_thr(void *args)
             //fprintf(stderr, "[warning] %s 파일에 더 이상 접근할 수 없습니다.\n 복구하시려면 recover %s ... 명령을 사용하십시오.\n", node->pathname, node->pathname);
         } else {
             fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
-            backuped_file_add(bfq, backuped_pathname); // 백업된 파일에 추가한다.
+            backuped_file_add(node->bfq, backuped_pathname); // 백업된 파일에 추가한다.
         }
 
         // 매 PERIOD마다 백업 파일을 생성하고 기존 모든 백업 파일의 생성시간을 확인. 확인한 파일의 생성시간이 주어진 TIME보다 크면 해당 파일 삭제 
         if (node->option_t) {
             // 큐를 선회함
             time(&now); // current time
-            for (int i = 0; i < bfq->number_of_nodes; i++) {
-                int idx = bfq->front + i + 1;
-                idx %= bfq->limit;
+            for (int i = 0; i < node->bfq->number_of_nodes; i++) {
+                int idx = node->bfq->front + i + 1;
+                idx %= node->bfq->limit;
                 // bfq->queue[idx] 파일에 대한 lstat실행
-                if (lstat(bfq->queue[idx], &statbuf) < 0) {
-                    fprintf(stderr, "백업된 파일에 접근할 수 없음. \n => %s\n", bfq->queue[idx]);
+                if (lstat(node->bfq->queue[idx], &statbuf) < 0) {
+                    fprintf(stderr, "백업된 파일에 접근할 수 없음. \n => %s\n", node->bfq->queue[idx]);
                     return NULL;
                 }
                 if (now - statbuf.st_mtime > node->store_time) { // 부등호를 >= 으로 설정하면 정확히 그 시점에 파일이 삭제됨. add test.txt 1 -t 10 하면 10개만 남음
                     // 이 파일은 오래되어서 삭제
                     // 개념상 큐의 첫 부분임이 분명하므로 deque로 충분하다.
                     // printf("삭제 %s\n", bfq->queue[idx]);
-                    sprintf(sysCmd, "rm %s", bfq->queue[idx]);
+                    sprintf(sysCmd, "rm %s", node->bfq->queue[idx]);
                     if (system(sysCmd) != 0) {
-                        fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", bfq->queue[idx]);
+                        fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", node->bfq->queue[idx]);
                         return NULL;
                     }
-                    backuped_file_del(bfq);
+                    backuped_file_del(node->bfq);
                 }
             }
         }
@@ -652,25 +655,100 @@ void compare_command_action(int argc, char **argv)
     }
     printf("두 파일은 동일합니다.\n");
 }
+
+
+
 void recover_command_action(int argc, char **argv)
 {
     char pathname[512];
+    char new_pathname[512];
+    char sysCmd[1024];
+    int number_of_pathList = 0;
+    char **recover_pathList = NULL; // 현재 상태를 capture 해 두기 위해서 필요함.
+    long *recover_fsizeList = NULL; // file size 저장용
+    struct backup_file_node *curr = backup_list.start;
+    struct stat statbuf;
+    char user_input[4]; // 번호 선택 용
+    int user_input_int;
+
+    // (2) NEWFILE 입력 없을 시 에러 처리 후 프롬프트로 제어가 넘어감
     if (argc != 2 && argc != 4) {
         fprintf(stderr, "usage :\nrecover <filename>\nrecover <filename> -n <newfile>\n");
         return;
     }
+    
+    get_absolute_path(pathname, argv[1]);
+    if (argc == 4) get_absolute_path(new_pathname, argv[3]);
+
     if (argc == 4 && strcmp(argv[2], "-n") != 0) {
         fprintf(stderr, "usage :\nrecover <filename>\nrecover <filename> -n <newfile>\n");
         return;
     }
-    if (argc == 2 && access(argv[1], R_OK) != 0) {
-        // 기존 파일은 삭제 되도 상관없나?
-    }
-    if (argc == 4 && access(argv[3], F_OK) == 0) {
-        get_absolute_path(pathname, argv[3]);
-        fprintf(stderr, "%s already exists!!\n", pathname);
+    // (3) NEWFILE이 이미 존재한다면 에러 처리 후 프롬프트로 제어가 넘어감
+    if (access(new_pathname, F_OK) == 0) {
+        fprintf(stderr, "%s is already exist!!\n", new_pathname);
         return;
     }
-    
-    if(argv){}
+
+    if (access(pathname, F_OK) != 0) {
+        // 변경할 파일이 존재하지 않으면 에러 처리 후 프롬프트로 제어가 넘어감
+        // => 백업과 복원이라는 특성상 파일이 삭제되어도 복원 가능해야 할 거 같은데..
+        fprintf(stderr, "파일이 존재하지 않습니다.\n");
+        return;    
+    }
+
+    while (curr) {
+        if (strcmp(curr->pathname, pathname) == 0) break;
+        curr = curr->next;
+    }
+
+    if (!curr) {
+        fprintf(stderr, "이 파일은 백업 중인 파일이 아닙니다.\n");
+        return;
+    }
+
+    printf("  0. exit\n");
+    number_of_pathList = curr->bfq->number_of_nodes;
+    recover_pathList = (char **)calloc(number_of_pathList, sizeof(char *));
+    recover_fsizeList = (long *)calloc(number_of_pathList, sizeof(long));
+    for (int i = 0; i < number_of_pathList; i++) {
+        recover_pathList[i] = (char *)calloc(512, sizeof(char));
+        int idx = curr->bfq->front + i + 1;
+        idx %= curr->bfq->limit;
+        // lstat으로 크기를 가져오기.
+        lstat(curr->bfq->queue[idx], &statbuf);
+        recover_fsizeList[i] = statbuf.st_size;
+        strcpy(recover_pathList[i], curr->bfq->queue[idx]);
+    }
+    for (int i = 0; i < number_of_pathList; i++) {
+        printf("%3d. %s\t%10ldbytes\n", i + 1, strrchr(recover_pathList[i], '_') + 1, recover_fsizeList[i]);
+    }
+    printf("Choose file to recover : ");
+    scanf("%3s", user_input);
+    while ((user_input_int = getchar()) != EOF && user_input_int != '\n'); // stdin buffer를 비운다.
+    user_input_int = atoi(user_input);
+    if (user_input_int < 0 || user_input_int > number_of_pathList) {
+        fprintf(stderr, "Wrong Choice.\n");
+    } else if (user_input_int > 0) {
+        // printf("정확한 선택 (0 제외)\n");
+        // cp로 파일을 복사하면 복원 완료.
+        // 변경할 파일이 현재 백업 리스트에 존재한다면 백업 수행 '종료' 후 복구 진행
+        backup_list_delete(pathname); // 해당 파일 백업을 중단
+        // 의미상 -p 옵션을 빼야 할 수도 있다. (mtime 보존용 옵션)
+        if (argc == 2)
+            sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", recover_pathList[user_input_int - 1], pathname);
+        else
+            sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", recover_pathList[user_input_int - 1], new_pathname);
+        if (system(sysCmd) == 0) {
+            printf("Recovery success\n");
+        } else {
+            printf("Recovery failed\n");
+        }
+    }
+    for (int i = 0; i < number_of_pathList; i++)
+        free(recover_pathList[i]);
+    if (recover_pathList)
+        free(recover_pathList);
+    if (recover_fsizeList)
+        free(recover_fsizeList);
 }
