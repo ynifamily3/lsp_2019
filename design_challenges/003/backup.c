@@ -290,7 +290,9 @@ void *file_backup_thr(void *args)
                 return NULL;
             }
             backuped_file_del(node->bfq);
+            if (node->bfq->number_of_nodes == 0) isFirst = 1; // 아예 백업본이 없어진 경우. m옵션의 영향을 받지 않도록 하기 위해
         }
+
         if (isBackup) {
             sprintf(backuped_pathname, "%s/%s_%02d%02d%02d%02d%02d%02d", backup_directory, getFileName(node->pathname), (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
             // 백업 파일을 실질적으로 생성함
@@ -323,6 +325,7 @@ void *file_backup_thr(void *args)
                         return NULL;
                     }
                     backuped_file_del(node->bfq);
+                    if (node->bfq->number_of_nodes == 0) isFirst = 1; // 아예 백업본이 없어진 경우. m옵션의 영향을 받지 않도록 하기 위해
                 }
             }
         }
@@ -345,7 +348,7 @@ void twae(const char *absolute_dir, int period, int option_m, int option_n, int 
         strncpy(pathname, absolute_dir, 511);
     
     if (strlen(pathname) > 255) {
-        fprintf(stderr, "path length is too long !\n");
+        fprintf(stderr, "%s 경로는 너무 깁니다. %lu/255\n", pathname, strlen(pathname));
         return;
     }
     
@@ -393,16 +396,22 @@ void add_command_action(int argc, char **argv)
     int t_option_number = -1; // 백업 파일의 보관 기간
     int d_option = 0;
     char pathname[512];
+    struct stat statbuf;
     // printf("add 액션 처리\n");
     // i) 옵션 처리 -m -n -t -d 처리하기
     if (argc < 3) {
-        fprintf(stderr, "Usage :  add <FILENAME> [PERIOD] [OPTION]\n");
+        fprintf(stderr, "Usage :  add <FILENAME> <PERIOD> [OPTION]\n");
         return;
     }
 
     // 절대 경로화
     get_absolute_path(pathname, argv[1]);
-    struct stat statbuf;
+    // 절대 경로의 길이가 255 byte 초과 시 백업 수행 하지 못함.
+    if (strlen(pathname) > 255) {
+        fprintf(stderr, "%s 경로는 너무 깁니다 %ld/255", pathname, strlen(pathname));
+        return;
+    }
+
     if (lstat(pathname, &statbuf) < 0 && access(pathname, R_OK) != 0) {
         fprintf(stderr, "해당 파일에 접근할 수 없습니다. : %s\n", pathname);
         return;
@@ -523,7 +532,17 @@ void list_command_action(void)
     // 한 줄에 한 개 파일의 절대경로, PERIOD, OPTION 출력
     struct backup_file_node *curr = backup_list.start;
     while (curr) {
-        printf("%s\t%d\n", curr->pathname, curr->period);
+        printf("%s\t[Period : %3d]\t", curr->pathname, curr->period);
+        printf("%s\t", curr->option_m ? "[Only when editing]" : "[    Everytime    ]");
+        if (curr->option_n)
+            printf("[Number of file limitation : %4d]\t", curr->maxn);
+        else
+            printf("[  No Number of file limitation  ]\t");
+        if (curr->option_t)
+            printf("[  Backuped file Lifetime : %3d  ]\t", curr->store_time);
+        else
+            printf("[Unlimited Backuped file Lifetime]\t");
+        printf("\n");
         curr = curr->next;
     }
 }
@@ -572,6 +591,10 @@ void compare_command_action(int argc, char **argv)
     }
     get_absolute_path(absPath1, argv[1]);
     get_absolute_path(absPath2, argv[2]);
+    if (strlen(absPath1) > 255 || strlen(absPath2) > 255) {
+        fprintf(stderr, "경로 이름이 너무 깁니다!\n");
+        return;
+    }
     if (lstat(absPath1, &statbuf1) < 0 || lstat(absPath2, &statbuf2) < 0) {
         fprintf(stderr, "올바르지 않은 파일 경로\n");
         return;
@@ -663,14 +686,14 @@ void recover_command_action(int argc, char **argv)
     } else if (user_input_int > 0) {
         // printf("정확한 선택 (0 제외)\n");
         // cp로 파일을 복사하면 복원 완료.
-        // 변경할 파일이 현재 백업 리스트에 존재한다면 백업 수행 '종료' 후 복구 진행
-        backup_list_delete(pathname); // 해당 파일 백업을 중단
         // 의미상 -p 옵션을 빼야 할 수도 있다. (mtime 보존용 옵션)
         if (argc == 2)
             sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", recover_pathList[user_input_int - 1], pathname);
         else
             sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", recover_pathList[user_input_int - 1], new_pathname);
         if (system(sysCmd) == 0) {
+            // 변경할 파일이 현재 백업 리스트에 존재한다면 백업 수행 '종료' 후 복구 진행
+            backup_list_delete(pathname); // 해당 파일 백업을 중단
             time(&now);
             tm_p = localtime(&now);
             if (argc == 2)
@@ -679,7 +702,7 @@ void recover_command_action(int argc, char **argv)
                 fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s->%s recovered\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, pathname, new_pathname);
             printf("Recovery success\n");
         } else {
-            printf("Recovery failed\n");
+            printf("Recovery failed : [백업이 이미 삭제됨.]\n");
         }
     }
     for (int i = 0; i < number_of_pathList; i++)
