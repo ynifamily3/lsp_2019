@@ -438,7 +438,7 @@ void add_command_action(int argc, char **argv)
         -m : 입력받은 PERIOD마다 파일의 mtime이 수정 되었을 경우 백업 실행
         */
         if (!m_option && strcmp("-m", argv[i]) == 0) {
-            fprintf(stderr, "m option enabled\n");
+            // fprintf(stderr, "m option enabled\n");
             m_option = 1;
         }
         /*
@@ -448,7 +448,7 @@ void add_command_action(int argc, char **argv)
         (3) 채점의 편의를 위해 제출할 예제 프로그램에서는 1≤NUMBER≤100로 설정하여 실행시켜 제출
         */
         if (!n_option && strcmp("-n", argv[i]) == 0) {
-            fprintf(stderr, "n option enabled\n");
+            // fprintf(stderr, "n option enabled\n");
             n_option = 1;
             if (i + 1 >= argc) {
                 fprintf(stderr, "usage : add <filename> <period> -n NUMBER\n");
@@ -473,7 +473,7 @@ void add_command_action(int argc, char **argv)
         (4) 채점의 편의를 위해 제출할 예제 프로그램에서는 60≤TIME≤1200로 설정하여 실행시켜 제출
         */
         if (!t_option && strcmp("-t", argv[i]) == 0) {
-            fprintf(stderr, "t option enabled\n");
+            // fprintf(stderr, "t option enabled\n");
             t_option = 1;
             if (i + 1 >= argc) {
                 fprintf(stderr, "usage : add <filename> <period> -t TIME\n");
@@ -497,7 +497,7 @@ void add_command_action(int argc, char **argv)
         (3) 디렉토리 내에 있는 파일이 이미 백업 리스트에 존재할 경우 해당 파일은 리스트에 추가하지 않고 건너뜀
         */
         if (!d_option && strcmp("-d", argv[i]) == 0) {
-            fprintf(stderr, "d option enabled\n");
+            // fprintf(stderr, "d option enabled\n");
             d_option = 1;
             struct stat statbuf;
             if (lstat(pathname, &statbuf) < 0) {
