@@ -5,11 +5,14 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/param.h> // realpath(2)
+#include <sys/param.h>
+#include <limits.h> // realpath(3)
 #include <pthread.h>
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include <pwd.h> // getpwuid(3)
+#include <errno.h>
 
 #ifndef R_OK
 #define R_OK 4
@@ -50,7 +53,7 @@ struct backuped_file_queue {
     int limit; // n옵션의 인자가 된다. (최대 100의 값이 들어온다고 가정)
     int number_of_nodes;
     char *queue[101];
-
+    time_t create_time[101]; // 백업 파일 생성 시간
 };
 
 struct backups_head backup_list; // 백업 리스트 전역 변수 선언
@@ -64,7 +67,19 @@ void backup_list_init()
 void get_absolute_path(char *result, char *path)
 {
     char real_path[512];
-    realpath(path, real_path);
+    // ~로 시작하는 경로이면 홈 디렉토리로 처리한다.
+    if (path[0] == '~') {
+        char home_path[512];
+        char temp_path[512];
+        strcpy(home_path, getpwuid(getuid())->pw_dir);
+        ++path;
+         // /home/jong + path
+         strcpy(temp_path, home_path);
+         strcat(temp_path, path);
+         realpath(temp_path, real_path);
+    } else {
+        realpath(path, real_path);
+    }
     strncpy(result, real_path, 511);
 }
 
@@ -101,6 +116,7 @@ void backuped_file_add(struct backuped_file_queue *bfq, const char *data)
     bfq->rear %= bfq->limit;
     char *tmp = (char *)calloc(1, strlen(data) + 1); // => 이건 에러 없음.
     bfq->queue[bfq->rear] = tmp;
+    time(&bfq->create_time[bfq->rear]); // 백업 생성 시각을 기록해 둔다.
     strncpy(bfq->queue[bfq->rear], data, strlen(data));
     bfq->queue[bfq->rear][strlen(data)] = '\0';
 
@@ -226,6 +242,7 @@ void *file_backup_thr(void *args)
     time_t now;
     time_t recent_backup_mtime; //최근에 백업한 시간
     int isFirst = 1;
+    int isBackup;
     char sysCmd[1024];
     time(&now);
     tm_p = localtime(&now);
@@ -246,7 +263,7 @@ void *file_backup_thr(void *args)
         sleep(node->period); // period 마다 백업을 진행함
         time(&now);
         tm_p = localtime(&now);
-
+        isBackup = 1; // 백업 진행 플래그 초기화
         // 1. m 옵션 확인 후 파일이 수정되지 않았다면 백업 처리를 하지 않음
         if (node->option_m) {
             if (lstat(node->pathname, &statbuf) < 0) {
@@ -255,7 +272,7 @@ void *file_backup_thr(void *args)
             }
             if (!isFirst && recent_backup_mtime == statbuf.st_mtime) {
                 // 수정 시간이 안 바뀌어서 백업을 진행하지 않음
-                continue;
+                isBackup = 0;
             }
             // 수정 시간이 바뀌어 백업을 진행함. 시간은 갱신함.
             isFirst = 0;
@@ -274,15 +291,19 @@ void *file_backup_thr(void *args)
             }
             backuped_file_del(node->bfq);
         }
-        sprintf(backuped_pathname, "%s/%s_%02d%02d%02d%02d%02d%02d", backup_directory, getFileName(node->pathname), (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
-        // 백업 파일을 실질적으로 생성함
-        sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", node->pathname, backuped_pathname);
-        if (system(sysCmd) != 0) {
-            // 백업하려는 파일이 접근불가 한 경우
-            //fprintf(stderr, "[warning] %s 파일에 더 이상 접근할 수 없습니다.\n 복구하시려면 recover %s ... 명령을 사용하십시오.\n", node->pathname, node->pathname);
-        } else {
-            fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
-            backuped_file_add(node->bfq, backuped_pathname); // 백업된 파일에 추가한다.
+        if (isBackup) {
+            sprintf(backuped_pathname, "%s/%s_%02d%02d%02d%02d%02d%02d", backup_directory, getFileName(node->pathname), (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
+            // 백업 파일을 실질적으로 생성함
+            sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", node->pathname, backuped_pathname); // -p 옵션은 mtime 등을 preserve 한다.
+            // sprintf(sysCmd, "cp %s %s", node->pathname, backuped_pathname);
+            if (system(sysCmd) != 0) {
+                // 백업하려는 파일이 접근불가 한 경우
+                //fprintf(stderr, "[warning] %s 파일에 더 이상 접근할 수 없습니다.\n 복구하시려면 recover %s ... 명령을 사용하십시오.\n", node->pathname, node->pathname);
+                printf("명령 실패\n");
+            } else {
+                fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
+                backuped_file_add(node->bfq, backuped_pathname); // 백업된 파일에 추가한다.
+            }
         }
 
         // 매 PERIOD마다 백업 파일을 생성하고 기존 모든 백업 파일의 생성시간을 확인. 확인한 파일의 생성시간이 주어진 TIME보다 크면 해당 파일 삭제 
@@ -292,12 +313,7 @@ void *file_backup_thr(void *args)
             for (int i = 0; i < node->bfq->number_of_nodes; i++) {
                 int idx = node->bfq->front + i + 1;
                 idx %= node->bfq->limit;
-                // bfq->queue[idx] 파일에 대한 lstat실행
-                if (lstat(node->bfq->queue[idx], &statbuf) < 0) {
-                    fprintf(stderr, "백업된 파일에 접근할 수 없음. \n => %s\n", node->bfq->queue[idx]);
-                    return NULL;
-                }
-                if (now - statbuf.st_mtime > node->store_time) { // 부등호를 >= 으로 설정하면 정확히 그 시점에 파일이 삭제됨. add test.txt 1 -t 10 하면 10개만 남음
+                if (now - node->bfq->create_time[idx] > node->store_time) { // 부등호를 >= 으로 설정하면 정확히 그 시점에 파일이 삭제됨. add test.txt 1 -t 10 하면 10개만 남음
                     // 이 파일은 오래되어서 삭제
                     // 개념상 큐의 첫 부분임이 분명하므로 deque로 충분하다.
                     // printf("삭제 %s\n", bfq->queue[idx]);
@@ -340,7 +356,6 @@ void twae(const char *absolute_dir, int period, int option_m, int option_n, int 
 
     if (S_ISREG(statbuf.st_mode)) {
         // 일반 FILE
-        // printf("%s\n", pathname);
         backup_list_append(pathname, period, option_m, option_n, maxn, option_t, store_time); // 백업리스트에 추가
         return;
     }
@@ -476,8 +491,9 @@ void add_command_action(int argc, char **argv)
             fprintf(stderr, "d option enabled\n");
             d_option = 1;
             struct stat statbuf;
-            if (lstat(argv[1], &statbuf) < 0) {
+            if (lstat(pathname, &statbuf) < 0) {
                 fprintf(stderr, "lstat error\n");
+                fprintf(stderr, "%s\n", strerror(errno));
                 return;
             }
             if (!S_ISDIR(statbuf.st_mode)) {
@@ -488,10 +504,7 @@ void add_command_action(int argc, char **argv)
     }
 
     if (d_option) {
-        // 절대 경로화
-        get_absolute_path(pathname, argv[1]);
         twae(pathname, period, m_option, n_option, n_option_number, t_option, t_option_number);
-
     } else {
         // 리스트에 append
         if(S_ISREG(statbuf.st_mode))
@@ -557,7 +570,9 @@ void compare_command_action(int argc, char **argv)
         fprintf(stderr, "usage: compare <FILENAME1> <FILENAME2>\n");
         return;
     }
-    if (lstat(argv[1], &statbuf1) < 0 || lstat(argv[2], &statbuf2) < 0) {
+    get_absolute_path(absPath1, argv[1]);
+    get_absolute_path(absPath2, argv[2]);
+    if (lstat(absPath1, &statbuf1) < 0 || lstat(absPath2, &statbuf2) < 0) {
         fprintf(stderr, "올바르지 않은 파일 경로\n");
         return;
     }
@@ -566,8 +581,6 @@ void compare_command_action(int argc, char **argv)
         return;
     }
     if (statbuf1.st_size != statbuf2.st_size || statbuf1.st_mtime != statbuf2.st_mtime) {
-        get_absolute_path(absPath1, argv[1]);
-        get_absolute_path(absPath2, argv[2]);
         printf("두 파일은 다릅니다.\n%s\tsize : [%ld]\tmtime : [%ld]\n%s\tsize : [%ld]\tmtime : [%ld]\n", absPath1, statbuf1.st_size, statbuf1.st_mtime, absPath2, statbuf2.st_size, statbuf2.st_mtime);
         return;
     }
@@ -603,7 +616,7 @@ void recover_command_action(int argc, char **argv)
         return;
     }
     // (3) NEWFILE이 이미 존재한다면 에러 처리 후 프롬프트로 제어가 넘어감
-    if (access(new_pathname, F_OK) == 0) {
+    if (argc == 4 && access(new_pathname, F_OK) == 0) {
         fprintf(stderr, "%s is already exist!!\n", new_pathname);
         return;
     }

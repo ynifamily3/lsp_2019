@@ -1,0 +1,5 @@
+[190524 144926] /home/jong/lsp.txt added
+[190524 144929] /home/jong/lsp/design_challenges/003/ssu_backup_dir/lsp.txt_190524144929 generated
+[190524 144938] /home/jong/lsp/design_challenges/003/ssu_backup_dir/lsp.txt_190524144938 generated
+[190524 144946] /home/jong/lsp.txt deleted
+[190524 144946] /home/jong/lsp.txt recovered

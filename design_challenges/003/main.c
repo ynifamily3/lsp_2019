@@ -17,15 +17,15 @@ extern FILE *log_file;
 int main(int argc, char *argv[])
 {
     size_t input_command_length;
-    char input_command[512];
-    char *sys_init_command = "rm -rf ssu_backup_dir > /dev/null 2>&1";
+    char input_command[1024];
+    char *sys_init_command = "rm -rf ssu_backup_dir/* > /dev/null 2>&1";
     char *backup_postfix = "ssu_backup_dir";
     if (argc > 2) {
         fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
         exit(1);
     }
 
-    backup_list_init(); // 초기화..
+    backup_list_init(); // 초기화
     getcwd(binary_directory, 511); // 해당 프로그램이 있는 현재 경로의 절댓값.
 
     if (argc == 2) {
@@ -36,14 +36,10 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
-            system(sys_init_command); // 기존 백업 폴더 삭제
-            if (mkdir(backup_postfix, 0777) < 0) {
-                fprintf(stderr, "백업 디렉토리 생성 실패\n");
-                fprintf(stderr, "%s\n", strerror(errno));
-                exit(1);
-            }
+            system(sys_init_command); // 기존 백업 폴더 내부 내용 삭제
+            mkdir(backup_postfix, 0777);
             if (chdir(backup_postfix) < 0) {
-                fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
+                fprintf(stderr, "백업 디렉토리 %s/%s에 접근 오류\n", backup_directory, backup_postfix);
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
@@ -54,28 +50,20 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
-            system(sys_init_command); // 기존 백업 폴더 삭제
-            if (mkdir(backup_postfix, 0777) < 0) {
-                fprintf(stderr, "백업 디렉토리 생성 실패\n");
-                fprintf(stderr, "%s\n", strerror(errno));
-                exit(1);
-            }
+            system(sys_init_command); // 기존 백업 폴더 내부 내용 삭제
+            mkdir(backup_postfix, 0777);
             if (chdir(backup_postfix) < 0) {
-                fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
+                fprintf(stderr, "백업 디렉토리 %s에 접근 오류\n", backup_postfix);
                 fprintf(stderr, "%s\n", strerror(errno));
                 exit(1);
             }
         }
     } else {
         // 인자 x
-        system(sys_init_command); // 기존 백업 폴더 삭제
-        if (mkdir(backup_postfix, 0777) < 0) {
-                fprintf(stderr, "백업 디렉토리 생성 실패\n");
-                fprintf(stderr, "%s\n", strerror(errno));
-                //exit(1);
-            }
+        system(sys_init_command); // 기존 백업 폴더 내부 내용 삭제
+        mkdir(backup_postfix, 0777);
         if (chdir(backup_postfix) < 0) {
-            fprintf(stderr, "해당 경로에 백업할 수 없습니다.\n");
+            fprintf(stderr, "백업 디렉토리 %s에 접근 오류\n", backup_postfix);
             fprintf(stderr, "%s\n", strerror(errno));
             exit(1);
         }
@@ -85,16 +73,15 @@ int main(int argc, char *argv[])
     setbuf(log_file, NULL); // 로그 버퍼 없음
 
     getcwd(backup_directory, 511);
-    printf("바이너리 경로 : %s\n", binary_directory);
-    printf("백업저장 경로 : %s\n", backup_directory);
+    printf("현재 경로 : %s\n", binary_directory);
+    printf("백업 경로 : %s\n", backup_directory);
     setbuf(stdout, NULL);
     backup_list_init();
-
     chdir(binary_directory); // 바이너리 위치 기준으로 현재 위치 설정함.
 
     while (1) {
         printf("20142455>");
-        fgets(input_command, 512, stdin);
+        fgets(input_command, 1023, stdin);
         input_command_length = strlen(input_command); // 아무것도 안 치고 엔터만 눌러도 '\n'은 입력된다.
         input_command[--input_command_length] = '\0';
         if (check_exit(input_command)) {

@@ -4,80 +4,117 @@
 #include <ctype.h>
 #include "command_checker.h"
 
-int check_exit(const char *command)
+/*
+void str_rstrip(str* s)
 {
-    if (strcmp("exit", command) == 0) {
+  unsigned len;
+  for (len = s->len; len > 0 && isspace(s->s[len-1]); --len) ;
+  s->len = len;
+  s->s[len] = 0;
+}
+*/
+
+// 리턴 값 : lstrip 한 만큼 이동된 포인터, 변경 값 : rstrip 한 \0
+char *strip(char *command)
+{
+    int start_ptr = 0;
+    // rstrip
+    for (int i = (int)strlen(command) - 1; i != 0 ;i--) {
+        if (!isspace(command[i])) {
+            command[i + 1] = '\0';
+            break;
+        }
+    }
+
+    // lstrip
+    while (command[start_ptr] != '\0') {
+        if (isspace(command[start_ptr])) ++start_ptr;
+        else break;
+    }
+    return &command[start_ptr];
+}
+
+int check_exit(char *command)
+{
+    char *striped = strip(command);
+    if (strcmp("exit", striped) == 0) {
         return 1;
     }
     return 0;
 }
 
-int check_ls(const char *command)
+int check_ls(char *command)
 {
-    size_t len = strlen(command);
-    if ((len == 2 && command[0] == 'l' && command[1] == 's') || (len >= 3 && command[0] == 'l' && command[1] == 's' && command[2] == ' ')) {
+    char *striped = strip(command);
+    size_t len = strlen(striped);
+    if ((len == 2 && striped[0] == 'l' && striped[1] == 's') || (len >= 3 && striped[0] == 'l' && striped[1] == 's' && striped[2] == ' ')) {
         return 1;
     }
     return 0;
 }
 
-int check_vim(const char *command)
+int check_vim(char *command)
 {
-    size_t len = strlen(command);
-    if ((len == 2 && command[0] == 'v' && command[1] == 'i') || (len == 3 && command[0] == 'v' && command[1] == 'i' && command[2] == 'm') ||
-        (len >= 3 && command[0] == 'v' && command[1] == 'i' && command[2] == ' ')||(len >= 4 && command[0] == 'v' && command[1] == 'i' && command[2] == 'm' && command[3] == ' ')) {
+    char *striped = strip(command);
+    size_t len = strlen(striped);
+    if ((len == 2 && striped[0] == 'v' && striped[1] == 'i') || (len == 3 && striped[0] == 'v' && striped[1] == 'i' && striped[2] == 'm') ||
+        (len >= 3 && striped[0] == 'v' && striped[1] == 'i' && striped[2] == ' ')||(len >= 4 && striped[0] == 'v' && striped[1] == 'i' && striped[2] == 'm' && striped[3] == ' ')) {
             return 1;
     }
     return 0;
 }
 
-int check_add(const char *command)
+int check_add(char *command)
 {
-    size_t len = strlen(command);
-    if ((len >= 3 && command[0] == 'a' && command[1] == 'd' && command[2] == 'd' && command[3] == '\0') ||
-        (len >= 4 && command[0] == 'a' && command[1] == 'd' && command[2] == 'd' && command[3] == ' ')) {
+    char *striped = strip(command);
+    size_t len = strlen(striped);
+    if ((len >= 3 && striped[0] == 'a' && striped[1] == 'd' && striped[2] == 'd' && striped[3] == '\0') ||
+        (len >= 4 && striped[0] == 'a' && striped[1] == 'd' && striped[2] == 'd' && striped[3] == ' ')) {
         return 1;
     } else {
         return 0;
     }
 }
 
-int check_list(const char *command)
+int check_list(char *command)
 {
-    if (strcmp("list", command) == 0) {
+    char *striped = strip(command);
+    if (strcmp("list", striped) == 0) {
         return 1;
     }
     return 0;
 }
 
-int check_remove(const char *command)
+int check_remove(char *command)
 {
-    // i) -d 옵션 없을 경우
-    size_t len = strlen(command);
-    if ((len >= 6 && command[0] == 'r' && command[1] == 'e' && command[2] == 'm' && command[3] == 'o' && command[4] == 'v' && command[5] == 'e' && command[6] == '\0') ||
-        (len >= 7 && command[0] == 'r' && command[1] == 'e' && command[2] == 'm' && command[3] == 'o' && command[4] == 'v' && command[5] == 'e' && command[6] == ' ')) {
+    char *striped = strip(command);
+    size_t len = strlen(striped);
+    if ((len >= 6 && striped[0] == 'r' && striped[1] == 'e' && striped[2] == 'm' && striped[3] == 'o' && striped[4] == 'v' && striped[5] == 'e' && striped[6] == '\0') ||
+        (len >= 7 && striped[0] == 'r' && striped[1] == 'e' && striped[2] == 'm' && striped[3] == 'o' && striped[4] == 'v' && striped[5] == 'e' && striped[6] == ' ')) {
         return 1;
     } else {
         return 0;
     }
 }
 
-int check_compare(const char *command)
+int check_compare(char *command)
 {
-    size_t len = strlen(command);
-    if ((len >= 7 && command[0] == 'c' && command[1] == 'o' && command[2] == 'm' && command[3] == 'p' && command[4] == 'a' && command[5] == 'r' && command[6] == 'e' && command[7] == '\0') ||
-        (len >= 8 && command[0] == 'c' && command[1] == 'o' && command[2] == 'm' && command[3] == 'p' && command[4] == 'a' && command[5] == 'r' && command[6] == 'e' && command[7] == ' ')) {
+    char *striped = strip(command);
+    size_t len = strlen(striped);
+    if ((len >= 7 && striped[0] == 'c' && striped[1] == 'o' && striped[2] == 'm' && striped[3] == 'p' && striped[4] == 'a' && striped[5] == 'r' && striped[6] == 'e' && striped[7] == '\0') ||
+        (len >= 8 && striped[0] == 'c' && striped[1] == 'o' && striped[2] == 'm' && striped[3] == 'p' && striped[4] == 'a' && striped[5] == 'r' && striped[6] == 'e' && striped[7] == ' ')) {
         return 1;
     } else {
         return 0;
     }
 }
 
-int check_recover(const char *command)
+int check_recover(char *command)
 {
-    size_t len = strlen(command);
-    if ((len >= 7 && command[0] == 'r' && command[1] == 'e' && command[2] == 'c' && command[3] == 'o' && command[4] == 'v' && command[5] == 'e' && command[6] == 'r' && command[7] == '\0') ||
-        (len >= 8 && command[0] == 'r' && command[1] == 'e' && command[2] == 'c' && command[3] == 'o' && command[4] == 'v' && command[5] == 'e' && command[6] == 'r' && command[7] == ' ')) {
+    char *striped = strip(command);
+    size_t len = strlen(striped);
+    if ((len >= 7 && striped[0] == 'r' && striped[1] == 'e' && striped[2] == 'c' && striped[3] == 'o' && striped[4] == 'v' && striped[5] == 'e' && striped[6] == 'r' && striped[7] == '\0') ||
+        (len >= 8 && striped[0] == 'r' && striped[1] == 'e' && striped[2] == 'c' && striped[3] == 'o' && striped[4] == 'v' && striped[5] == 'e' && striped[6] == 'r' && striped[7] == ' ')) {
         return 1;
     } else {
         return 0;
@@ -89,6 +126,7 @@ void parse_args(char *input_text, int *arg_count, char **arg_vector)
     // 동적 메모리 할당을 함.
     // add /file/path/and/name.txt ...
     // 띄어쓰기 단위로 구분함.
+    input_text = (char *)strip(input_text);
     *arg_count = 0;
     char *ptr = input_text;
     char *ptr2;
