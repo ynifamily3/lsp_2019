@@ -84,6 +84,7 @@ void get_absolute_path(char *result, char *path)
         realpath(path, real_path);
     }
     strncpy(result, real_path, 511);
+    result[511] = '\0';
 }
 
 // 경로에서 파일 이름만 가져옴
@@ -104,7 +105,7 @@ void backuped_file_init(struct backuped_file_queue *bfq, int n_option_arg)
     if (n_option_arg < 0)
         bfq->limit = 512;
     else
-        bfq->limit = n_option_arg + 1;
+        bfq->limit = n_option_arg + 2;
 }
 
 void backuped_file_add(struct backuped_file_queue *bfq, const char *data)
@@ -278,17 +279,6 @@ void *file_backup_thr(void *args)
             }
         }
 
-        // 백업 한계에 다다른 경우 오래된 백업부터 삭제
-        if (node->bfq->number_of_nodes >= node->bfq->limit - 1) {
-            int front = node->bfq->front + 1;
-            front %= node->bfq->limit;
-            sprintf(sysCmd, "rm %s", node->bfq->queue[front]);
-            if (system(sysCmd) != 0) {
-                fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", node->bfq->queue[front]);
-            }
-            backuped_file_del(node->bfq);
-        }
-
         if (isBackup) {
             sprintf(backuped_pathname, "%s/%s_%02d%02d%02d%02d%02d%02d", backup_directory, get_file_name(node->pathname), (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
             // 백업 파일을 실질적으로 생성함
@@ -303,6 +293,16 @@ void *file_backup_thr(void *args)
                 backuped_file_add(node->bfq, backuped_pathname); // 백업된 파일에 추가한다.
             }
         }
+        // 백업 한계에 다다른 경우 오래된 백업부터 삭제
+        if (node->bfq->number_of_nodes >= node->bfq->limit - 1) {
+            int front = node->bfq->front + 1;
+            front %= node->bfq->limit;
+            sprintf(sysCmd, "rm %s", node->bfq->queue[front]);
+            if (system(sysCmd) != 0) {
+                fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", node->bfq->queue[front]);
+            }
+            backuped_file_del(node->bfq);
+        }
 
         // 매 PERIOD마다 백업 파일을 생성하고 기존 모든 백업 파일의 생성시간을 확인. 확인한 파일의 생성시간이 주어진 TIME보다 크면 해당 파일 삭제
         if (node->option_t) {
@@ -310,7 +310,7 @@ void *file_backup_thr(void *args)
             for (int i = 0; i < node->bfq->number_of_nodes; i++) {
                 int idx = node->bfq->front + i + 1;
                 idx %= node->bfq->limit;
-                if (now - node->bfq->create_time[idx] > node->store_time) { // 부등호를 >= 으로 설정하면 정확히 그 시점에 파일이 삭제됨. add test.txt 1 -t 10 하면 10개만 남음
+                if (now - node->bfq->create_time[idx] > node->store_time) { // 부등호를 >= 으로 설정하면 정확히 그 시점에 파일이 삭제됨.
                     // 이 파일은 오래되어서 삭제
                     // 개념상 큐의 첫 부분임이 분명하므로 deque로 충분하다.
                     // printf("삭제 %s\n", bfq->queue[idx]);
@@ -407,7 +407,7 @@ void add_command_action(int argc, char **argv)
         return;
     }
 
-    if (lstat(pathname, &statbuf) < 0 && access(pathname, R_OK) != 0) {
+    if (lstat(pathname, &statbuf) < 0 || access(pathname, R_OK) != 0) {
         fprintf(stderr, "해당 파일에 접근할 수 없습니다. : %s\n", pathname);
         return;
     }
@@ -424,7 +424,7 @@ void add_command_action(int argc, char **argv)
         return;
     }
     if (period <= 0) {
-        fprintf(stderr, "PERIOD error\n");
+        fprintf(stderr, "PERIOD : positive integer ONLY\n");
         return;
     }
 
@@ -454,8 +454,8 @@ void add_command_action(int argc, char **argv)
                 return;
             }
             n_option_number = atoi(argv[i + 1]);
-            if (n_option_number < 1) {
-                fprintf(stderr, "invalid NUMBER : %s\n", argv[i + 1]);
+            if (n_option_number <= 0) {
+                fprintf(stderr, "NUMBER : positive integer ONLY\n");
                 return;
             }
         }
@@ -479,8 +479,8 @@ void add_command_action(int argc, char **argv)
                 return;
             }
             t_option_number = atoi(argv[i + 1]);
-            if (t_option_number < 1) {
-                fprintf(stderr, "invalid TIME : %s\n", argv[i + 1]);
+            if (t_option_number <= 0) {
+                fprintf(stderr, "TIME : positive integer ONLY\n");
                 return;
             }
         }
@@ -494,7 +494,6 @@ void add_command_action(int argc, char **argv)
         if (!d_option && strcmp("-d", argv[i]) == 0) {
             // fprintf(stderr, "d option enabled\n");
             d_option = 1;
-            struct stat statbuf;
             if (lstat(pathname, &statbuf) < 0) {
                 fprintf(stderr, "lstat error\n");
                 fprintf(stderr, "%s\n", strerror(errno));
@@ -519,6 +518,8 @@ void add_command_action(int argc, char **argv)
         }
     }
 }
+
+// 여기 까지 봄
 // list 명령어 처리
 void list_command_action(void)
 {
