@@ -157,10 +157,11 @@ void backup_list_delete(char *pathname)
     int find = 0;
     struct backup_file_node *prev = NULL;
     struct backup_file_node *curr = backup_list.start;
+    struct tm lt;
     struct tm *tm_p;
     time_t now;
     time(&now);
-    tm_p = localtime(&now);
+    tm_p = localtime_r(&now, &lt);
 
     while (curr) {
         if (strcmp(curr->pathname, pathname) == 0) {
@@ -237,15 +238,17 @@ void cleanup(void *args)
 void *file_backup_thr(void *args)
 {
     struct backup_file_node *node = (struct backup_file_node *)args;
-    struct tm *tm_p;
     struct stat statbuf;
     char backuped_pathname[512];
     time_t now;
+    struct tm *tm_p;
+    struct tm lt;
     time_t recent_backup_mtime; //최근에 백업한 시간
     int isBackup;
     char sysCmd[1024];
     time(&now);
-    tm_p = localtime(&now);
+    // tm_p = localtime(&now);
+    tm_p = localtime_r(&now, &lt); // make localtime thread-safe
     isBackup = 1;
     node->bfq = (struct backuped_file_queue *)calloc(1, sizeof(struct backuped_file_queue));
     backuped_file_init(node->bfq, node->maxn);
@@ -262,7 +265,7 @@ void *file_backup_thr(void *args)
     while (1) {
         sleep(node->period); // period 마다 백업을 진행함
         time(&now);
-        tm_p = localtime(&now);
+        tm_p = localtime_r(&now, &lt);
         // 1. m 옵션 확인 후 파일이 수정되지 않았다면 백업 처리를 하지 않음
         if (node->option_m) {
             if (lstat(node->pathname, &statbuf) < 0) {
@@ -512,7 +515,7 @@ void add_command_action(int argc, char **argv)
         // 리스트에 append
         if(S_ISREG(statbuf.st_mode))
             backup_list_append(pathname, period, m_option, n_option, n_option_number, t_option, t_option_number);
-        else  {// 디렉토리 등
+        else  { // 디렉토리 등
             fprintf(stderr, "일반 파일만 백업할 수 있습니다. 디렉터리는 -d 옵션 사용.\n");
             return;
         }
@@ -547,9 +550,10 @@ void remove_command_action(int argc, char **argv)
 {
     char pathname[512];
     struct tm *tm_p;
+    struct tm lt;
     time_t now;
     time(&now);
-    tm_p = localtime(&now);
+    tm_p = localtime_r(&now, &lt);
     if (argc != 2) {
         fprintf(stderr, "usage :\nremove -a\nremove <filename>\n");
         return;
