@@ -28,7 +28,7 @@ extern FILE *log_file;
 void *file_backup_thr(void *);
 struct backups_head;
 struct backup_file_node;
-struct backuped_file_queue;
+struct backedup_file_queue;
 
 struct backups_head backup_list; // 백업 리스트 전역 변수 선언
 
@@ -49,11 +49,11 @@ struct backup_file_node {
     int option_t; // -t TIME : 백업해야할 파일에 대한 백업 디렉토리 내 보관 기간을 TIME만큼 설정
     int store_time; // 보관 기간
     pthread_t backup_thread;
-    struct backuped_file_queue *bfq;// 백업 중인 파일 리스트 관리를 위한 큐 포인터 
+    struct backedup_file_queue *bfq;// 백업 중인 파일 리스트 관리를 위한 큐 포인터 
 };
 
 // 백업파일 관리를 위한 순환 queue, 큐 사이즈는 최대 512
-struct backuped_file_queue {
+struct backedup_file_queue {
     int front, rear;
     int limit; // n옵션의 인자가 된다. (최대 100의 값이 들어온다고 가정)
     int number_of_nodes;
@@ -74,7 +74,10 @@ void get_absolute_path(char *result, char *path)
     if (path[0] == '~') {
         char home_path[512];
         char temp_path[512];
-        strcpy(home_path, getpwuid(getuid())->pw_dir);
+        if (path[1] != '/' && path[1] != '\0')
+            strcpy(home_path, "/home/");
+        else
+            strcpy(home_path, getpwuid(getuid())->pw_dir);
         ++path;
          // /home/username + path
          strcpy(temp_path, home_path);
@@ -98,7 +101,7 @@ char* get_file_name(char *pathname)
         return pathname;
 }
 
-void backuped_file_init(struct backuped_file_queue *bfq, int n_option_arg)
+void backedup_file_init(struct backedup_file_queue *bfq, int n_option_arg)
 {
     bfq->number_of_nodes = 0;
     bfq->front = bfq->rear = 0;
@@ -108,10 +111,10 @@ void backuped_file_init(struct backuped_file_queue *bfq, int n_option_arg)
         bfq->limit = n_option_arg + 2;
 }
 
-void backuped_file_add(struct backuped_file_queue *bfq, const char *data)
+void backedup_file_add(struct backedup_file_queue *bfq, const char *data)
 {
     if ((bfq->rear+1) % bfq->limit == bfq->front) {
-        fprintf(stderr, "backuped_file fully added!!\n");
+        fprintf(stderr, "backedup_file fully added!!\n");
         return;
     }
     ++bfq->number_of_nodes;
@@ -125,7 +128,7 @@ void backuped_file_add(struct backuped_file_queue *bfq, const char *data)
 }
 
 // 처음에 추가된 data 가 빠져 나간다. (제일 오래된 백업)
-void backuped_file_del(struct backuped_file_queue *bfq) {
+void backedup_file_del(struct backedup_file_queue *bfq) {
     if (bfq->front == bfq->rear) {
         fprintf(stderr, "queue is empty\n");
         return;
@@ -196,7 +199,7 @@ void backup_list_append(char *pathname, int period, int option_m, int option_n, 
     struct backup_file_node *curr = backup_list.start;
     while (curr) {
         if (strcmp(curr->pathname, pathname) == 0) {
-            fprintf(stderr, "이미 같은 파일이 백업 중입니다.\n");
+            fprintf(stderr, "이미 같은 파일이 백업 중입니다. -> %s\n", curr->pathname);
             return;
         }
         curr = curr->next;
@@ -227,10 +230,10 @@ void cleanup(void *args)
     if (args == NULL) {
         return;
     }
-    struct backuped_file_queue *bfq = (struct backuped_file_queue *)args;
+    struct backedup_file_queue *bfq = (struct backedup_file_queue *)args;
     while(bfq->front != bfq->rear) {
         // printf("%s => 이 파일은 더 이상 백업하지 않으므로 메모리를 해제합니다.\n", bfq->queue[(bfq->front + 1)%bfq->limit]);
-        backuped_file_del(bfq);
+        backedup_file_del(bfq);
     }
     free(args);
 }
@@ -239,7 +242,7 @@ void *file_backup_thr(void *args)
 {
     struct backup_file_node *node = (struct backup_file_node *)args;
     struct stat statbuf;
-    char backuped_pathname[512];
+    char backedup_pathname[512];
     time_t now;
     struct tm *tm_p;
     struct tm lt;
@@ -247,11 +250,10 @@ void *file_backup_thr(void *args)
     int isBackup;
     char sysCmd[1024];
     time(&now);
-    // tm_p = localtime(&now);
     tm_p = localtime_r(&now, &lt); // make localtime thread-safe
     isBackup = 1;
-    node->bfq = (struct backuped_file_queue *)calloc(1, sizeof(struct backuped_file_queue));
-    backuped_file_init(node->bfq, node->maxn);
+    node->bfq = (struct backedup_file_queue *)calloc(1, sizeof(struct backedup_file_queue));
+    backedup_file_init(node->bfq, node->maxn);
     // 쓰레드가 끝나기 전에 bfq에 할당된 동적 메모리가 반납되어야 한다.
     pthread_cleanup_push(cleanup, node->bfq);
 
@@ -283,17 +285,17 @@ void *file_backup_thr(void *args)
         }
 
         if (isBackup) {
-            sprintf(backuped_pathname, "%s/%s_%02d%02d%02d%02d%02d%02d", backup_directory, get_file_name(node->pathname), (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
+            sprintf(backedup_pathname, "%s/%s_%02d%02d%02d%02d%02d%02d", backup_directory, get_file_name(node->pathname), (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec);
             // 백업 파일을 실질적으로 생성함
-            sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", node->pathname, backuped_pathname); // -p 옵션은 mtime 등을 preserve 한다.
-            // sprintf(sysCmd, "cp %s %s", node->pathname, backuped_pathname);
+            sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", node->pathname, backedup_pathname); // -p 옵션은 mtime 등을 preserve 한다.
+            // sprintf(sysCmd, "cp %s %s", node->pathname, backedup_pathname);
             if (system(sysCmd) != 0) {
                 // 백업하려는 파일이 접근불가 한 경우
                 //fprintf(stderr, "[warning] %s 파일에 더 이상 접근할 수 없습니다.\n 복구하시려면 recover %s ... 명령을 사용하십시오.\n", node->pathname, node->pathname);
                 printf("명령 실패\n");
             } else {
-                fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backuped_pathname);
-                backuped_file_add(node->bfq, backuped_pathname); // 백업된 파일에 추가한다.
+                fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s generated\n", (tm_p->tm_year+1900)%100, tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, backedup_pathname);
+                backedup_file_add(node->bfq, backedup_pathname); // 백업된 파일에 추가한다.
             }
         }
         // 백업 한계에 다다른 경우 오래된 백업부터 삭제
@@ -304,7 +306,7 @@ void *file_backup_thr(void *args)
             if (system(sysCmd) != 0) {
                 fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", node->bfq->queue[front]);
             }
-            backuped_file_del(node->bfq);
+            backedup_file_del(node->bfq);
         }
 
         // 매 PERIOD마다 백업 파일을 생성하고 기존 모든 백업 파일의 생성시간을 확인. 확인한 파일의 생성시간이 주어진 TIME보다 크면 해당 파일 삭제
@@ -321,7 +323,7 @@ void *file_backup_thr(void *args)
                     if (system(sysCmd) != 0) {
                         fprintf(stderr, "백업된 파일 삭제 실패.\n%s\n", node->bfq->queue[idx]);
                     }
-                    backuped_file_del(node->bfq);
+                    backedup_file_del(node->bfq);
                 } // end of if time
             } // end of for queue
         } // end of if option t
@@ -522,7 +524,6 @@ void add_command_action(int argc, char **argv)
     }
 }
 
-// 여기 까지 봄
 // list 명령어 처리
 void list_command_action(void)
 {
@@ -531,16 +532,12 @@ void list_command_action(void)
     // 한 줄에 한 개 파일의 절대경로, PERIOD, OPTION 출력
     struct backup_file_node *curr = backup_list.start;
     while (curr) {
-        printf("%s\t[Period : %3d]\t", curr->pathname, curr->period);
-        printf("%s\t", curr->option_m ? "[Only when editing]" : "[    Everytime    ]");
+        printf("%s\t[백업 주기 %3d초]\t", curr->pathname, curr->period);
+        printf("%s", curr->option_m ? "[수정 시 백업]\t" : "");
         if (curr->option_n)
-            printf("[Number of file limitation : %4d]\t", curr->maxn);
-        else
-            printf("[  No Number of file limitation  ]\t");
+            printf("[백업본 개수 제한 %3d개]\t", curr->maxn);
         if (curr->option_t)
-            printf("[  Backuped file Lifetime : %3d  ]\t", curr->store_time);
-        else
-            printf("[Unlimited Backuped file Lifetime]\t");
+            printf("[백업본 %3d초간 보존]\t", curr->store_time);
         printf("\n");
         curr = curr->next;
     }
@@ -562,7 +559,6 @@ void remove_command_action(int argc, char **argv)
         // 모두 삭제 (백업 중인 작업 중지)
         struct backup_file_node *curr = backup_list.start;
         while (curr) {
-            printf("백업 중지 : %s\n", curr->pathname);
             fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s deleted\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, curr->pathname);
             pthread_cancel(curr->backup_thread);
             curr = curr->next;
@@ -574,9 +570,7 @@ void remove_command_action(int argc, char **argv)
         }
     } else {
         // 지정한 <filename> 삭제
-        // 절대 경로화
         get_absolute_path(pathname, argv[1]);
-        printf("백업 중지 : %s\n", pathname);
         backup_list_delete(pathname); // 해당 파일 백업을 중단
     }
 }
@@ -622,6 +616,7 @@ void recover_command_action(int argc, char **argv)
     struct stat statbuf;
     char user_input[4]; // 번호 선택 용
     int user_input_int;
+    struct tm lt;
     struct tm *tm_p;
     time_t now;
 
@@ -640,7 +635,7 @@ void recover_command_action(int argc, char **argv)
     }
     // (3) NEWFILE이 이미 존재한다면 에러 처리 후 프롬프트로 제어가 넘어감
     if (argc == 4 && access(new_pathname, F_OK) == 0) {
-        fprintf(stderr, "%s is already exist!!\n", new_pathname);
+        fprintf(stderr, "%s already exists!!\n", new_pathname);
         return;
     }
 
@@ -684,9 +679,6 @@ void recover_command_action(int argc, char **argv)
     if (user_input_int < 0 || user_input_int > number_of_pathList) {
         fprintf(stderr, "Wrong Choice.\n");
     } else if (user_input_int > 0) {
-        // printf("정확한 선택 (0 제외)\n");
-        // cp로 파일을 복사하면 복원 완료.
-        // 의미상 -p 옵션을 빼야 할 수도 있다. (mtime 보존용 옵션)
         if (argc == 2)
             sprintf(sysCmd, "cp %s %s -p > /dev/null 2>&1", recover_pathList[user_input_int - 1], pathname);
         else
@@ -695,14 +687,14 @@ void recover_command_action(int argc, char **argv)
             // 변경할 파일이 현재 백업 리스트에 존재한다면 백업 수행 '종료' 후 복구 진행
             backup_list_delete(pathname); // 해당 파일 백업을 중단
             time(&now);
-            tm_p = localtime(&now);
+            tm_p = localtime_r(&now, &lt); // make localtime thread-safe
             if (argc == 2)
                 fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s recovered\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, pathname);
             else 
                 fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s->%s recovered\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, pathname, new_pathname);
             printf("Recovery success\n");
         } else {
-            printf("Recovery failed : [백업이 이미 삭제됨.]\n");
+            printf("Recovery failed : [백업본이 이미 삭제됨.]\n");
         }
     }
     for (int i = 0; i < number_of_pathList; i++)
