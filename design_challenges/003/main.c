@@ -18,8 +18,8 @@ int main(int argc, char *argv[])
 {
     size_t input_command_length;
     char input_command[1024];
-    char *sys_init_command = "rm -rf ssu_backup_dir/* > /dev/null 2>&1";
-    char *backup_postfix = "ssu_backup_dir";
+    char *sys_init_command = "rm -rf ssubk_32000/* > /dev/null 2>&1";
+    char *backup_postfix = "ssubk_32000";
     if (argc > 2) {
         fprintf(stderr, "usage : %s [backup_directory]\n", argv[0]);
         exit(1);
@@ -66,8 +66,8 @@ int main(int argc, char *argv[])
     setbuf(stdout, NULL); // 표준출력 버퍼 없음
     getcwd(backup_directory, 511);
     backup_directory[511] = '\0';
-    printf("현재 경로 : %s\n", binary_directory);
-    printf("백업 경로 : %s\n", backup_directory);
+    printf("Working  Directory : %s\n", binary_directory);
+    printf("Backedup Directory : %s\n", backup_directory);
     backup_list_init();
     chdir(binary_directory); // 바이너리 위치 기준으로 현재 위치 설정함.
 
