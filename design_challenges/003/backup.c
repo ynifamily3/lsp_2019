@@ -463,6 +463,10 @@ void add_command_action(int argc, char **argv)
                 fprintf(stderr, "NUMBER : positive integer ONLY\n");
                 return;
             }
+            if (!(n_option_number >= 1 && n_option_number <= 100)) {
+                fprintf(stderr, "NUMBER : 1 ~ 100 사이의 값을 입력하십시오.\n");
+                return;
+            }
         }
 
         /*
@@ -486,6 +490,10 @@ void add_command_action(int argc, char **argv)
             t_option_number = atoi(argv[i + 1]);
             if (t_option_number <= 0) {
                 fprintf(stderr, "TIME : positive integer ONLY\n");
+                return;
+            }
+            if (!(t_option_number >= 60 && t_option_number <= 1200)) {
+                fprintf(stderr, "TIME : 60 ~ 1200 사이의 값을 입력하십시오.\n");
                 return;
             }
         }
