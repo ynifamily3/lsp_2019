@@ -1,0 +1,2 @@
+reading 5 bytes
+nwrite = 5, errno = 0
