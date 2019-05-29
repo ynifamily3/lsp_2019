@@ -17,25 +17,25 @@ int main(void)
 	shared_value = 0;
 
 	if (pthread_create(&tid1, NULL, ssu_loop1, NULL) != 0) {
-					fprintf(stderr, "pthread_create error\n");
-					exit(1);
+		fprintf(stderr, "pthread_create error\n");
+		exit(1);
 	}
-	
+
 	sleep(1);
-	
+
 	if (pthread_create(&tid2, NULL, ssu_loop2, NULL) != 0) {
-					fprintf(stderr, "pthread_create error\n");
-					exit(1);
+		fprintf(stderr, "pthread_create error\n");
+		exit(1);
 	}
 
 	if (pthread_join(tid1, (void *)&status) != 0) {
-					fprintf(stderr, "pthread_join error\n");
-					exit(1);
+		fprintf(stderr, "pthread_join error\n");
+		exit(1);
 	}
 
 	if (pthread_join(tid2, (void *)&status) != 0) {
-					fprintf(stderr, "pthread_join error\n");
-					exit(1);
+		fprintf(stderr, "pthread_join error\n");
+		exit(1);
 	}
 
 	status = pthread_mutex_destroy(&mutex);
@@ -45,31 +45,34 @@ int main(void)
 }
 
 void *ssu_loop1(void *arg) {
-				int i;
-				for (i = 0; i < 10; i++) {
-								pthread_mutex_lock(&mutex);
-								printf("loop1 : %d\n", shared_value);
-								shared_value++;
+	int i;
+	for (i = 0; i < 10; i++) {
+		pthread_mutex_lock(&mutex);
+		printf("쓰레드 1 에서 잠갔음.\n");
+		printf("loop1 : %d\n", shared_value);
+		shared_value++;
 
-								if (i == 10)
-												return NULL;
-
-								pthread_mutex_unlock(&mutex);
-								sleep(1);
-				}
-				return NULL;
+		if (i == 10)
+			return NULL;
+		printf("쓰레드 1 에서 풀기로 함.\n");
+		pthread_mutex_unlock(&mutex);
+		sleep(1);
+	}
+	return NULL;
 }
 
 void *ssu_loop2(void *arg) {
-				int i;
-				for (i = 0; i < 10; i++) {
-								pthread_mutex_lock(&mutex);
-								printf("loop2 : %d\n", shared_value);
-								shared_value++;
-								pthread_mutex_unlock(&mutex);
-								sleep(2);
-				}
+	int i;
+	for (i = 0; i < 10; i++) {
+		pthread_mutex_lock(&mutex);
+		printf("쓰레드 2 에서 잠갔음.\n");
+		printf("loop2 : %d\n", shared_value);
+		shared_value++;
+		printf("쓰레드 2 에서 풀기로 함.\n");
+		pthread_mutex_unlock(&mutex);
+		sleep(2);
+	}
 
-				return NULL;
+	return NULL;
 }
 

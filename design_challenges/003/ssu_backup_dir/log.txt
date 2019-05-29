@@ -1,0 +1,3 @@
+[190524 170510] /home/jong/lsp.txt added
+[190524 170513] /home/jong/lsp/design_challenges/003/ssu_backup_dir/lsp.txt_190524170513 generated
+[190524 170516] /home/jong/lsp/design_challenges/003/ssu_backup_dir/lsp.txt_190524170516 generated
