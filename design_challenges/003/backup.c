@@ -168,6 +168,7 @@ void backup_list_delete(char *pathname)
 
     while (curr) {
         if (strcmp(curr->pathname, pathname) == 0) {
+            pthread_detach(curr->backup_thread);
             pthread_cancel(curr->backup_thread); // 내부 백업 과정을 중지시킴
             find = 1;
             break;
@@ -432,6 +433,10 @@ void add_command_action(int argc, char **argv)
         fprintf(stderr, "PERIOD : positive integer ONLY\n");
         return;
     }
+    if (!(period >= 5 && period <= 10)) {
+        fprintf(stderr, "PERIOD : 5 ~ 10 사이의 값을 입력하십시오.\n");
+        return;
+    }
 
     for (int i = 0; i < argc; i++) {
         /*
@@ -568,6 +573,7 @@ void remove_command_action(int argc, char **argv)
         struct backup_file_node *curr = backup_list.start;
         while (curr) {
             fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s deleted\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, curr->pathname);
+            pthread_detach(curr->backup_thread);
             pthread_cancel(curr->backup_thread);
             curr = curr->next;
         }
