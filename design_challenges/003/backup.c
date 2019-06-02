@@ -706,7 +706,10 @@ void recover_command_action(int argc, char **argv)
                 fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s recovered\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, pathname);
             else 
                 fprintf(log_file, "[%02d%02d%02d %02d%02d%02d] %s->%s recovered\n", (tm_p->tm_year+1900)%100,tm_p->tm_mon + 1, tm_p->tm_mday, tm_p->tm_hour, tm_p->tm_min, tm_p->tm_sec, pathname, new_pathname);
-            printf("Recovery success\n");
+            printf("Recovery success\n-------------------\n");
+            sprintf(sysCmd, "cat %s", argc == 2 ? pathname : new_pathname);
+            system(sysCmd);
+            printf("-------------------\n");
         } else {
             printf("Recovery failed : [백업본이 이미 삭제됨.]\n");
         }
